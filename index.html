@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>PayEasy · Vehicle Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK (8.x) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #0a0f1e; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
+        /* splash */
+        .splash-container { position: fixed; inset: 0; background: #0a0f1e; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; transition: 0.4s; }
+        .line-animation { position: relative; width: 200px; height: 100px; margin-bottom: 2rem; }
+        .line { position: absolute; height: 4px; background: #2a80e6; border-radius: 4px; animation: pulse 1.5s infinite; }
+        .line-1 { width: 30%; top: 20px; left: 0; animation-delay: 0s; }
+        .line-2 { width: 60%; top: 40px; left: 20%; animation-delay: 0.3s; }
+        .line-3 { width: 45%; top: 60px; left: 10%; animation-delay: 0.6s; }
+        .line-4 { width: 75%; top: 80px; left: 5%; animation-delay: 0.9s; }
+        .logo-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        .logo-image { width: 80px; height: 80px; background: #1e2a47; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2a80e6; font-size: 2rem; border: 3px solid #2a80e6; }
+        .loading { color: #8b9bb5; font-size: 1.2rem; }
+        .dot { animation: blink 1.4s infinite; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse { 0%,100% { opacity: 0.3; transform: scaleX(0.8); } 50% { opacity: 1; transform: scaleX(1); } }
+        @keyframes blink { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }
+
+        /* main */
+        .main-content { display: none; width: 100%; max-width: 500px; margin: 0 auto; }
+        .main-content.show { display: block; }
+
+        /* LOGIN container — fully centered, mobile friendly */
+        .login-container { background: #141b2b; border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #2a3a55; margin: 1rem; overflow: hidden; }
+        .login-box { padding: 2rem 1.8rem; }
+        .login-box h2 { color: white; margin-bottom: 1.8rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.6rem; justify-content: center; }
+        .login-box h2 i { color: #2a80e6; }
+        .form-group { margin-bottom: 1.3rem; }
+        .form-label { color: #b7c9e2; font-size: 0.95rem; margin-bottom: 0.4rem; display: block; font-weight: 500; }
+        .form-input { width: 100%; padding: 14px 18px; background: #1e2a3a; border: 1px solid #2e3f55; border-radius: 28px; color: white; font-size: 1rem; transition: 0.2s; }
+        .form-input:focus { border-color: #2a80e6; outline: none; background: #23324a; }
+        .btn { padding: 14px 24px; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 1.1rem; transition: 0.2s; background: #2a80e6; color: white; width: 100%; }
+        .btn-primary { background: #2a80e6; }
+        .btn-secondary { background: #2e3f55; color: #ddd; }
+        .btn-success { background: #27ae60; }
+        .message { padding: 12px; border-radius: 18px; margin-bottom: 1.2rem; display: none; font-size: 0.95rem; text-align: center; }
+        .message.success { background: rgba(39,174,96,0.2); color: #2ecc71; display: block; border:1px solid #2ecc71; }
+        .message.error { background: rgba(192,57,43,0.2); color: #e74c3c; display: block; border:1px solid #e74c3c; }
+        .login-options { margin-top: 1.8rem; text-align: center; color: #7f8c8d; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .login-options a { color: #2a80e6; text-decoration: none; font-size: 1rem; font-weight: 500; }
+        .developer-name { text-align: center; padding: 1.2rem; color: #5d7188; font-size: 0.9rem; border-top: 1px solid #253241; }
+
+        /* sidebar / main */
+        .app-wrapper { display: flex; height: 100vh; background: #0a0f1e; position: relative; overflow: hidden; }
+        .sidebar { width: 280px; background: #141b2b; height: 100vh; position: fixed; left: -280px; top: 0; transition: 0.3s; z-index: 1000; border-right: 1px solid #2a3a55; overflow-y: auto; }
+        .sidebar.open { left: 0; }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid #253241; display: flex; align-items: center; gap: 1rem; }
+        .sidebar-header .avatar { width: 48px; height: 48px; background:#1e2a47; border-radius: 50%; display: flex; align-items: center; justify-content: center; color:#2a80e6; font-size:1.5rem; }
+        .sidebar-header h3 { color: white; font-size: 1.1rem; }
+        .sidebar-header p { color: #8b9bb5; font-size: 0.8rem; }
+        .sidebar-item { padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; color: #b7c9e2; cursor: pointer; transition: 0.2s; }
+        .sidebar-item:hover { background: #1e2a3a; color: white; }
+        .sidebar-item i { width: 24px; color: #2a80e6; }
+        .sidebar-item.active { background: #1e2a3a; color: white; border-left: 4px solid #2a80e6; }
+
+        .main-panel { flex: 1; margin-left: 0; transition: 0.3s; width: 100%; }
+        .top-bar { background: #141b2b; padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.8rem; border-bottom: 1px solid #253241; }
+        .menu-toggle { background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; }
+        .menu-toggle:hover { background: #1e2a3a; }
+        .user-info-header { flex:1; display: flex; justify-content: flex-end; align-items: center; gap: 0.8rem; color: white; font-weight: 500; }
+        .badge { background: #f39c12; padding: 4px 10px; border-radius: 30px; font-size: 0.75rem; color: #0a0f1e; font-weight: 600; }
+        .badge.verified { background:#27ae60; color:white; }
+
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+        .overlay.show { display: block; }
+
+        /* dashboard content */
+        .dashboard-content { padding: 1rem; overflow-y: auto; height: calc(100vh - 70px); }
+        .section-title { color: white; font-size: 1.4rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
+        .card { background: #1e2a3a; border-radius: 28px; padding: 1.5rem; margin-bottom: 1.2rem; border: 1px solid #2e4057; }
+
+        .vehicle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .vehicle-card, .service-card { background: #253445; border-radius: 24px; padding: 1.2rem 0.8rem; text-align: center; cursor: pointer; border: 1px solid #2e4057; transition: 0.1s; }
+        .vehicle-card:hover, .service-card:hover { background: #2d4058; transform: scale(0.98); }
+        .vehicle-icon, .service-icon { font-size: 2rem; color: #2a80e6; margin-bottom: 0.5rem; }
+        .vehicle-name, .service-name { color: white; font-weight: 600; }
+        .vehicle-plate { color: #8bb9fe; font-size: 0.8rem; }
+        .service-price { color: #f1c40f; font-size: 0.9rem; margin-top: 0.3rem; }
+
+        /* folder grid - MY DOCUMENTS style */
+        .folder-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
+        .folder-card { background: #1b2a3f; border-radius: 24px; padding: 1.5rem 0.5rem; text-align: center; cursor: pointer; border: 1px solid #3a4b66; transition: 0.2s; box-shadow: 0 8px 0 #0e1a28; }
+        .folder-card:hover { background: #25415c; transform: translateY(-3px); box-shadow: 0 10px 0 #0e1a28; }
+        .folder-icon { font-size: 2.4rem; color: #f39c12; margin-bottom: 0.5rem; }
+        .folder-name { color: white; font-weight: 700; font-size: 1rem; letter-spacing: 0.3px; }
+        .folder-count { color: #a0b8d4; font-size: 0.8rem; margin-top: 4px; }
+
+        .doc-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #1b2537; border-radius: 20px; margin-bottom: 0.7rem; }
+        .doc-icon { color: #2a80e6; font-size: 1.8rem; }
+        .doc-info { flex: 1; }
+        .doc-name { color: white; font-weight: 600; }
+        .doc-date { color: #8b9bb5; font-size: 0.8rem; }
+        .doc-download { color: #2a80e6; font-size: 1.4rem; cursor: pointer; padding: 0 0.5rem; }
+
+        /* progress */
+        .progress-container { margin: 1.5rem 0; }
+        .progress-steps { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .step { flex:1; text-align: center; color: #8b9bb5; font-size: 0.8rem; }
+        .step.active { color: #2a80e6; }
+        .step.completed { color: #27ae60; }
+        .progress-bar { height: 8px; background: #2e3f55; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #2a80e6; transition: width 0.3s; }
+
+        .bank-details { background: #1b2537; border-radius: 20px; padding: 1.2rem; margin: 1rem 0; }
+        .bank-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid #2e3f55; }
+        .bank-row:last-child { border-bottom: none; }
+        .bank-label { color: #8b9bb5; }
+        .bank-value { color: white; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+        .copy-btn { background: #2a80e6; border: none; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
+
+        .file-upload { border: 2px dashed #3e5570; border-radius: 28px; padding: 1.2rem; text-align: center; margin: 1rem 0; cursor: pointer; background: #1b2537; }
+        .file-upload i { font-size: 2rem; color: #2a80e6; }
+        .file-name { color: #2ecc71; font-size:0.9rem; margin-top: 0.2rem; }
+
+        /* modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 2000; padding: 1rem; }
+        .modal-content { background: #141b2b; border-radius: 36px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border: 1px solid #2e3f55; padding: 1.8rem; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-title { color: white; font-size: 1.5rem; font-weight: 600; }
+        .close-btn { background: none; border: none; color: #aaa; font-size: 2.5rem; cursor: pointer; line-height: 1; }
+
+        /* admin */
+        .admin-dashboard { background: #0f1625; min-height: 100vh; padding: 1rem; }
+        .dashboard-header { display: flex; justify-content: space-between; background:#141b2b; padding:1rem 1.5rem; border-radius: 30px; margin-bottom: 1.5rem; align-items:center; }
+        .admin-stats { display: grid; grid-template-columns: repeat(2,1fr); gap:1rem; margin-bottom:2rem; }
+        .stat-card { background:#1e2a3a; border-radius:20px; padding:1.5rem; color:white; }
+        .dashboard-section { display: none; }
+        .dashboard-section.active { display: block; }
+
+        .notification { position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 1rem 1.8rem; border-radius: 40px; z-index: 3000; display: none; box-shadow:0 10px 20px rgba(0,0,0,0.3); }
+
+        @media (max-width: 480px) {
+            .login-box { padding: 1.8rem 1.2rem; }
+            .login-box h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- splash -->
+    <div class="splash-container" id="splashScreen">
+        <div class="line-animation"><div class="line line-1"></div><div class="line line-2"></div><div class="line line-3"></div><div class="line line-4"></div><div class="logo-container"><div class="logo-image"><i class="fas fa-car"></i></div></div></div>
+        <div class="loading">Loading<span class="dots"><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span></div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content" id="mainContent">
+        <!-- LOGIN SECTION (perfectly centered on mobile) -->
+        <div id="loginSection" class="login-container">
+            <div class="login-box">
+                <h2><i class="fas fa-car"></i> PayEasy</h2>
+                <div id="loginMessage" class="message"></div>
+                <form id="loginForm">
+                    <div class="form-group"><label class="form-label">Email / Phone</label><input type="text" class="form-input" id="loginUsername" placeholder="user@example.com"></div>
+                    <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="loginPassword" placeholder="••••••••"></div>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </form>
+                <div class="login-options">
+                    <a href="#" onclick="showRegisterModal()">Create account</a>
+                    <a href="#" onclick="showAdminLoginModal()">Admin</a>
+                </div>
+            </div>
+            <div class="developer-name"><i class="fas fa-code"></i> PayEasy · Vehicle Services</div>
+        </div>
+
+        <!-- Register Modal -->
+        <div id="registerModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><div class="modal-title"><i class="fas fa-user-plus"></i> Register</div><button class="close-btn" onclick="closeRegisterModal()">&times;</button></div><div id="registerMessage" class="message"></div><form id="registerForm"><div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="regName" required></div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="regEmail" required></div><div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" id="regPhone" required></div><div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="regPassword" required></div><div class="form-group"><label class="form-label">Confirm</label><input type="password" class="form-input" id="regConfirm" required></div><button type="submit" class="btn btn-primary">Register</button></form></div></div>
+
+        <!-- Admin Login Modal -->
+        <div id="adminLoginModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><div class="modal-title"><i class="fas fa-user-shield"></i> Admin</div><button class="close-btn" onclick="closeAdminLoginModal()">&times;</button></div><div id="adminMessage" class="message"></div><form id="adminLoginForm"><div class="form-group"><label class="form-label">Admin ID</label><input type="text" class="form-input" id="adminId" value="admin"></div><div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="adminPassword" value="Admin123"></div><button type="submit" class="btn btn-primary">Login</button></form></div></div>
+
+        <!-- User Dashboard -->
+        <div id="userDashboard" style="display: none;">
+            <div class="app-wrapper">
+                <div class="overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-header"><div class="avatar"><i class="fas fa-user"></i></div><div><h3 id="sidebarUserName">User</h3><p id="sidebarUserStatus">Pending</p></div></div>
+                    <div class="sidebar-menu">
+                        <div class="sidebar-item active" onclick="showUserSection('dashboard')"><i class="fas fa-home"></i> Dashboard</div>
+                        <div class="sidebar-item" onclick="showUserSection('vehicles')"><i class="fas fa-car"></i> My Vehicles</div>
+                        <div class="sidebar-item" onclick="showUserSection('services')"><i class="fas fa-concierge-bell"></i> Vehicle Services</div>
+                        <div class="sidebar-item" onclick="showUserSection('folder')"><i class="fas fa-folder"></i> My Documents</div>
+                        <div class="sidebar-item" onclick="showUserSection('requests')"><i class="fas fa-clipboard-list"></i> My Requests</div>
+                        <div class="sidebar-item" onclick="showUserSection('bank')"><i class="fas fa-university"></i> Bank Details</div>
+                        <div class="sidebar-item" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+                    </div>
+                </div>
+                <div class="main-panel" id="mainPanel">
+                    <div class="top-bar"><button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><div class="user-info-header"><span id="headerUserName">User</span><span class="badge" id="headerVerifiedBadge">Pending</span></div></div>
+                    <div class="dashboard-content" id="userContent">
+                        <!-- Dashboard Section -->
+                        <div id="dashboardSection" class="user-section"><h4 class="section-title"><i class="fas fa-home"></i> Dashboard</h4><div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><h3 style="color:white;">Welcome, <span id="welcomeName">User</span></h3><p style="color:#8b9bb5;">Manage your vehicle services</p></div><button class="btn btn-secondary" style="width:auto;" onclick="showUserSection('vehicles')"><i class="fas fa-plus"></i> Add Vehicle</button></div></div><div class="vehicle-grid" id="dashboardVehicles"></div><div class="card"><h4 style="color:white;">Recent Requests</h4><div id="dashboardRecentRequests"></div></div></div>
+                        <!-- Vehicles -->
+                        <div id="vehiclesSection" class="user-section" style="display:none;"><h4 class="section-title"><i class="fas fa-car"></i> My Vehicles</h4><button class="btn btn-secondary" style="margin-bottom:1rem;" onclick="showAddVehicleModal()"><i class="fas fa-plus"></i> Add New Vehicle</button><div id="vehiclesList" class="vehicle-grid"></div></div>
+                        <!-- Services -->
+                        <div id="servicesSection" class="user-section" style="display:none;"><h4 class="section-title"><i class="fas fa-concierge-bell"></i> Vehicle Services</h4><div class="vehicle-grid" id="serviceGrid"></div></div>
+                        <!-- MY DOCUMENTS (styled folder grid) -->
+                        <div id="folderSection" class="user-section" style="display:none;">
+                            <h4 class="section-title"><i class="fas fa-folder"></i> My Documents</h4>
+                            <div class="folder-grid">
+                                <div class="folder-card" onclick="openFolder('id_documents')"><div class="folder-icon"><i class="fas fa-id-card"></i></div><div class="folder-name">ID DOCUMENTS</div><div class="folder-count" id="idCount">0 files</div></div>
+                                <div class="folder-card" onclick="openFolder('vehicle_documents')"><div class="folder-icon"><i class="fas fa-car"></i></div><div class="folder-name">VEHICLE DOCS</div><div class="folder-count" id="vehicleCount">0 files</div></div>
+                                <div class="folder-card" onclick="openFolder('sticker_documents')"><div class="folder-icon"><i class="fas fa-tag"></i></div><div class="folder-name">STICKERS</div><div class="folder-count" id="stickerCount">0 files</div></div>
+                                <div class="folder-card" onclick="openFolder('bank_slips')"><div class="folder-icon"><i class="fas fa-receipt"></i></div><div class="folder-name">BANK SLIPS</div><div class="folder-count" id="slipCount">0 files</div></div>
+                            </div>
+                            <div id="folderContents" style="margin-top:1.5rem;"></div>
+                        </div>
+                        <!-- Requests -->
+                        <div id="requestsSection" class="user-section" style="display:none;"><h4 class="section-title"><i class="fas fa-clipboard-list"></i> My Requests</h4><div id="userRequestsList"></div></div>
+                        <!-- Bank -->
+                        <div id="bankSection" class="user-section" style="display:none;"><h4 class="section-title"><i class="fas fa-university"></i> Bank Details</h4><div class="card"><div class="bank-details"><div class="bank-row"><span class="bank-label">Bank Name</span><span class="bank-value">Bank of Maldives</span></div><div class="bank-row"><span class="bank-label">Account Name</span><span class="bank-value">PayEasy Services</span></div><div class="bank-row"><span class="bank-label">Account Number</span><span class="bank-value">7711-3344-5566-8899 <button class="copy-btn" onclick="copyToClipboard('7711-3344-5566-8899')"><i class="fas fa-copy"></i></button></span></div></div><p style="color:#8b9bb5;"><i class="fas fa-info-circle"></i> Copy account & upload slip</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard (minimal) -->
+        <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+            <div class="dashboard-header"><h3 style="color:white"><i class="fas fa-shield-alt"></i> Admin · PayEasy</h3><div><span style="color:white;margin-right:1rem;">Admin</span><button class="btn btn-danger" onclick="logoutAdmin()">Exit</button></div></div>
+            <div class="admin-stats"><div class="stat-card"><i class="fas fa-users"></i> Users <span id="statUsers">0</span></div><div class="stat-card"><i class="fas fa-file-signature"></i> Pending <span id="statPendingVerif">0</span></div></div>
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;"><button class="btn btn-secondary" onclick="showAdminSection('verifications')">Verifications</button><button class="btn btn-secondary" onclick="showAdminSection('serviceRequests')">Requests</button></div>
+            <div id="adminVerificationsSection" class="dashboard-section active"></div>
+            <div id="adminServiceRequestsSection" class="dashboard-section"></div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="addVehicleModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><div class="modal-title">Add Vehicle</div><button class="close-btn" onclick="closeAddVehicleModal()">&times;</button></div><div id="vehicleMessage" class="message"></div><div class="form-group"><label class="form-label">Number</label><input class="form-input" id="vehicleNumber" placeholder="C 1234"></div><div class="form-group"><label class="form-label">Type</label><select class="form-input" id="vehicleType"><option value="car">Car</option><option value="bike">Bike</option></select></div><div class="form-group"><label class="form-label">Model</label><input class="form-input" id="vehicleModel" placeholder="Corolla"></div><button class="btn btn-primary" onclick="addVehicle()">Add</button></div></div>
+
+    <div id="requestServiceModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><div class="modal-title">Renew Annual Sticker</div><button class="close-btn" onclick="closeRequestModal()">&times;</button></div><div id="requestModalMessage" class="message"></div><div class="progress-container"><div class="progress-steps"><div class="step completed" id="step1">Form</div><div class="step" id="step2">Payment</div><div class="step" id="step3">Verify</div><div class="step" id="step4">Done</div></div><div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:25%"></div></div></div><form id="requestForm"><div class="form-group"><label class="form-label">Select Vehicle</label><select class="form-input" id="requestVehicle" required></select></div><div class="form-group"><label class="form-label">Upload ID Copy</label><div class="file-upload" onclick="document.getElementById('idFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload ID</p><input type="file" id="idFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" required></div><div id="idFileName" class="file-name"></div></div><div class="bank-details"><h4 style="color:white;">Bank Transfer</h4><div class="bank-row"><span class="bank-label">Account</span><span class="bank-value">7711-3344-5566-8899 <button type="button" class="copy-btn" onclick="copyToClipboard('7711-3344-5566-8899')"><i class="fas fa-copy"></i></button></span></div><div class="bank-row"><span class="bank-label">Amount</span><span class="bank-value">MVR 350</span></div></div><div class="form-group"><label class="form-label">Upload Bank Slip</label><div class="file-upload" onclick="document.getElementById('slipFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload slip</p><input type="file" id="slipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" required></div><div id="slipFileName" class="file-name"></div></div><button type="button" class="btn btn-primary" onclick="submitStickerRequest()">Submit Request</button></form></div></div>
+
+    <!-- Admin upload sticker modal (simple) -->
+    <div id="adminUploadStickerModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><div class="modal-title">Upload Sticker</div><button class="close-btn" onclick="closeAdminUploadModal()">&times;</button></div><input type="hidden" id="adminUploadRequestId"><div class="form-group"><label class="form-label">Sticker file</label><input type="file" id="stickerFile" class="form-input"></div><button class="btn btn-primary" onclick="uploadStickerForRequest()">Upload</button></div></div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Firebase config
+        const firebaseConfig = { apiKey: "AIzaSyCZA8Z9AJcC97CyQUZVCRsljTuYBfxjHMw", authDomain: "easycargo-9c0cd.firebaseapp.com", databaseURL: "https://easycargo-9c0cd-default-rtdb.firebaseio.com", projectId: "easycargo-9c0cd", storageBucket: "easycargo-9c0cd.firebasestorage.app", messagingSenderId: "51689325187", appId: "1:51689325187:web:c65cb8fb0af2241a4c91b6" };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(), storage = firebase.storage();
+
+        let currentUser = null, currentFolder = null;
+
+        window.onload = ()=>{ setTimeout(()=>{ document.getElementById('splashScreen').style.opacity='0'; setTimeout(()=>{ document.getElementById('splashScreen').style.display='none'; document.getElementById('mainContent').classList.add('show'); },300); },2000); checkSession(); initServices(); };
+
+        function initServices(){ db.ref('services').once('value', snap=>{ if(!snap.exists()) db.ref('services').set({ annual_sticker: { name:'Annual Sticker', price:350, icon:'fa-tag' } }); }); }
+
+        // session
+        function checkSession(){ let s=localStorage.getItem('payeasy_session'); if(s){ let d=JSON.parse(s); if(d.expiry>Date.now()){ if(d.type==='user'){ db.ref('users/'+d.uid).once('value', snap=>{ if(snap.exists()){ currentUser=snap.val(); currentUser.uid=d.uid; showUserDashboard(); } else localStorage.removeItem('payeasy_session'); }); } else if(d.type==='admin') showAdminDashboard(); } else localStorage.removeItem('payeasy_session'); } }
+        function saveSession(type,uid=null){ localStorage.setItem('payeasy_session',JSON.stringify({type,expiry:Date.now()+86400000,uid})); }
+
+        // login
+        document.getElementById('loginForm').addEventListener('submit', async e=>{ e.preventDefault(); let un=document.getElementById('loginUsername').value, pw=document.getElementById('loginPassword').value, msg=document.getElementById('loginMessage'); if(!un||!pw){ msg.className='message error'; msg.innerText='Enter credentials'; return; }
+            let snap=await db.ref('users').orderByChild('email').equalTo(un).once('value'); let user=null,uid=null;
+            if(snap.exists()) snap.forEach(c=>{ user=c.val(); uid=c.key; }); else { let snap2=await db.ref('users').orderByChild('phone').equalTo(un).once('value'); if(snap2.exists()) snap2.forEach(c=>{ user=c.val(); uid=c.key; }); }
+            if(!user||user.password!==pw){ msg.className='message error'; msg.innerText='Invalid credentials'; return; }
+            currentUser=user; currentUser.uid=uid; saveSession('user',uid); showUserDashboard();
+        });
+
+        // register
+        document.getElementById('registerForm').addEventListener('submit', async e=>{ e.preventDefault(); let name=document.getElementById('regName').value, email=document.getElementById('regEmail').value, phone=document.getElementById('regPhone').value, pw=document.getElementById('regPassword').value, confirm=document.getElementById('regConfirm').value; if(pw!==confirm){ showMessage('registerMessage','Mismatch','error'); return; } let user={name,email,phone,password:pw,verified:false,createdAt:Date.now(),vehicles:{}}; try{ let snap=await db.ref('users').orderByChild('email').equalTo(email).once('value'); if(snap.exists()){ showMessage('registerMessage','Email exists','error'); return; } await db.ref('users').push().set(user); showMessage('registerMessage','Registered!','success'); setTimeout(closeRegisterModal,1500); }catch(er){ showMessage('registerMessage',er.message,'error'); } });
+
+        // admin login
+        document.getElementById('adminLoginForm').addEventListener('submit', e=>{ e.preventDefault(); let id=document.getElementById('adminId').value, pw=document.getElementById('adminPassword').value; if(id==='admin'&&pw==='Admin123'){ saveSession('admin'); showAdminDashboard(); closeAdminLoginModal(); } else showMessage('adminMessage','Invalid','error'); });
+
+        function showMessage(el,text,type){ let m=document.getElementById(el); m.style.display='block'; m.className='message '+type; m.innerText=text; setTimeout(()=>m.style.display='none',3000); }
+        function showNotification(msg,type='success'){ let n=document.getElementById('notification'); n.style.display='block'; n.style.background=type==='success'?'#27ae60':'#c0392b'; n.innerText=msg; setTimeout(()=>n.style.display='none',3000); }
+        function copyToClipboard(t){ navigator.clipboard.writeText(t).then(()=>showNotification('Copied!')); }
+
+        // Sidebar
+        function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
+
+        function showUserSection(section){ document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active')); event.currentTarget.classList.add('active'); document.querySelectorAll('.user-section').forEach(s=>s.style.display='none'); document.getElementById(section+'Section').style.display='block'; if(section==='vehicles') loadUserVehicles(); else if(section==='services') loadServices(); else if(section==='folder') loadDocuments(); else if(section==='requests') loadUserRequests(); if(window.innerWidth<=500) toggleSidebar(); }
+
+        // User dashboard
+        function showUserDashboard(){ document.getElementById('loginSection').style.display='none'; document.getElementById('adminDashboard').style.display='none'; document.getElementById('userDashboard').style.display='block'; document.getElementById('sidebarUserName').innerText=currentUser.name||'User'; document.getElementById('headerUserName').innerText=currentUser.name||'User'; document.getElementById('welcomeName').innerText=currentUser.name||'User'; let status=currentUser.verified?'Verified':'Pending'; document.getElementById('sidebarUserStatus').innerHTML=`Status: <span style="color:${currentUser.verified?'#27ae60':'#f39c12'}">${status}</span>`; document.getElementById('headerVerifiedBadge').innerText=status; loadDashboard(); }
+
+        function loadDashboard(){ loadDashboardVehicles(); loadRecentRequests(); }
+        async function loadDashboardVehicles(){ let v=currentUser.vehicles||{}, container=document.getElementById('dashboardVehicles'); container.innerHTML=''; if(Object.keys(v).length===0){ container.innerHTML='<div class="card">No vehicles</div>'; return; } Object.keys(v).slice(0,2).forEach(k=>{ let veh=v[k]; container.innerHTML+=`<div class="vehicle-card"><div class="vehicle-icon"><i class="fas fa-car"></i></div><div class="vehicle-name">${veh.number}</div><div class="vehicle-plate">${veh.model||''}</div></div>`; }); }
+        async function loadRecentRequests(){ let snap=await db.ref('requests').orderByChild('userId').equalTo(currentUser.uid).limitToLast(3).once('value'); let container=document.getElementById('dashboardRecentRequests'); container.innerHTML=''; if(!snap.exists()){ container.innerHTML='<p style="color:#8b9bb5;">No recent requests</p>'; return; } snap.forEach(c=>{ let r=c.val(); container.innerHTML+=`<div style="padding:0.5rem 0;border-bottom:1px solid #2e3f55"><div style="display:flex;justify-content:space-between"><span style="color:white;">${r.serviceName}</span><span class="badge">${r.status}</span></div><div style="color:#8b9bb5;">${new Date(r.createdAt).toLocaleDateString()}</div></div>`; }); }
+
+        // Vehicles
+        function showAddVehicleModal(){ document.getElementById('addVehicleModal').style.display='flex'; }
+        function closeAddVehicleModal(){ document.getElementById('addVehicleModal').style.display='none'; }
+        async function addVehicle(){ let num=document.getElementById('vehicleNumber').value, type=document.getElementById('vehicleType').value, model=document.getElementById('vehicleModel').value; if(!num){ showMessage('vehicleMessage','Enter number','error'); return; } let vid='v_'+Date.now(); let vehicle={number:num,type,model,addedAt:Date.now()}; await db.ref(`users/${currentUser.uid}/vehicles/${vid}`).set(vehicle); if(!currentUser.vehicles) currentUser.vehicles={}; currentUser.vehicles[vid]=vehicle; showMessage('vehicleMessage','Added','success'); setTimeout(()=>{ closeAddVehicleModal(); loadUserVehicles(); },1500); }
+        async function loadUserVehicles(){ let v=currentUser.vehicles||{}, container=document.getElementById('vehiclesList'); container.innerHTML=''; if(Object.keys(v).length===0){ container.innerHTML='<div class="card">No vehicles</div>'; return; } Object.keys(v).forEach(k=>{ let veh=v[k]; container.innerHTML+=`<div class="vehicle-card" onclick="selectVehicle('${k}')"><div class="vehicle-icon"><i class="fas fa-${veh.type==='bike'?'motorcycle':'car'}"></i></div><div class="vehicle-name">${veh.number}</div><div class="vehicle-plate">${veh.model||''}</div></div>`; }); }
+        window.selectVehicle=function(vid){ currentVehicle=vid; showUserSection('services'); }
+
+        // Services
+        async function loadServices(){ let servSnap=await db.ref('services').once('value'); let grid=document.getElementById('serviceGrid'); grid.innerHTML=''; if(servSnap.exists()) servSnap.forEach(c=>{ let s=c.val(), id=c.key; grid.innerHTML+=`<div class="service-card" onclick="openRequestModal('${id}','${s.name}',${s.price})"><div class="service-icon"><i class="fas ${s.icon||'fa-tag'}"></i></div><div class="service-name">${s.name}</div><div class="service-price">MVR ${s.price}</div></div>`; }); }
+
+        // request modal
+        function openRequestModal(sid,name,price){ if(!currentUser.verified){ showNotification('Verification required','error'); return; } document.getElementById('requestServiceModal').style.display='flex'; let sel=document.getElementById('requestVehicle'); sel.innerHTML='<option value="">Select vehicle</option>'; let v=currentUser.vehicles||{}; Object.keys(v).forEach(k=>{ sel.innerHTML+=`<option value="${k}">${v[k].number}</option>`; }); document.getElementById('idFile').onchange=e=>{ document.getElementById('idFileName').innerText=e.target.files[0]?.name||''; }; document.getElementById('slipFile').onchange=e=>{ document.getElementById('slipFileName').innerText=e.target.files[0]?.name||''; }; document.getElementById('progressFill').style.width='25%'; document.querySelectorAll('.step').forEach((s,idx)=> s.className= idx===0?'step completed':'step'); }
+        function closeRequestModal(){ document.getElementById('requestServiceModal').style.display='none'; }
+
+        async function submitStickerRequest(){ let vid=document.getElementById('requestVehicle').value, idFile=document.getElementById('idFile').files[0], slipFile=document.getElementById('slipFile').files[0]; if(!vid||!idFile||!slipFile){ showMessage('requestModalMessage','All fields required','error'); return; } let vehicle=currentUser.vehicles[vid]; let reqId='req_'+Date.now()+'_'+Math.random().toString(36).substr(2,5); try{ document.getElementById('progressFill').style.width='50%'; document.getElementById('step2').classList.add('completed'); let idRef=storage.ref(`requests/${reqId}/id_${idFile.name}`); await idRef.put(idFile); let idUrl=await idRef.getDownloadURL(); let slipRef=storage.ref(`requests/${reqId}/slip_${slipFile.name}`); await slipRef.put(slipFile); let slipUrl=await slipRef.getDownloadURL(); document.getElementById('progressFill').style.width='75%'; document.getElementById('step3').classList.add('completed'); let request={userId:currentUser.uid,userName:currentUser.name,vehicleId:vid,vehicleNumber:vehicle.number,serviceId:'annual_sticker',serviceName:'Annual Sticker',amount:350,idUrl,slipUrl,status:'pending',paid:false,createdAt:Date.now(),progress:75}; await db.ref('requests/'+reqId).set(request); document.getElementById('progressFill').style.width='100%'; document.getElementById('step4').classList.add('completed'); showNotification('Request submitted!'); setTimeout(closeRequestModal,1500); loadUserRequests(); }catch(e){ showMessage('requestModalMessage',e.message,'error'); } }
+
+        // documents
+        async function loadDocuments(){ let snap=await db.ref('requests').orderByChild('userId').equalTo(currentUser.uid).once('value'); let idC=0,stickerC=0,slipC=0; if(snap.exists()) snap.forEach(c=>{ let r=c.val(); if(r.idUrl) idC++; if(r.documentURL) stickerC++; if(r.slipUrl) slipC++; }); document.getElementById('idCount').innerText=idC+' files'; document.getElementById('stickerCount').innerText=stickerC+' files'; document.getElementById('slipCount').innerText=slipC+' files'; document.getElementById('vehicleCount').innerText=Object.keys(currentUser.vehicles||{}).length+' files'; }
+        async function openFolder(name){ currentFolder=name; let container=document.getElementById('folderContents'); let contents=await loadFolderContents(name); let html=`<h4 style="color:white;margin:1rem 0;">${name.replace('_',' ').toUpperCase()}</h4>`; if(contents.length===0) html+='<div class="card">No files</div>'; else contents.forEach(d=>{ html+=`<div class="doc-item"><div class="doc-icon"><i class="fas fa-file-${d.type}"></i></div><div class="doc-info"><div class="doc-name">${d.name}</div><div class="doc-date">${d.date}</div></div><div class="doc-download" onclick="window.open('${d.url}')"><i class="fas fa-download"></i></div></div>`; }); container.innerHTML=html; }
+        async function loadFolderContents(name){ let arr=[]; let snap=await db.ref('requests').orderByChild('userId').equalTo(currentUser.uid).once('value'); if(snap.exists()) snap.forEach(c=>{ let r=c.val(); if(name==='id_documents'&&r.idUrl) arr.push({name:'ID Document',url:r.idUrl,date:new Date(r.createdAt).toLocaleDateString(),type:r.idUrl.includes('.pdf')?'pdf':'image'}); if(name==='sticker_documents'&&r.documentURL) arr.push({name:'Sticker '+r.vehicleNumber,url:r.documentURL,date:new Date(r.createdAt).toLocaleDateString(),type:r.documentURL.includes('.pdf')?'pdf':'image'}); if(name==='bank_slips'&&r.slipUrl) arr.push({name:'Slip '+r.vehicleNumber,url:r.slipUrl,date:new Date(r.createdAt).toLocaleDateString(),type:r.slipUrl.includes('.pdf')?'pdf':'image'}); }); return arr; }
+
+        // user requests
+        async function loadUserRequests(){ let snap=await db.ref('requests').orderByChild('userId').equalTo(currentUser.uid).once('value'); let div=document.getElementById('userRequestsList'); div.innerHTML=''; if(!snap.exists()){ div.innerHTML='<div class="card">No requests</div>'; return; } snap.forEach(c=>{ let r=c.val(); let prog=r.progress||(r.status==='approved'?100:r.paid?75:50); div.innerHTML+=`<div class="card"><div style="display:flex;justify-content:space-between"><span style="color:white;">${r.serviceName} ${r.vehicleNumber||''}</span><span class="badge">${r.status}</span></div><div class="progress-bar" style="margin:0.5rem 0"><div class="progress-fill" style="width:${prog}%"></div></div>${r.documentURL?`<button class="btn btn-info btn-small" onclick="window.open('${r.documentURL}')">View sticker</button>`:''}</div>`; }); }
+
+        // admin
+        function showAdminDashboard(){ document.getElementById('loginSection').style.display='none'; document.getElementById('userDashboard').style.display='none'; document.getElementById('adminDashboard').style.display='block'; loadAdminData(); showAdminSection('verifications'); }
+        function showAdminSection(sec){ ['verifications','serviceRequests'].forEach(s=> document.getElementById(`admin${s.charAt(0).toUpperCase()+s.slice(1)}Section`).classList.remove('active')); document.getElementById(`admin${sec.charAt(0).toUpperCase()+sec.slice(1)}Section`).classList.add('active'); if(sec==='verifications') loadVerifications(); else if(sec==='serviceRequests') loadAdminRequests(); }
+        async function loadAdminData(){ let u=await db.ref('users').once('value'); document.getElementById('statUsers').innerText=u.numChildren(); let p=await db.ref('users').orderByChild('verified').equalTo(false).once('value'); document.getElementById('statPendingVerif').innerText=p.numChildren(); }
+        async function loadVerifications(){ let snap=await db.ref('users').orderByChild('verified').equalTo(false).once('value'); let cont=document.getElementById('adminVerificationsSection'); cont.innerHTML=''; if(!snap.exists()){ cont.innerHTML='<div class="card">None pending</div>'; return; } snap.forEach(c=>{ let u=c.val(),uid=c.key; cont.innerHTML+=`<div class="card"><b>${u.name}</b> ${u.email}<br><button class="btn btn-success btn-small" onclick="verifyUser('${uid}')">Verify</button></div>`; }); }
+        window.verifyUser=async(uid)=>{ await db.ref('users/'+uid).update({verified:true}); showNotification('Verified'); loadVerifications(); loadAdminData(); }
+        async function loadAdminRequests(){ let snap=await db.ref('requests').once('value'); let cont=document.getElementById('adminServiceRequestsSection'); cont.innerHTML=''; if(!snap.exists()){ cont.innerHTML='<div class="card">No requests</div>'; return; } snap.forEach(c=>{ let r=c.val(),rid=c.key; cont.innerHTML+=`<div class="card"><b>${r.userName}</b> ${r.vehicleNumber} | ${r.serviceName} | ${r.status} <br>${!r.paid?`<button class="btn btn-small" onclick="markPaid('${rid}')">Mark paid</button>`:''} ${r.paid&&r.status!=='approved'?`<button class="btn btn-small" onclick="openStickerUpload('${rid}')">Upload sticker</button>`:''}</div>`; }); }
+        window.markPaid=async(id)=>{ await db.ref('requests/'+id).update({paid:true,status:'paid',progress:75}); showNotification('Marked paid'); loadAdminRequests(); }
+        window.openStickerUpload=rid=>{ document.getElementById('adminUploadRequestId').value=rid; document.getElementById('adminUploadStickerModal').style.display='flex'; }
+        window.uploadStickerForRequest=async()=>{ let file=document.getElementById('stickerFile').files[0], rid=document.getElementById('adminUploadRequestId').value; if(!file) return; let ref=storage.ref(`stickers/${rid}_${file.name}`); await ref.put(file); let url=await ref.getDownloadURL(); await db.ref('requests/'+rid).update({documentURL:url,status:'approved',progress:100}); showNotification('Sticker uploaded'); closeAdminUploadModal(); loadAdminRequests(); }
+        function closeAdminUploadModal(){ document.getElementById('adminUploadStickerModal').style.display='none'; }
+
+        // modal controls
+        function showRegisterModal(){ document.getElementById('registerModal').style.display='flex'; } function closeRegisterModal(){ document.getElementById('registerModal').style.display='none'; } function showAdminLoginModal(){ document.getElementById('adminLoginModal').style.display='flex'; } function closeAdminLoginModal(){ document.getElementById('adminLoginModal').style.display='none'; } function logoutUser(){ localStorage.removeItem('payeasy_session'); location.reload(); } function logoutAdmin(){ localStorage.removeItem('payeasy_session'); location.reload(); }
+
+        // expose globals
+        window.toggleSidebar=toggleSidebar; window.showUserSection=showUserSection; window.showAddVehicleModal=showAddVehicleModal; window.closeAddVehicleModal=closeAddVehicleModal; window.addVehicle=addVehicle; window.openRequestModal=openRequestModal; window.closeRequestModal=closeRequestModal; window.submitStickerRequest=submitStickerRequest; window.openFolder=openFolder; window.copyToClipboard=copyToClipboard; window.showRegisterModal=showRegisterModal; window.closeRegisterModal=closeRegisterModal; window.showAdminLoginModal=showAdminLoginModal; window.closeAdminLoginModal=closeAdminLoginModal; window.logoutUser=logoutUser; window.logoutAdmin=logoutAdmin; window.verifyUser=verifyUser; window.markPaid=markPaid; window.openStickerUpload=openStickerUpload; window.uploadStickerForRequest=uploadStickerForRequest; window.showAdminSection=showAdminSection; window.closeAdminUploadModal=closeAdminUploadModal;
+    </script>
+</body>
+</html>
