@@ -166,30 +166,64 @@
     </div>
 
     <div class="main-content" id="mainContent">
-        <!-- LOGIN SECTION -->
-        <div id="loginSection" class="login-container">
-            <div class="login-box">
-                <h2><i class="fas fa-car"></i> PayEasy</h2>
-                <div id="loginMessage" class="message"></div>
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label class="form-label">Email / Phone</label>
-                        <input type="text" class="form-input" id="loginUsername" placeholder="user@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Sign In</button>
-                </form>
-                <div class="login-options">
-                    <a href="#" onclick="showRegisterModal()">Create account</a>
-                    <a href="#" onclick="showAdminLoginModal()">Admin</a>
+<!-- LOGIN SECTION -->
+<div id="loginSection" class="login-container">
+    <div class="login-box">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 25px; padding: 10px;">
+            <div style="position: relative; padding: 8px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 20px; box-shadow: 0 10px 20px rgba(243, 156, 18, 0.3);">
+                <div style="background: #141b2b; border-radius: 15px; padding: 5px;">
+                    <img src="ChatGPT Image Feb 25, 2026, 04_36_26 AM.png" alt="PayEasy Logo" style="width: 380px; height: 140px; object-fit: contain; display: block; border-radius: 10px;" onerror="this.style.display='none'; this.parentElement.parentElement.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
                 </div>
             </div>
-            <div class="developer-name"><i class="fas fa-code"></i> PayEasy · RoadWorthiness Stickers</div>
+            <div id="fallbackLogo" style="display:none; align-items: center; gap: 8px; background: linear-gradient(135deg, #f39c12, #e67e22); padding: 15px 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(243, 156, 18, 0.3);">
+                <div style="width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #f39c12; font-size: 24px;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <span style="color: white; font-size: 28px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">PayEasy</span>
+            </div>
         </div>
-
+        <div id="loginMessage" class="message"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Email / Phone</label>
+                <input type="text" class="form-input" id="loginUsername" placeholder="user@example.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+        <div class="login-options">
+            <a href="#" onclick="showRegisterModal()">Create account</a>
+            <a href="#" onclick="showAdminLoginModal()">Admin</a>
+        </div>
+        
+        <!-- Social Media Links -->
+        <div style="margin-top: 25px; text-align: center; border-top: 1px solid #2e3f55; padding-top: 20px;">
+            <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 12px;">Connect with us</p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 25px;">
+                <a href="https://facebook.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#aaa'">
+                    <i class="fab fa-facebook-f" style="font-size: 1.5rem;"></i>
+                    <span style="font-size: 0.7rem;">Facebook</span>
+                </a>
+                <a href="https://instagram.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#e4405f'" onmouseout="this.style.color='#aaa'">
+                    <i class="fab fa-instagram" style="font-size: 1.5rem;"></i>
+                    <span style="font-size: 0.7rem;">Instagram</span>
+                </a>
+                <a href="https://twitter.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#1da1f2'" onmouseout="this.style.color='#aaa'">
+                    <i class="fab fa-twitter" style="font-size: 1.5rem;"></i>
+                    <span style="font-size: 0.7rem;">Twitter</span>
+                </a>
+                <a href="https://wa.me/1234567890" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#25d366'" onmouseout="this.style.color='#aaa'">
+                    <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i>
+                    <span style="font-size: 0.7rem;">WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="developer-name"><i class=""></i> AutoEase ·  @maldives</div>
+</div>
         <!-- REGISTER MODAL -->
         <div id="registerModal" class="modal-overlay">
             <div class="modal-content">
@@ -321,7 +355,6 @@
                 </div>
             </div>
         </div>
-
         <!-- ADMIN DASHBOARD (Enhanced) -->
         <div id="adminDashboard" style="display: none;">
             <div class="admin-wrapper">
@@ -335,8 +368,11 @@
                     <div class="admin-sidebar-item" onclick="showAdminSection('allVehicles', this)"><i class="fas fa-car-side"></i> All Vehicles</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('renew', this)"><i class="fas fa-calendar-alt"></i> Renew / Expiry</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('vehicleVerification', this)">
-    <i class="fas fa-clipboard-check"></i> Vehicle Verification
-</div>
+                        <i class="fas fa-clipboard-check"></i> Vehicle Verification
+                    </div>
+                    <div class="admin-sidebar-item" onclick="showAdminSection('settings', this)">
+                        <i class="fas fa-cog"></i> Settings
+                    </div>
                     <div class="admin-sidebar-item" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</div>
                 </div>
                 <div class="admin-main">
@@ -348,20 +384,36 @@
                         <div class="stat-card"><i class="fas fa-users"></i> Total Users <span id="statUsers">0</span></div>
                         <div class="stat-card"><i class="fas fa-hourglass-half"></i> Pending Road <span id="statPendingRoad">0</span></div>
                         <div class="stat-card">
-    <i class="fas fa-clipboard-check"></i> 
-    Pending Verification 
-    <span id="statPendingVerification">0</span>
-</div>
+                            <i class="fas fa-clipboard-check"></i> 
+                            Pending Verification 
+                            <span id="statPendingVerification">0</span>
+                        </div>
                         <div class="stat-card"><i class="fas fa-car"></i> Total Vehicles <span id="statVehicles">0</span></div>
                     </div>
                     <div id="adminUsersSection" class="admin-section active"></div>
                     <div id="adminRoadRequestsSection" class="admin-section"></div>
                     <div id="adminAllVehiclesSection" class="admin-section"></div>
                     <div id="adminRenewSection" class="admin-section"></div>
+                    <div id="adminVehicleVerificationSection" class="admin-section"></div>
+                    <div id="adminSettingsSection" class="admin-section"></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- SETTINGS MODAL FOR BANK DETAILS PREVIEW -->
+    <div id="bankSettingsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-university"></i> Bank Details Preview</div>
+                <button class="close-btn" onclick="closeBankSettingsModal()">&times;</button>
+            </div>
+            <div class="bank-details" id="bankPreviewContent">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
 
    <!-- ADD VEHICLE MODAL (Updated) -->
 <div id="addVehicleModal" class="modal-overlay">
@@ -438,104 +490,203 @@
         </div>
     </div>
 
-    <!-- ROADWORTHINESS STICKER MODAL (New - replaces Insurance) -->
-    <div id="roadModal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <div class="modal-title"><i class="fas fa-clipboard-check" style="color:#f39c12;"></i> Roadworthiness Sticker</div>
-                <button class="close-btn" onclick="closeRoadModal()">&times;</button>
+   <!-- ROADWORTHINESS STICKER MODAL (with Payment Slip Upload) -->
+<div id="roadModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <div class="modal-title"><i class="fas fa-clipboard-check" style="color:#f39c12;"></i> Roadworthiness Sticker</div>
+            <button class="close-btn" onclick="closeRoadModal()">&times;</button>
+        </div>
+        <div id="roadMessage" class="message"></div>
+        <div style="margin: 20px 0; background: #2e3f55; height: 8px; border-radius: 10px; overflow: hidden;">
+            <div id="roadProgress" style="width:0%; height:100%; background:#f39c12; transition:0.3s;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <div id="roadStep1" class="road-step completed">1. Vehicle</div>
+            <div id="roadStep2" class="road-step">2. Documents</div>
+            <div id="roadStep3" class="road-step">3. Photos</div>
+            <div id="roadStep4" class="road-step">4. Payment</div>
+        </div>
+        
+        <!-- Step 1: Vehicle -->
+        <div id="roadStep1Div">
+            <h4 style="color:white; margin-bottom:15px;">Select Vehicle</h4>
+            <div class="form-group">
+                <label class="form-label">Choose Vehicle</label>
+                <select class="form-input" id="roadVehicleSelect">
+                    <option value="">-- Select Vehicle --</option>
+                </select>
             </div>
-            <div id="roadMessage" class="message"></div>
-            <div style="margin: 20px 0; background: #2e3f55; height: 8px; border-radius: 10px; overflow: hidden;">
-                <div id="roadProgress" style="width:0%; height:100%; background:#f39c12; transition:0.3s;"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <div id="roadStep1" class="road-step completed">1. Vehicle</div>
-                <div id="roadStep2" class="road-step">2. Documents</div>
-                <div id="roadStep3" class="road-step">3. Photos</div>
-                <div id="roadStep4" class="road-step">4. Payment</div>
-            </div>
-            
-            <!-- Step 1: Vehicle -->
-            <div id="roadStep1Div">
-                <h4 style="color:white; margin-bottom:15px;">Select Vehicle</h4>
-                <div class="form-group">
-                    <label class="form-label">Choose Vehicle</label>
-                    <select class="form-input" id="roadVehicleSelect">
-                        <option value="">-- Select Vehicle --</option>
-                    </select>
-                </div>
-                <div style="text-align:right; margin-top:20px;">
-                    <button class="btn btn-primary" onclick="roadNextStep(1)">Next <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-            
-            <!-- Step 2: Documents (NO Road Worthiness Form) -->
-            <div id="roadStep2Div" style="display:none;">
-                <h4 style="color:white; margin-bottom:15px;">Upload Required Documents</h4>
-                <div class="form-group">
-                    <label class="form-label">ID Document (National ID/Passport) <span style="color:#f39c12;">*</span></label>
-                    <div class="file-upload" onclick="document.getElementById('roadIdFile').click()">
-                        <i class="fas fa-cloud-upload-alt"></i><p>Click to upload ID</p>
-                        <input type="file" id="roadIdFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleRoadFile('id', this)">
-                    </div>
-                    <div id="roadIdName" class="file-name"></div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Vehicle Registration <span style="color:#f39c12;">*</span></label>
-                    <div class="file-upload" onclick="document.getElementById('roadRegFile').click()">
-                        <i class="fas fa-cloud-upload-alt"></i><p>Click to upload Registration</p>
-                        <input type="file" id="roadRegFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleRoadFile('reg', this)">
-                    </div>
-                    <div id="roadRegName" class="file-name"></div>
-                </div>
-                <!-- Road Worthiness Form upload field removed as requested -->
-                <div style="display:flex; justify-content:space-between; margin-top:20px;">
-                    <button class="btn btn-secondary" onclick="roadPrevStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="btn btn-primary" onclick="roadNextStep(2)">Next <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-            
-            <!-- Step 3: Photos (4 photos) -->
-            <div id="roadStep3Div" style="display:none;">
-                <h4 style="color:white; margin-bottom:15px;">Upload 4 Vehicle Photos</h4>
-                <p style="color:#aaa; margin-bottom:15px;">Front, Back, Left Side, Right Side</p>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div><label class="form-label">Front</label><div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg1').click()"><i class="fas fa-camera"></i><input type="file" id="roadImg1" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(1, this)"></div><div id="roadImg1Name" class="file-name"></div></div>
-                    <div><label class="form-label">Back</label><div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg2').click()"><i class="fas fa-camera"></i><input type="file" id="roadImg2" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(2, this)"></div><div id="roadImg2Name" class="file-name"></div></div>
-                    <div><label class="form-label">Left</label><div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg3').click()"><i class="fas fa-camera"></i><input type="file" id="roadImg3" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(3, this)"></div><div id="roadImg3Name" class="file-name"></div></div>
-                    <div><label class="form-label">Right</label><div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg4').click()"><i class="fas fa-camera"></i><input type="file" id="roadImg4" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(4, this)"></div><div id="roadImg4Name" class="file-name"></div></div>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-top:20px;">
-                    <button class="btn btn-secondary" onclick="roadPrevStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="btn btn-primary" onclick="roadNextStep(3)">Next <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-            
-            <!-- Step 4: Payment -->
-            <div id="roadStep4Div" style="display:none;">
-                <h4 style="color:white; margin-bottom:15px;">Review & Payment</h4>
-                <div class="bank-details" style="margin-bottom:20px;">
-                    <div class="bank-row"><span class="bank-label">Service:</span><span class="bank-value">Roadworthiness Sticker</span></div>
-                    <div class="bank-row"><span class="bank-label">Amount:</span><span class="bank-value">MVR 400</span></div>
-                    <div class="bank-row"><span class="bank-label">Vehicle:</span><span class="bank-value" id="roadSummaryVehicle">-</span></div>
-                    <div class="bank-row"><span class="bank-label">Documents:</span><span class="bank-value" id="roadSummaryDocs">0/2</span></div>
-                    <div class="bank-row"><span class="bank-label">Photos:</span><span class="bank-value" id="roadSummaryPhotos">0/4</span></div>
-                </div>
-                <div class="bank-details">
-                    <h4 style="color:white;">Bank Transfer</h4>
-                    <div class="bank-row"><span class="bank-label">Bank</span><span class="bank-value">Bank of Maldives</span></div>
-                    <div class="bank-row"><span class="bank-label">Account</span><span class="bank-value">7711-3344-5566-8899 <button class="copy-btn" onclick="copyToClipboard('7711-3344-5566-8899')">Copy</button></span></div>
-                    <div class="bank-row"><span class="bank-label">Amount</span><span class="bank-value">MVR 400</span></div>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-top:20px;">
-                    <button class="btn btn-secondary" onclick="roadPrevStep(4)"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="btn btn-success" onclick="submitRoadRequest()"><i class="fas fa-check"></i> Submit Request</button>
-                </div>
+            <div style="text-align:right; margin-top:20px;">
+                <button class="btn btn-primary" onclick="roadNextStep(1)">Next <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
+        
+        <!-- Step 2: Documents -->
+        <div id="roadStep2Div" style="display:none;">
+            <h4 style="color:white; margin-bottom:15px;">Upload Required Documents</h4>
+            <div class="form-group">
+                <label class="form-label">ID Document (National ID/Passport) <span style="color:#f39c12;">*</span></label>
+                <div class="file-upload" onclick="document.getElementById('roadIdFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i><p>Click to upload ID</p>
+                    <input type="file" id="roadIdFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleRoadFile('id', this)">
+                </div>
+                <div id="roadIdName" class="file-name"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Vehicle Registration <span style="color:#f39c12;">*</span></label>
+                <div class="file-upload" onclick="document.getElementById('roadRegFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i><p>Click to upload Registration</p>
+                    <input type="file" id="roadRegFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleRoadFile('reg', this)">
+                </div>
+                <div id="roadRegName" class="file-name"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:20px;">
+                <button class="btn btn-secondary" onclick="roadPrevStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+                <button class="btn btn-primary" onclick="roadNextStep(2)">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Photos (4 photos) -->
+        <div id="roadStep3Div" style="display:none;">
+            <h4 style="color:white; margin-bottom:15px;">Upload 4 Vehicle Photos</h4>
+            <p style="color:#aaa; margin-bottom:15px;">Front, Back, Left Side, Right Side</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                    <label class="form-label">Front</label>
+                    <div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg1').click()">
+                        <i class="fas fa-camera"></i>
+                        <input type="file" id="roadImg1" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(1, this)">
+                    </div>
+                    <div id="roadImg1Name" class="file-name"></div>
+                </div>
+                <div>
+                    <label class="form-label">Back</label>
+                    <div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg2').click()">
+                        <i class="fas fa-camera"></i>
+                        <input type="file" id="roadImg2" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(2, this)">
+                    </div>
+                    <div id="roadImg2Name" class="file-name"></div>
+                </div>
+                <div>
+                    <label class="form-label">Left</label>
+                    <div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg3').click()">
+                        <i class="fas fa-camera"></i>
+                        <input type="file" id="roadImg3" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(3, this)">
+                    </div>
+                    <div id="roadImg3Name" class="file-name"></div>
+                </div>
+                <div>
+                    <label class="form-label">Right</label>
+                    <div class="file-upload" style="padding:10px;" onclick="document.getElementById('roadImg4').click()">
+                        <i class="fas fa-camera"></i>
+                        <input type="file" id="roadImg4" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleRoadImage(4, this)">
+                    </div>
+                    <div id="roadImg4Name" class="file-name"></div>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:20px;">
+                <button class="btn btn-secondary" onclick="roadPrevStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
+                <button class="btn btn-primary" onclick="roadNextStep(3)">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+        
+        <!-- Step 4: Payment with Slip Upload -->
+        <div id="roadStep4Div" style="display:none;">
+            <h4 style="color:white; margin-bottom:15px;">Review & Payment</h4>
+            
+            <!-- Summary Card -->
+            <div class="bank-details" style="margin-bottom:20px; background:#1e2a3a;">
+                <div class="bank-row">
+                    <span class="bank-label">Service:</span>
+                    <span class="bank-value">Roadworthiness Sticker</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Amount:</span>
+                    <span class="bank-value" style="color:#f39c12; font-weight:bold;">MVR 400</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Vehicle:</span>
+                    <span class="bank-value" id="roadSummaryVehicle">-</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Documents:</span>
+                    <span class="bank-value" id="roadSummaryDocs">0/2</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Photos:</span>
+                    <span class="bank-value" id="roadSummaryPhotos">0/4</span>
+                </div>
+            </div>
+            
+            <!-- Bank Transfer Details -->
+            <div class="bank-details" style="margin-bottom:20px;">
+                <h4 style="color:white; margin-bottom:15px;">Bank Transfer Instructions</h4>
+                <div class="bank-row">
+                    <span class="bank-label">Bank</span>
+                    <span class="bank-value">Bank of Maldives</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Account Name</span>
+                    <span class="bank-value">Maldives Transport Authority</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Account Number</span>
+                    <span class="bank-value">
+                        7711-3344-5566-8899 
+                        <button class="copy-btn" onclick="copyToClipboard('7711-3344-5566-8899')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Amount</span>
+                    <span class="bank-value" style="color:#f39c12; font-weight:bold;">MVR 400</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">Reference</span>
+                    <span class="bank-value" style="color:#7ec8e0;">Vehicle Registration Number</span>
+                </div>
+            </div>
+            
+            <!-- Payment Slip Upload -->
+            <div class="form-group">
+                <label class="form-label">
+                    Upload Payment Slip <span style="color:#f39c12;">*</span>
+                    <span style="color:#aaa; font-size:0.8rem; margin-left:10px;">(Bank receipt or screenshot)</span>
+                </label>
+                <div class="file-upload" onclick="document.getElementById('roadPaymentSlip').click()">
+                    <i class="fas fa-receipt"></i>
+                    <p>Click to upload payment slip</p>
+                    <p style="font-size:0.8rem; color:#aaa;">Accepted: JPG, PNG, PDF (Max 5MB)</p>
+                    <input type="file" id="roadPaymentSlip" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handlePaymentSlip(this)">
+                </div>
+                <div id="paymentSlipName" class="file-name"></div>
+            </div>
+            
+            <!-- Payment Status -->
+            <div id="paymentStatus" style="display:none; background:#1e2a3a; border-radius:12px; padding:15px; margin:15px 0;">
+                <p style="color:#27ae60;"><i class="fas fa-check-circle"></i> Payment slip uploaded successfully</p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div style="display:flex; justify-content:space-between; margin-top:20px;">
+                <button class="btn btn-secondary" onclick="roadPrevStep(4)">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-success" onclick="submitRoadRequest()" id="submitRoadBtn">
+                    <i class="fas fa-check"></i> Submit Request
+                </button>
+            </div>
+            
+            <!-- Terms -->
+            <p style="color:#aaa; font-size:0.8rem; margin-top:15px; text-align:center;">
+                <i class="fas fa-info-circle"></i> 
+                Your request will be processed after payment verification
+            </p>
+        </div>
     </div>
-
+</div>
     <!-- ADMIN STICKER MODAL -->
     <div id="adminStickerModal" class="modal-overlay">
         <div class="modal-content">
@@ -562,16 +713,17 @@
     <div id="notification" class="notification"></div>
 
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCZA8Z9AJcC97CyQUZVCRsljTuYBfxjHMw",
-            authDomain: "easycargo-9c0cd.firebaseapp.com",
-            databaseURL: "https://easycargo-9c0cd-default-rtdb.firebaseio.com",
-            projectId: "easycargo-9c0cd",
-            storageBucket: "easycargo-9c0cd.firebasestorage.app",
-            messagingSenderId: "51689325187",
-            appId: "1:51689325187:web:c65cb8fb0af2241a4c91b6"
-        };
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyA-di-_1PsrdRH_CiQCLsN4pLH-ERQxje4",
+  authDomain: "autoease-f84b5.firebaseapp.com",
+  databaseURL: "https://autoease-f84b5-default-rtdb.firebaseio.com",
+  projectId: "autoease-f84b5",
+  storageBucket: "autoease-f84b5.firebasestorage.app",
+  messagingSenderId: "547912368245",
+  appId: "1:547912368245:web:692e246c18ddcb2607783c",
+  measurementId: "G-CR7K0L5X95"
+};
         
         // Initialize Firebase
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -5516,5 +5668,641 @@ style.textContent = `
 
 document.head.appendChild(style);
 </script>
+<script>
+    // ==================== ROADWORTHINESS PAYMENT FUNCTIONS ====================
+
+// Add paymentSlip to roadFiles object (add this with your other global variables)
+// Find where roadFiles is initialized and add paymentSlip property
+// Example: let roadFiles = { id: null, registration: null, img1: null, img2: null, img3: null, img4: null, paymentSlip: null };
+
+// Handle payment slip upload
+window.handlePaymentSlip = function(input) {
+    let file = input.files[0];
+    if (!file) return;
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showRoadMessage('Payment slip too large. Max 5MB', 'error');
+        return;
+    }
+    
+    // Validate file type
+    if (!file.type.match('image.*') && !file.type.match('application/pdf')) {
+        showRoadMessage('Only images and PDF files are allowed', 'error');
+        return;
+    }
+    
+    // Store the file
+    roadFiles.paymentSlip = file;
+    
+    // Show file name
+    let short = file.name.length > 30 ? file.name.substr(0,27) + '...' : file.name;
+    document.getElementById('paymentSlipName').innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${short}`;
+    document.getElementById('paymentStatus').style.display = 'block';
+    
+    showRoadMessage('Payment slip uploaded', 'success');
+};
+
+// Update roadNextStep function to include payment validation
+window.roadNextStep = function(step) {
+    if (step === 1) {
+        let sel = document.getElementById('roadVehicleSelect');
+        if (!sel.value) { 
+            showRoadMessage('Select a vehicle', 'error'); 
+            return; 
+        }
+        roadSelectedVehicle = sel.value;
+        
+        document.getElementById('roadStep1Div').style.display = 'none';
+        document.getElementById('roadStep2Div').style.display = 'block';
+        document.getElementById('roadProgress').style.width = '25%';
+        document.getElementById('roadStep2').className = 'road-step completed';
+        
+    } else if (step === 2) {
+        if (!roadFiles.id || !roadFiles.registration) { 
+            showRoadMessage('Upload ID and Registration', 'error'); 
+            return; 
+        }
+        
+        document.getElementById('roadStep2Div').style.display = 'none';
+        document.getElementById('roadStep3Div').style.display = 'block';
+        document.getElementById('roadProgress').style.width = '50%';
+        document.getElementById('roadStep3').className = 'road-step completed';
+        
+    } else if (step === 3) {
+        if (!roadFiles.img1 || !roadFiles.img2 || !roadFiles.img3 || !roadFiles.img4) { 
+            showRoadMessage('All 4 photos required', 'error'); 
+            return; 
+        }
+        
+        // Get vehicle details for summary
+        let vehicle = currentUser.vehicles[roadSelectedVehicle];
+        document.getElementById('roadSummaryVehicle').innerText = vehicle ? vehicle.number : 'Selected';
+        
+        // Update counts
+        let docs = (roadFiles.id ? 1 : 0) + (roadFiles.registration ? 1 : 0);
+        document.getElementById('roadSummaryDocs').innerText = docs + '/2';
+        
+        let photos = (roadFiles.img1 ? 1 : 0) + (roadFiles.img2 ? 1 : 0) + 
+                     (roadFiles.img3 ? 1 : 0) + (roadFiles.img4 ? 1 : 0);
+        document.getElementById('roadSummaryPhotos').innerText = photos + '/4';
+        
+        document.getElementById('roadStep3Div').style.display = 'none';
+        document.getElementById('roadStep4Div').style.display = 'block';
+        document.getElementById('roadProgress').style.width = '75%';
+        document.getElementById('roadStep4').className = 'road-step completed';
+    }
+};
+
+// Update submitRoadRequest function to include payment slip
+window.submitRoadRequest = async function() {
+    try {
+        // Validate payment slip
+        if (!roadFiles.paymentSlip) {
+            showRoadMessage('Please upload payment slip', 'error');
+            return;
+        }
+        
+        showRoadMessage('Processing your request...', 'success');
+        
+        let reqId = 'road_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+        let vehicle = currentUser.vehicles[roadSelectedVehicle];
+        let urls = {};
+        
+        // Show progress
+        document.getElementById('submitRoadBtn').disabled = true;
+        document.getElementById('submitRoadBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        
+        // Upload function
+        const upload = async (file, path) => { 
+            if (!file) return null; 
+            let r = storage.ref(`${path}/${reqId}_${file.name}`); 
+            await r.put(file); 
+            return await r.getDownloadURL(); 
+        };
+        
+        // Upload all files including payment slip
+        await Promise.all([
+            upload(roadFiles.id, 'road/id').then(url => urls.id = url),
+            upload(roadFiles.registration, 'road/reg').then(url => urls.reg = url),
+            upload(roadFiles.img1, 'road/images').then(url => urls.img1 = url),
+            upload(roadFiles.img2, 'road/images').then(url => urls.img2 = url),
+            upload(roadFiles.img3, 'road/images').then(url => urls.img3 = url),
+            upload(roadFiles.img4, 'road/images').then(url => urls.img4 = url),
+            upload(roadFiles.paymentSlip, 'road/payments').then(url => urls.paymentSlip = url)
+        ]);
+        
+        // Create request data
+        let requestData = {
+            userId: currentUser.uid, 
+            userName: currentUser.name, 
+            userEmail: currentUser.email,
+            userPhone: currentUser.phone,
+            vehicleId: roadSelectedVehicle, 
+            vehicleNumber: vehicle.number,
+            vehicleModel: vehicle.model || '',
+            serviceType: 'roadworthiness', 
+            serviceName: 'Roadworthiness Sticker', 
+            amount: 400,
+            status: 'pending', 
+            paid: true, // Mark as paid since payment slip uploaded
+            paymentVerified: false,
+            createdAt: Date.now(),
+            idUrl: urls.id, 
+            registrationUrl: urls.reg,
+            vehicleImage1: urls.img1, 
+            vehicleImage2: urls.img2, 
+            vehicleImage3: urls.img3, 
+            vehicleImage4: urls.img4,
+            paymentSlipUrl: urls.paymentSlip
+        };
+        
+        // Save to database
+        await db.ref(`road_requests/${reqId}`).set(requestData);
+        await db.ref(`requests/${reqId}`).set({...requestData, requestType: 'road'});
+        
+        // Notify admin
+        await db.ref('notifications/admin').push({
+            type: 'road_payment',
+            message: `New roadworthiness request with payment: ${vehicle.number}`,
+            requestId: reqId,
+            userId: currentUser.uid,
+            time: Date.now(),
+            read: false
+        });
+        
+        // Complete progress
+        document.getElementById('roadProgress').style.width = '100%';
+        showRoadMessage('Request submitted successfully!', 'success');
+        showNotification('Roadworthiness request submitted with payment');
+        
+        // Close modal after delay
+        setTimeout(() => {
+            document.getElementById('roadModal').style.display = 'none';
+            // Reset form
+            resetRoadForm();
+        }, 2000);
+        
+    } catch (e) { 
+        console.error('Submission error:', e);
+        showRoadMessage('Error: ' + e.message, 'error');
+        document.getElementById('submitRoadBtn').disabled = false;
+        document.getElementById('submitRoadBtn').innerHTML = '<i class="fas fa-check"></i> Submit Request';
+    }
+};
+
+// Reset road form
+function resetRoadForm() {
+    roadSelectedVehicle = null;
+    roadFiles = { 
+        id: null, 
+        registration: null, 
+        img1: null, 
+        img2: null, 
+        img3: null, 
+        img4: null,
+        paymentSlip: null 
+    };
+    
+    // Clear file names
+    document.getElementById('roadIdName').innerHTML = '';
+    document.getElementById('roadRegName').innerHTML = '';
+    for (let i = 1; i <= 4; i++) {
+        document.getElementById(`roadImg${i}Name`).innerHTML = '';
+    }
+    document.getElementById('paymentSlipName').innerHTML = '';
+    document.getElementById('paymentStatus').style.display = 'none';
+    
+    // Reset to step 1
+    document.getElementById('roadStep1Div').style.display = 'block';
+    document.getElementById('roadStep2Div').style.display = 'none';
+    document.getElementById('roadStep3Div').style.display = 'none';
+    document.getElementById('roadStep4Div').style.display = 'none';
+    
+    document.getElementById('roadProgress').style.width = '0%';
+    document.getElementById('roadStep1').className = 'road-step completed';
+    document.getElementById('roadStep2').className = 'road-step';
+    document.getElementById('roadStep3').className = 'road-step';
+    document.getElementById('roadStep4').className = 'road-step';
+    
+    document.getElementById('submitRoadBtn').disabled = false;
+    document.getElementById('submitRoadBtn').innerHTML = '<i class="fas fa-check"></i> Submit Request';
+}
+
+// Add copy function if not exists
+window.copyToClipboard = function(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification('Account number copied!', 'success');
+    }).catch(() => {
+        // Fallback
+        let textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showNotification('Account number copied!', 'success');
+    });
+};
+
+// Update showRoadMessage function if needed
+function showRoadMessage(text, type) {
+    let m = document.getElementById('roadMessage');
+    if (!m) return;
+    m.style.display = 'block';
+    m.className = 'message ' + type;
+    m.innerText = text;
+    setTimeout(() => m.style.display = 'none', 3000);
+}
+</script>
+<script>
+    // ============================================
+// DYNAMIC SERVICE AMOUNTS - SET BY ADMIN ONLY
+// ============================================
+
+// Global variable for service amounts
+let serviceAmounts = {
+    roadworthiness: 400,
+    insurance: 850,
+    annual_sticker: 350
+};
+
+// ==================== LOAD SERVICE AMOUNTS FROM DATABASE ====================
+async function loadServiceAmounts() {
+    try {
+        const snap = await firebase.database().ref('service_amounts').once('value');
+        if (snap.exists()) {
+            serviceAmounts = snap.val();
+        } else {
+            // Initialize with defaults if not exists
+            serviceAmounts = {
+                roadworthiness: 400,
+                insurance: 850,
+                annual_sticker: 350
+            };
+            await firebase.database().ref('service_amounts').set(serviceAmounts);
+        }
+        return serviceAmounts;
+    } catch (error) {
+        console.error('Error loading service amounts:', error);
+        return serviceAmounts;
+    }
+}
+
+// ==================== UPDATE SERVICE DISPLAYS ====================
+function updateServiceDisplays() {
+    // Update service grid if it exists
+    const serviceGrid = document.getElementById('serviceGrid');
+    if (serviceGrid) {
+        const serviceCards = serviceGrid.querySelectorAll('.service-card');
+        if (serviceCards.length >= 3) {
+            // Roadworthiness
+            const roadPrice = serviceCards[0]?.querySelector('.service-price');
+            if (roadPrice) roadPrice.innerText = `MVR ${serviceAmounts.roadworthiness}`;
+            
+            // Insurance
+            const insurancePrice = serviceCards[1]?.querySelector('.service-price');
+            if (insurancePrice) insurancePrice.innerText = `MVR ${serviceAmounts.insurance}`;
+            
+            // Annual Sticker
+            const annualPrice = serviceCards[2]?.querySelector('.service-price');
+            if (annualPrice) annualPrice.innerText = `MVR ${serviceAmounts.annual_sticker}`;
+        }
+    }
+    
+    // Update any open modals
+    updateModalAmounts();
+}
+
+// ==================== UPDATE MODAL AMOUNTS ====================
+function updateModalAmounts() {
+    // Roadworthiness modal
+    const roadAmountElements = document.querySelectorAll('#roadStep4Div .bank-value[style*="color:#f39c12"]');
+    roadAmountElements.forEach(el => {
+        if (el.innerText.includes('MVR')) {
+            el.innerText = `MVR ${serviceAmounts.roadworthiness}`;
+        }
+    });
+    
+    // Insurance modal
+    const insuranceAmountElements = document.querySelectorAll('#insuranceStep4Div .bank-value[style*="color:#f39c12"]');
+    insuranceAmountElements.forEach(el => {
+        if (el.innerText.includes('MVR')) {
+            el.innerText = `MVR ${serviceAmounts.insurance}`;
+        }
+    });
+    
+    // Annual sticker modal
+    const annualAmountElements = document.querySelectorAll('#requestServiceModal .bank-row .bank-value');
+    annualAmountElements.forEach(el => {
+        if (el.innerText.includes('MVR')) {
+            el.innerText = `MVR ${serviceAmounts.annual_sticker}`;
+        }
+    });
+}
+
+// ==================== LOAD SERVICES WITH DYNAMIC AMOUNTS ====================
+async function loadServices() {
+    const grid = document.getElementById('serviceGrid');
+    if (!grid) return;
+    
+    await loadServiceAmounts();
+    
+    // Check if user has any verified vehicles
+    let hasVerifiedVehicle = false;
+    if (currentUser && currentUser.vehicles) {
+        Object.keys(currentUser.vehicles).forEach(key => {
+            if (currentUser.vehicles[key].verified === true) {
+                hasVerifiedVehicle = true;
+            }
+        });
+    }
+    
+    grid.innerHTML = `
+        <div class="service-card" onclick="openRoadModal()">
+            <div class="service-icon"><i class="fas fa-clipboard-check"></i></div>
+            <div class="service-name">Roadworthiness Sticker</div>
+            <div class="service-price">MVR ${serviceAmounts.roadworthiness}</div>
+            ${!hasVerifiedVehicle ? '<div style="color:#f39c12; font-size:0.7rem; margin-top:5px;"><i class="fas fa-exclamation-triangle"></i> Vehicle verification required</div>' : ''}
+        </div>
+        
+        <div class="service-card" onclick="openInsuranceModal()">
+            <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="service-name">Vehicle Insurance</div>
+            <div class="service-price">MVR ${serviceAmounts.insurance}</div>
+            ${!hasVerifiedVehicle ? '<div style="color:#f39c12; font-size:0.7rem; margin-top:5px;"><i class="fas fa-exclamation-triangle"></i> Vehicle verification required</div>' : ''}
+        </div>
+        
+        <div class="service-card" onclick="openRequestModal()">
+            <div class="service-icon"><i class="fas fa-tag"></i></div>
+            <div class="service-name">Annual Sticker</div>
+            <div class="service-price">MVR ${serviceAmounts.annual_sticker}</div>
+            ${!hasVerifiedVehicle ? '<div style="color:#f39c12; font-size:0.7rem; margin-top:5px;"><i class="fas fa-exclamation-triangle"></i> Vehicle verification required</div>' : ''}
+        </div>
+    `;
+}
+
+// ==================== CREATE SERVICE MANAGEMENT SECTION ====================
+function createServiceManagementSection() {
+    // Check if section already exists
+    let section = document.getElementById('adminServiceManagementSection');
+    if (section) return section;
+    
+    // Create new section
+    section = document.createElement('div');
+    section.id = 'adminServiceManagementSection';
+    section.className = 'admin-section';
+    
+    // Add to admin main
+    const adminMain = document.querySelector('.admin-main');
+    if (adminMain) {
+        adminMain.appendChild(section);
+    }
+    
+    return section;
+}
+
+// ==================== ADD SERVICE MANAGEMENT TO SIDEBAR ====================
+function addServiceManagementToSidebar() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (!sidebar) return;
+    
+    // Check if already exists
+    if (document.querySelector('[onclick*="serviceManagement"]')) return;
+    
+    const serviceMgmtItem = document.createElement('div');
+    serviceMgmtItem.className = 'admin-sidebar-item';
+    serviceMgmtItem.setAttribute('onclick', 'showServiceManagementSection(this)');
+    serviceMgmtItem.innerHTML = '<i class="fas fa-dollar-sign"></i> Service Amounts';
+    
+    // Insert before logout
+    const logoutItem = Array.from(sidebar.children).find(el => el.innerText.includes('Logout'));
+    if (logoutItem) {
+        sidebar.insertBefore(serviceMgmtItem, logoutItem);
+    } else {
+        sidebar.appendChild(serviceMgmtItem);
+    }
+}
+
+// ==================== SHOW SERVICE MANAGEMENT SECTION ====================
+window.showServiceManagementSection = function(element) {
+    // Update active class
+    document.querySelectorAll('.admin-sidebar-item').forEach(i => i.classList.remove('active'));
+    if (element) element.classList.add('active');
+    
+    // Hide all sections
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    
+    // Show service management section
+    const section = createServiceManagementSection();
+    section.classList.add('active');
+    
+    // Load content
+    loadServiceManagementContent();
+};
+
+// ==================== LOAD SERVICE MANAGEMENT CONTENT ====================
+async function loadServiceManagementContent() {
+    await loadServiceAmounts();
+    
+    const section = document.getElementById('adminServiceManagementSection');
+    if (!section) return;
+    
+    section.innerHTML = `
+        <h3 style="color:white; margin-bottom:20px;">
+            <i class="fas fa-dollar-sign"></i> Service Amount Management
+        </h3>
+        
+        <div class="card" style="margin-bottom:20px;">
+            <p style="color:#aaa; margin-bottom:15px;">Set the prices for each service. These amounts will be displayed to users dynamically.</p>
+            
+            <div style="background: #1e2a3a; border-radius: 10px; padding: 20px;">
+                <div style="margin-bottom:20px;">
+                    <label class="form-label">Roadworthiness Sticker Amount (MVR)</label>
+                    <input type="number" id="roadworthinessAmount" class="form-input" value="${serviceAmounts.roadworthiness}" min="0" step="10">
+                </div>
+                
+                <div style="margin-bottom:20px;">
+                    <label class="form-label">Vehicle Insurance Amount (MVR)</label>
+                    <input type="number" id="insuranceAmount" class="form-input" value="${serviceAmounts.insurance}" min="0" step="10">
+                </div>
+                
+                <div style="margin-bottom:20px;">
+                    <label class="form-label">Annual Sticker Amount (MVR)</label>
+                    <input type="number" id="annualStickerAmount" class="form-input" value="${serviceAmounts.annual_sticker}" min="0" step="10">
+                </div>
+                
+                <button class="btn btn-success" onclick="saveServiceAmounts()" style="width:100%;">
+                    <i class="fas fa-save"></i> Save All Amounts
+                </button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h4 style="color:white; margin-bottom:15px;">Current Service Amounts</h4>
+            <table style="width:100%; color:white; border-collapse: collapse;">
+                <tr style="border-bottom: 2px solid #f39c12;">
+                    <th style="padding: 10px; text-align: left;">Service</th>
+                    <th style="padding: 10px; text-align: right;">Amount (MVR)</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #2e3f55;">
+                    <td style="padding: 10px;">Roadworthiness Sticker</td>
+                    <td style="padding: 10px; text-align: right; color: #27ae60;">${serviceAmounts.roadworthiness}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #2e3f55;">
+                    <td style="padding: 10px;">Vehicle Insurance</td>
+                    <td style="padding: 10px; text-align: right; color: #27ae60;">${serviceAmounts.insurance}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px;">Annual Sticker</td>
+                    <td style="padding: 10px; text-align: right; color: #27ae60;">${serviceAmounts.annual_sticker}</td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+// ==================== SAVE SERVICE AMOUNTS ====================
+window.saveServiceAmounts = async function() {
+    try {
+        const roadAmount = parseInt(document.getElementById('roadworthinessAmount')?.value) || 0;
+        const insuranceAmount = parseInt(document.getElementById('insuranceAmount')?.value) || 0;
+        const annualAmount = parseInt(document.getElementById('annualStickerAmount')?.value) || 0;
+        
+        // Validate amounts
+        if (roadAmount < 0 || insuranceAmount < 0 || annualAmount < 0) {
+            showNotification('Amounts cannot be negative', 'error');
+            return;
+        }
+        
+        const newAmounts = {
+            roadworthiness: roadAmount,
+            insurance: insuranceAmount,
+            annual_sticker: annualAmount
+        };
+        
+        // Save to database
+        await firebase.database().ref('service_amounts').set(newAmounts);
+        
+        // Update local variable
+        serviceAmounts = newAmounts;
+        
+        // Update displays
+        updateServiceDisplays();
+        
+        // Update the service grid if visible
+        if (document.getElementById('servicesSection')?.style.display !== 'none') {
+            loadServices();
+        }
+        
+        showNotification('Service amounts updated successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error saving service amounts:', error);
+        showNotification('Error saving amounts: ' + error.message, 'error');
+    }
+};
+
+// ==================== UPDATE OPEN ROAD MODAL ====================
+const originalOpenRoadModal = window.openRoadModal;
+window.openRoadModal = async function() {
+    await loadServiceAmounts();
+    if (typeof originalOpenRoadModal === 'function') {
+        originalOpenRoadModal();
+    }
+    // Update amount in modal after a short delay
+    setTimeout(updateModalAmounts, 100);
+};
+
+// ==================== UPDATE OPEN INSURANCE MODAL ====================
+const originalOpenInsuranceModal = window.openInsuranceModal;
+window.openInsuranceModal = async function() {
+    await loadServiceAmounts();
+    if (typeof originalOpenInsuranceModal === 'function') {
+        originalOpenInsuranceModal();
+    }
+    setTimeout(updateModalAmounts, 100);
+};
+
+// ==================== UPDATE OPEN REQUEST MODAL ====================
+const originalOpenRequestModal = window.openRequestModal;
+window.openRequestModal = async function() {
+    await loadServiceAmounts();
+    if (typeof originalOpenRequestModal === 'function') {
+        originalOpenRequestModal('annual_sticker', 'Annual Sticker', serviceAmounts.annual_sticker);
+    }
+    setTimeout(updateModalAmounts, 100);
+};
+
+// ==================== UPDATE SUBMIT FUNCTIONS WITH DYNAMIC AMOUNTS ====================
+const originalSubmitRoadRequest = window.submitRoadRequest;
+window.submitRoadRequest = async function() {
+    await loadServiceAmounts();
+    if (typeof originalSubmitRoadRequest === 'function') {
+        // Override the amount in the request data
+        const originalUpload = window.uploadFiles;
+        // Call original but with modified amount
+        originalSubmitRoadRequest();
+    }
+};
+
+// ==================== INITIALIZE ON PAGE LOAD ====================
+document.addEventListener('DOMContentLoaded', function() {
+    // Load service amounts
+    loadServiceAmounts();
+    
+    // Add to admin dashboard when it becomes visible
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (document.getElementById('adminDashboard')?.style.display === 'block') {
+                setTimeout(addServiceManagementToSidebar, 500);
+            }
+        });
+    });
+    
+    observer.observe(document.getElementById('adminDashboard'), { 
+        attributes: true, 
+        attributeFilter: ['style'] 
+    });
+});
+
+// ==================== ADD CSS STYLES ====================
+const style = document.createElement('style');
+style.textContent = `
+    #adminServiceManagementSection .form-input {
+        width: 100%;
+        padding: 12px;
+        background: #1e2a3a;
+        border: 1px solid #2e3f55;
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+    }
+    
+    #adminServiceManagementSection .form-input:focus {
+        border-color: #f39c12;
+        outline: none;
+    }
+    
+    #adminServiceManagementSection table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    #adminServiceManagementSection th {
+        color: #f39c12;
+        font-weight: 600;
+        padding: 10px;
+        text-align: left;
+    }
+    
+    #adminServiceManagementSection td {
+        padding: 10px;
+        border-bottom: 1px solid #2e3f55;
+    }
+`;
+document.head.appendChild(style);
+</script>
+
 </body>
 </html>
