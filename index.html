@@ -169,20 +169,21 @@
 <!-- LOGIN SECTION -->
 <div id="loginSection" class="login-container">
     <div class="login-box">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 25px; padding: 10px;">
-            <div style="position: relative; padding: 8px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 20px; box-shadow: 0 10px 20px rgba(243, 156, 18, 0.3);">
-                <div style="background: #141b2b; border-radius: 15px; padding: 5px;">
-                    <img src="ChatGPT Image Feb 25, 2026, 04_36_26 AM.png" alt="PayEasy Logo" style="width: 380px; height: 140px; object-fit: contain; display: block; border-radius: 10px;" onerror="this.style.display='none'; this.parentElement.parentElement.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
-                </div>
-            </div>
-            <div id="fallbackLogo" style="display:none; align-items: center; gap: 8px; background: linear-gradient(135deg, #f39c12, #e67e22); padding: 15px 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(243, 156, 18, 0.3);">
-                <div style="width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #f39c12; font-size: 24px;">
+        <!-- Logo only - no border, no styling -->
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+            <img src="ChatGPT Image Feb 25, 2026, 04_36_26 AM.png" alt="PayEasy Logo" style="width: 380px; height: 140px; object-fit: contain; display: block; filter: grayscale(100%) brightness(0.8);" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            
+            <!-- Fallback in grey if image fails to load -->
+            <div style="display:none; align-items: center; gap: 8px; background: #4a5568; padding: 15px 25px; border-radius: 15px;">
+                <div style="width: 45px; height: 45px; background: #a0aec0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2d3748; font-size: 24px;">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <span style="color: white; font-size: 28px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">PayEasy</span>
+                <span style="color: #e2e8f0; font-size: 28px; font-weight: 700;">PayEasy</span>
             </div>
         </div>
+        
         <div id="loginMessage" class="message"></div>
+        
         <form id="loginForm">
             <div class="form-group">
                 <label class="form-label">Email / Phone</label>
@@ -194,35 +195,36 @@
             </div>
             <button type="submit" class="btn btn-primary">Sign In</button>
         </form>
+        
         <div class="login-options">
             <a href="#" onclick="showRegisterModal()">Create account</a>
             <a href="#" onclick="showAdminLoginModal()">Admin</a>
         </div>
         
-        <!-- Social Media Links -->
-        <div style="margin-top: 25px; text-align: center; border-top: 1px solid #2e3f55; padding-top: 20px;">
-            <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 12px;">Connect with us</p>
+        <!-- Social Media Links in Grey -->
+        <div style="margin-top: 25px; text-align: center; border-top: 1px solid #4a5568; padding-top: 20px;">
+            <p style="color: #a0aec0; font-size: 0.85rem; margin-bottom: 12px;">Connect with us</p>
             <div style="display: flex; align-items: center; justify-content: center; gap: 25px;">
-                <a href="https://facebook.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#aaa'">
+                <a href="https://facebook.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0; transition: 0.3s;" onmouseover="this.style.color='#cbd5e0'" onmouseout="this.style.color='#a0aec0'">
                     <i class="fab fa-facebook-f" style="font-size: 1.5rem;"></i>
                     <span style="font-size: 0.7rem;">Facebook</span>
                 </a>
-                <a href="https://instagram.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#e4405f'" onmouseout="this.style.color='#aaa'">
+                <a href="https://instagram.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0; transition: 0.3s;" onmouseover="this.style.color='#cbd5e0'" onmouseout="this.style.color='#a0aec0'">
                     <i class="fab fa-instagram" style="font-size: 1.5rem;"></i>
                     <span style="font-size: 0.7rem;">Instagram</span>
                 </a>
-                <a href="https://twitter.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#1da1f2'" onmouseout="this.style.color='#aaa'">
+                <a href="https://twitter.com/payeasy" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0; transition: 0.3s;" onmouseover="this.style.color='#cbd5e0'" onmouseout="this.style.color='#a0aec0'">
                     <i class="fab fa-twitter" style="font-size: 1.5rem;"></i>
                     <span style="font-size: 0.7rem;">Twitter</span>
                 </a>
-                <a href="https://wa.me/1234567890" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #aaa; transition: 0.3s;" onmouseover="this.style.color='#25d366'" onmouseout="this.style.color='#aaa'">
+                <a href="https://wa.me/1234567890" target="_blank" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0; transition: 0.3s;" onmouseover="this.style.color='#cbd5e0'" onmouseout="this.style.color='#a0aec0'">
                     <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i>
                     <span style="font-size: 0.7rem;">WhatsApp</span>
                 </a>
             </div>
         </div>
     </div>
-    <div class="developer-name"><i class=""></i> AutoEase ·  @maldives</div>
+    <div class="developer-name"><i class=""></i> AutoEase · @</div>
 </div>
         <!-- REGISTER MODAL -->
         <div id="registerModal" class="modal-overlay">
