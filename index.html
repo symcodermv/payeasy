@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>PayEasy · RoadWorthiness Stickers</title>
-    <!-- Font Awesome 6 (free) -->
+    <title>PayEasy · Vehicle Management System</title>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Firebase SDK 8.x -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -76,6 +76,9 @@
         .badge.active { background: #2a80e6; }
         .badge.approved { background: #27ae60; }
         .badge.rejected { background: #e74c3c; }
+        .badge.expiring-soon { background: #e67e22; }
+        .badge.paid { background: #27ae60; }
+        .badge.unpaid { background: #e74c3c; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
         .overlay.show { display: block; }
         .dashboard-content { padding: 1rem; overflow-y: auto; height: calc(100vh - 70px); }
@@ -84,9 +87,9 @@
         .card { background: #1e2a3a; border-radius: 28px; padding: 1.5rem; margin-bottom: 1.2rem; border: 1px solid #2e4057; color: white; }
         .card p { color: white; }
         .vehicle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-        .vehicle-card, .service-card { background: #253445; border-radius: 24px; padding: 1.2rem 0.8rem; text-align: center; cursor: pointer; border: 1px solid #2e4057; transition: 0.1s; color: white; }
-        .vehicle-card:hover, .service-card:hover { background: #2d4058; transform: scale(0.98); }
-        .vehicle-icon, .service-icon { font-size: 2rem; color: #f39c12; margin-bottom: 0.5rem; }
+        .vehicle-card, .service-card, .fine-card { background: #253445; border-radius: 24px; padding: 1.2rem 0.8rem; text-align: center; cursor: pointer; border: 1px solid #2e4057; transition: 0.1s; color: white; }
+        .vehicle-card:hover, .service-card:hover, .fine-card:hover { background: #2d4058; transform: scale(0.98); }
+        .vehicle-icon, .service-icon, .fine-icon { font-size: 2rem; color: #f39c12; margin-bottom: 0.5rem; }
         .vehicle-name { color: white; font-weight: 600; }
         .vehicle-plate { color: white; font-size: 0.8rem; }
         .vehicle-type-badge { display: inline-block; background: #1e2a3a; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; margin-top: 5px; color: #f39c12; }
@@ -96,15 +99,16 @@
         .days-badge { background: #2a3a55; padding: 6px 12px; border-radius: 40px; font-weight: 600; color: white; }
         .progress-bar { height: 8px; background: #2e3f55; border-radius: 10px; overflow: hidden; margin: 0.5rem 0; }
         .progress-fill { height: 100%; background: #f39c12; transition: width 0.3s; }
-        .progress-fill.expiring { background: #f39c12; }
+        .progress-fill.expiring { background: #e67e22; }
         .progress-fill.expired { background: #e74c3c; }
-        .folder-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
+        .folder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
         .folder-card { background: #1b2a3f; border-radius: 24px; padding: 1.5rem 0.5rem; text-align: center; cursor: pointer; border: 1px solid #3a4b66; transition: 0.2s; box-shadow: 0 8px 0 #0e1a28; color: white; }
         .folder-card:hover { background: #25415c; transform: translateY(-3px); box-shadow: 0 10px 0 #0e1a28; }
         .folder-icon { font-size: 2.4rem; color: #f39c12; margin-bottom: 0.5rem; }
         .folder-name { color: white; font-weight: 700; font-size: 1rem; letter-spacing: 0.3px; }
         .folder-count { color: white; font-size: 0.8rem; margin-top: 4px; }
-        .doc-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #1b2537; border-radius: 20px; margin-bottom: 0.7rem; color: white; }
+        .doc-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #1b2537; border-radius: 20px; margin-bottom: 0.7rem; color: white; cursor: pointer; }
+        .doc-item:hover { background: #253a55; }
         .doc-icon { color: #f39c12; font-size: 1.8rem; }
         .doc-info { flex: 1; }
         .doc-name { color: white; font-weight: 600; }
@@ -142,12 +146,12 @@
         .stat-card i { color: #f39c12; }
         .admin-section { display: none; }
         .admin-section.active { display: block; }
-        .admin-user-item, .admin-request-item { background: #1b2537; border-radius: 24px; padding: 1.2rem; margin-bottom: 1rem; border: 1px solid #2e4057; color: white; }
+        .admin-user-item, .admin-request-item, .admin-fine-item { background: #1b2537; border-radius: 24px; padding: 1.2rem; margin-bottom: 1rem; border: 1px solid #2e4057; color: white; }
         .notification { position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 1rem 1.8rem; border-radius: 40px; z-index: 3000; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .vehicle-type-manager, .service-manager { background: #1e2a3a; border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .type-item, .service-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #253445; border-radius: 10px; margin-bottom: 0.5rem; }
-        .type-actions, .service-actions { display: flex; gap: 0.5rem; }
-        .service-amount-input { width: 100px; background: #1e2a3a; border: 1px solid #2e3f55; border-radius: 20px; padding: 5px 10px; color: white; text-align: center; }
+        .vehicle-type-manager, .service-manager, .fine-manager { background: #1e2a3a; border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .type-item, .service-item, .fine-type-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #253445; border-radius: 10px; margin-bottom: 0.5rem; }
+        .type-actions, .service-actions, .fine-actions { display: flex; gap: 0.5rem; }
+        .service-amount-input, .fine-amount-input { width: 100px; background: #1e2a3a; border: 1px solid #2e3f55; border-radius: 20px; padding: 5px 10px; color: white; text-align: center; }
         .vehicle-type-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin: 15px 0; }
         .type-option { background: #253445; border: 1px solid #2e3f55; border-radius: 30px; padding: 8px; text-align: center; cursor: pointer; transition: 0.2s; }
         .type-option.selected { background: #f39c12; color: #0a0f1e; border-color: #f39c12; }
@@ -160,11 +164,28 @@
         .image-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .vehicle-service-list { margin-top: 15px; }
         .vehicle-service-item { background: #1e2a3a; border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .image-preview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; }
+        .image-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
         .preview-item { position: relative; background: #1e2a3a; border-radius: 12px; padding: 5px; text-align: center; border: 1px solid #2e3f55; }
         .preview-item img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; }
         .preview-item span { font-size: 0.7rem; display: block; margin-top: 3px; color: #f39c12; }
         @media (max-width: 500px) { .vehicle-grid { grid-template-columns: 1fr; } .folder-grid { grid-template-columns: 1fr; } }
+        .live-progress { background: #0f1a2a; border-radius: 30px; padding: 15px; margin: 10px 0; border: 1px solid #f39c12; }
+        .status-badge { padding: 5px 12px; border-radius: 30px; font-size: 0.8rem; font-weight: 600; }
+        .status-pending { background: #f39c12; color: #000; }
+        .status-review { background: #3498db; }
+        .status-approved { background: #27ae60; }
+        .status-rejected { background: #e74c3c; }
+        .status-issued { background: #2ecc71; }
+        .sticker-upload-area { border: 2px dashed #2ecc71; padding: 1rem; text-align: center; border-radius: 20px; margin: 1rem 0; cursor: pointer; }
+        .fine-item { background: #1b2a3f; border-radius: 16px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid #e67e22; }
+        .fine-amount { color: #f39c12; font-size: 1.2rem; font-weight: bold; }
+        .fine-code { background: #2a3a55; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; }
+        .document-preview { max-width: 100%; max-height: 200px; border-radius: 12px; margin: 10px 0; }
+        .status-tracker { display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; background: #1e2a3a; border-radius: 20px; }
+        .tracker-step { text-align: center; flex: 1; color: #aaa; }
+        .tracker-step.active { color: #f39c12; }
+        .tracker-step.completed { color: #27ae60; }
+        .tracker-step i { font-size: 1.2rem; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -190,7 +211,7 @@
                         <div style="width: 45px; height: 45px; background: #a0aec0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2d3748; font-size: 24px;">
                             <i class="fas fa-check-circle"></i>
                         </div>
-                        <span style="color: #e2e8f0; font-size: 28px; font-weight: 700;">RegAssist</span>
+                        <span style="color: #e2e8f0; font-size: 28px; font-weight: 700;">PayEasy</span>
                     </div>
                 </div>
                 
@@ -212,30 +233,8 @@
                     <a href="#" onclick="showRegisterModal()">Create account</a>
                     <a href="#" onclick="showAdminLoginModal()">Admin</a>
                 </div>
-                
-                <div style="margin-top: 25px; text-align: center; border-top: 1px solid #4a5568; padding-top: 20px;">
-                    <p style="color: #a0aec0; font-size: 0.85rem; margin-bottom: 12px;">Connect with us</p>
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 25px;">
-                        <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0;">
-                            <i class="fab fa-facebook-f" style="font-size: 1.5rem;"></i>
-                            <span style="font-size: 0.7rem;">Facebook</span>
-                        </a>
-                        <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0;">
-                            <i class="fab fa-instagram" style="font-size: 1.5rem;"></i>
-                            <span style="font-size: 0.7rem;">Instagram</span>
-                        </a>
-                        <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0;">
-                            <i class="fab fa-twitter" style="font-size: 1.5rem;"></i>
-                            <span style="font-size: 0.7rem;">Twitter</span>
-                        </a>
-                        <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: #a0aec0;">
-                            <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i>
-                            <span style="font-size: 0.7rem;">WhatsApp</span>
-                        </a>
-                    </div>
-                </div>
             </div>
-            <div class="developer-name"><i class=""></i> AutoEase · @</div>
+            <div class="developer-name"><i class=""></i> PayEasy · Vehicle Management System</div>
         </div>
         
         <!-- REGISTER MODAL -->
@@ -289,9 +288,9 @@
                         <div class="sidebar-item active" onclick="showUserSection('dashboard')"><i class="fas fa-home"></i> Dashboard</div>
                         <div class="sidebar-item" onclick="showUserSection('vehicles')"><i class="fas fa-car"></i> My Vehicles</div>
                         <div class="sidebar-item" onclick="showUserSection('services')"><i class="fas fa-concierge-bell"></i> Vehicle Services</div>
+                        <div class="sidebar-item" onclick="showUserSection('fines')"><i class="fas fa-exclamation-triangle"></i> Traffic Fines</div>
                         <div class="sidebar-item" onclick="showUserSection('folder')"><i class="fas fa-folder"></i> My Documents</div>
-                        <div class="sidebar-item" onclick="showUserSection('requests')"><i class="fas fa-clipboard-list"></i> My Stickers</div>
-                        <div class="sidebar-item" onclick="showUserSection('bank')"><i class="fas fa-university"></i> Bank Details</div>
+                        <div class="sidebar-item" onclick="showUserSection('requests')"><i class="fas fa-clipboard-list"></i> My Requests</div>
                         <div class="sidebar-item" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</div>
                     </div>
                 </div>
@@ -311,7 +310,7 @@
                                 <div style="display:flex;justify-content:space-between;align-items:center">
                                     <div>
                                         <h3 style="color:white;">Welcome, <span id="welcomeName">User</span></h3>
-                                        <p style="color:white;">Manage your vehicle stickers</p>
+                                        <p style="color:white;">Manage your vehicle stickers and fines</p>
                                     </div>
                                     <button class="btn btn-secondary" style="width:auto;" onclick="showUserSection('vehicles')"><i class="fas fa-plus"></i> Add Vehicle</button>
                                 </div>
@@ -320,6 +319,10 @@
                             <div class="card">
                                 <h4 style="color:white;">Sticker Expiry Status</h4>
                                 <div id="stickerStatusList"></div>
+                            </div>
+                            <div class="card">
+                                <h4 style="color:white;">Outstanding Fines</h4>
+                                <div id="dashboardFines"></div>
                             </div>
                         </div>
                         
@@ -340,32 +343,30 @@
                             <div id="serviceGrid" class="vehicle-grid"></div>
                         </div>
                         
+                        <!-- Fines Section -->
+                        <div id="finesSection" class="user-section" style="display:none;">
+                            <h4 class="section-title"><i class="fas fa-exclamation-triangle"></i> Traffic Fines</h4>
+                            <button class="btn btn-warning" style="margin-bottom:1rem;" onclick="showAddFineModal()"><i class="fas fa-plus"></i> Submit Fine Check</button>
+                            <div id="userFinesList"></div>
+                        </div>
+                        
                         <!-- Documents Section -->
                         <div id="folderSection" class="user-section" style="display:none;">
                             <h4 class="section-title"><i class="fas fa-folder"></i> My Documents</h4>
                             <div class="folder-grid">
                                 <div class="folder-card" onclick="openFolder('id_documents')"><div class="folder-icon"><i class="fas fa-id-card"></i></div><div class="folder-name">ID DOCUMENTS</div><div class="folder-count" id="idCount">0 files</div></div>
                                 <div class="folder-card" onclick="openFolder('sticker_documents')"><div class="folder-icon"><i class="fas fa-tag"></i></div><div class="folder-name">STICKERS</div><div class="folder-count" id="stickerCount">0 files</div></div>
-                                <div class="folder-card" onclick="openFolder('bank_slips')"><div class="folder-icon"><i class="fas fa-receipt"></i></div><div class="folder-name">BANK SLIPS</div><div class="folder-count" id="slipCount">0 files</div></div>
+                                <div class="folder-card" onclick="openFolder('fine_documents')"><div class="folder-icon"><i class="fas fa-file-invoice"></i></div><div class="folder-name">FINE DOCUMENTS</div><div class="folder-count" id="fineCount">0 files</div></div>
+                                <div class="folder-card" onclick="openFolder('payment_slips')"><div class="folder-icon"><i class="fas fa-receipt"></i></div><div class="folder-name">PAYMENT SLIPS</div><div class="folder-count" id="slipCount">0 files</div></div>
+                                <div class="folder-card" onclick="openFolder('admin_uploads')"><div class="folder-icon"><i class="fas fa-cloud-upload-alt"></i></div><div class="folder-name">ADMIN UPLOADS</div><div class="folder-count" id="adminUploadCount">0 files</div></div>
                             </div>
                             <div id="folderContents" style="margin-top:1.5rem;"></div>
                         </div>
                         
-                        <!-- My Stickers Section -->
+                        <!-- My Requests Section -->
                         <div id="requestsSection" class="user-section" style="display:none;">
-                            <h4 class="section-title"><i class="fas fa-clipboard-list"></i> My Stickers</h4>
-                            <div id="userStickersList"></div>
-                        </div>
-                        
-                        <!-- Bank Details Section -->
-                        <div id="bankSection" class="user-section" style="display:none;">
-                            <h4 class="section-title"><i class="fas fa-university"></i> Bank Details</h4>
-                            <div class="card">
-                                <div class="bank-details" id="userBankDetails">
-                                    <p style="color:#aaa; text-align:center;">Loading bank details...</p>
-                                </div>
-                                <p style="color:white; margin-top:15px;"><i class="fas fa-info-circle"></i> Copy account details and upload payment slip with your request</p>
-                            </div>
+                            <h4 class="section-title"><i class="fas fa-clipboard-list"></i> My Requests & Status</h4>
+                            <div id="userRequestsList"></div>
                         </div>
                     </div>
                 </div>
@@ -383,14 +384,19 @@
                     <div class="admin-sidebar-item active" onclick="showAdminSection('dashboard', this)"><i class="fas fa-chart-line"></i> Dashboard</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('vehicleTypes', this)"><i class="fas fa-car"></i> Vehicle Types</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('services', this)"><i class="fas fa-concierge-bell"></i> Manage Services</div>
+                    <div class="admin-sidebar-item" onclick="showAdminSection('fineTypes', this)"><i class="fas fa-exclamation-triangle"></i> Fine Types</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('bankDetails', this)"><i class="fas fa-university"></i> Bank Details</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('vehicleVerification', this)"><i class="fas fa-clipboard-check"></i> Vehicle Verification</div>
+                    <div class="admin-sidebar-item" onclick="showAdminSection('allRequests', this)"><i class="fas fa-tasks"></i> All Service Requests</div>
+                    <div class="admin-sidebar-item" onclick="showAdminSection('fineRequests', this)"><i class="fas fa-file-invoice"></i> Fine Requests</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('roadRequests', this)"><i class="fas fa-road"></i> Road Stickers</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('insuranceRequests', this)"><i class="fas fa-shield-alt"></i> Insurance</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('annualStickers', this)"><i class="fas fa-tag"></i> Annual Stickers</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('users', this)"><i class="fas fa-users-cog"></i> Users</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('allVehicles', this)"><i class="fas fa-car-side"></i> All Vehicles</div>
                     <div class="admin-sidebar-item" onclick="showAdminSection('revenue', this)"><i class="fas fa-dollar-sign"></i> Revenue</div>
+                    <div class="admin-sidebar-item" onclick="showAdminSection('expiringStickers', this)"><i class="fas fa-exclamation-triangle"></i> Expiring Soon</div>
+                    <div class="admin-sidebar-item" onclick="showAdminSection('adminDocuments', this)"><i class="fas fa-folder-open"></i> Admin Documents</div>
                     <div class="admin-sidebar-item" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</div>
                 </div>
                 <div class="admin-main">
@@ -402,20 +408,27 @@
                         <div class="stat-card"><i class="fas fa-users"></i> Total Users <span id="statUsers">0</span></div>
                         <div class="stat-card"><i class="fas fa-car"></i> Total Vehicles <span id="statVehicles">0</span></div>
                         <div class="stat-card"><i class="fas fa-clock"></i> Pending Verification <span id="statPendingVerification">0</span></div>
+                        <div class="stat-card"><i class="fas fa-tasks"></i> Pending Requests <span id="statPendingRequests">0</span></div>
+                        <div class="stat-card"><i class="fas fa-file-invoice"></i> Pending Fines <span id="statPendingFines">0</span></div>
                         <div class="stat-card"><i class="fas fa-dollar-sign"></i> Today's Revenue <span id="statRevenue">0</span></div>
                     </div>
                     
                     <div id="adminDashboardSection" class="admin-section active"></div>
                     <div id="adminVehicleTypesSection" class="admin-section"></div>
                     <div id="adminServicesSection" class="admin-section"></div>
+                    <div id="adminFineTypesSection" class="admin-section"></div>
                     <div id="adminBankDetailsSection" class="admin-section"></div>
                     <div id="adminVehicleVerificationSection" class="admin-section"></div>
+                    <div id="adminAllRequestsSection" class="admin-section"></div>
+                    <div id="adminFineRequestsSection" class="admin-section"></div>
                     <div id="adminRoadRequestsSection" class="admin-section"></div>
                     <div id="adminInsuranceRequestsSection" class="admin-section"></div>
                     <div id="adminAnnualStickersSection" class="admin-section"></div>
                     <div id="adminUsersSection" class="admin-section"></div>
                     <div id="adminAllVehiclesSection" class="admin-section"></div>
                     <div id="adminRevenueSection" class="admin-section"></div>
+                    <div id="adminExpiringStickersSection" class="admin-section"></div>
+                    <div id="adminDocumentsSection" class="admin-section"></div>
                 </div>
             </div>
         </div>
@@ -453,6 +466,7 @@
                     <input type="file" id="ownerIdFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleOwnerIdFile(this)" required>
                 </div>
                 <div id="ownerIdName" class="file-name"></div>
+                <div id="ownerIdPreview" class="document-preview" style="display:none;"></div>
             </div>
             
             <div class="form-group">
@@ -463,6 +477,7 @@
                     <input type="file" id="vehicleRegFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleVehicleRegFile(this)" required>
                 </div>
                 <div id="vehicleRegName" class="file-name"></div>
+                <div id="vehicleRegPreview" class="document-preview" style="display:none;"></div>
             </div>
             
             <div style="background: #1e2a3a; border-radius: 16px; padding: 12px; margin: 15px 0;">
@@ -476,7 +491,89 @@
         </div>
     </div>
 
-    <!-- SERVICE REQUEST MODAL - UPDATED WITH IMAGE PREVIEW -->
+    <!-- ADD FINE MODAL -->
+    <div id="addFineModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-exclamation-triangle"></i> Traffic Fine Check</div>
+                <button class="close-btn" onclick="closeAddFineModal()">&times;</button>
+            </div>
+            <div id="fineMessage" class="message"></div>
+            
+            <div class="form-group">
+                <label class="form-label">Select Vehicle</label>
+                <select class="form-input" id="fineVehicleSelect"></select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Owner ID</label>
+                <input class="form-input" id="fineOwnerId" placeholder="A 123456">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Contact Number</label>
+                <input class="form-input" id="fineContact" placeholder="+960 1234567">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Additional Notes</label>
+                <textarea class="form-input" id="fineNotes" placeholder="Any additional information" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Document (Optional)</label>
+                <div class="file-upload" onclick="document.getElementById('fineDocFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload supporting document</p>
+                    <input type="file" id="fineDocFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleFineDoc(this)">
+                </div>
+                <div id="fineDocName" class="file-name"></div>
+                <div id="fineDocPreview" class="document-preview" style="display:none;"></div>
+            </div>
+            
+            <button class="btn btn-warning" onclick="submitFineCheck()">
+                <i class="fas fa-search"></i> Submit for Fine Check
+            </button>
+        </div>
+    </div>
+
+    <!-- PAY FINE MODAL -->
+    <div id="payFineModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-money-bill"></i> Pay Fine</div>
+                <button class="close-btn" onclick="closePayFineModal()">&times;</button>
+            </div>
+            <div id="payFineMessage" class="message"></div>
+            
+            <input type="hidden" id="payFineId">
+            <input type="hidden" id="payFineAmount">
+            
+            <div class="card" style="margin-bottom:20px;">
+                <h4 style="color:#f39c12;">Fine Details</h4>
+                <div id="payFineDetails"></div>
+            </div>
+            
+            <div class="bank-details" id="payFineBankDetails"></div>
+            
+            <div class="form-group">
+                <label class="form-label">Upload Payment Slip <span style="color:#f39c12;">*</span></label>
+                <div class="file-upload" onclick="document.getElementById('payFineSlipFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload payment slip</p>
+                    <input type="file" id="payFineSlipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handlePayFineSlip(this)">
+                </div>
+                <div id="payFineSlipName" class="file-name"></div>
+                <div id="payFineSlipPreview" class="document-preview" style="display:none;"></div>
+            </div>
+            
+            <button class="btn btn-success" onclick="submitFinePayment()">
+                <i class="fas fa-check"></i> Submit Payment
+            </button>
+        </div>
+    </div>
+
+    <!-- SERVICE REQUEST MODAL -->
     <div id="serviceRequestModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -485,14 +582,11 @@
             </div>
             <div id="serviceModalMessage" class="message"></div>
             
-            <div class="progress-container">
-                <div class="progress-steps">
-                    <div class="step completed" id="sstep1">Vehicle</div>
-                    <div class="step" id="sstep2">Documents</div>
-                    <div class="step" id="sstep3">Payment</div>
-                    <div class="step" id="sstep4">Submit</div>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" id="sprogressFill" style="width:25%"></div></div>
+            <div class="status-tracker" id="serviceStatusTracker">
+                <div class="tracker-step completed" id="trackStep1"><i class="fas fa-car"></i> Vehicle</div>
+                <div class="tracker-step" id="trackStep2"><i class="fas fa-file"></i> Docs</div>
+                <div class="tracker-step" id="trackStep3"><i class="fas fa-money-bill"></i> Payment</div>
+                <div class="tracker-step" id="trackStep4"><i class="fas fa-check"></i> Submit</div>
             </div>
             
             <form id="serviceRequestForm">
@@ -517,7 +611,6 @@
                     <h4 style="color:white; margin-bottom:15px;">Upload Required Documents</h4>
                     <div id="serviceDocumentsContainer"></div>
                     
-                    <!-- Image Preview Section -->
                     <div id="imagePreviewSection" style="display:none;">
                         <h4 style="color:white; margin:15px 0;">Image Previews</h4>
                         <div class="image-preview-grid" id="imagePreviewGrid"></div>
@@ -543,6 +636,7 @@
                             <input type="file" id="serviceSlipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleServiceSlip(this)">
                         </div>
                         <div id="serviceSlipName" class="file-name"></div>
+                        <div id="serviceSlipPreview" class="document-preview" style="display:none;"></div>
                     </div>
                     
                     <div style="display:flex; justify-content:space-between; margin-top:20px;">
@@ -554,16 +648,105 @@
         </div>
     </div>
 
-    <!-- ADMIN STICKER MODAL -->
+    <!-- ADMIN FINE UPDATE MODAL -->
+    <div id="adminFineModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-exclamation-triangle"></i> Update Fine Details</div>
+                <button class="close-btn" onclick="closeAdminFineModal()">&times;</button>
+            </div>
+            <div id="adminFineMessage" class="message"></div>
+            
+            <input type="hidden" id="adminFineRequestId">
+            <input type="hidden" id="adminFineUserId">
+            
+            <div class="form-group">
+                <label class="form-label">Select Fine Type</label>
+                <select class="form-input" id="adminFineType"></select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Violation Code</label>
+                <input type="text" class="form-input" id="adminFineCode" placeholder="e.g., TC-123">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Fine Amount (MVR)</label>
+                <input type="number" class="form-input" id="adminFineAmount" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Service Fee (MVR)</label>
+                <input type="number" class="form-input" id="adminFineServiceFee" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="adminFineDesc" rows="3" placeholder="Fine details..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Due Date (if applicable)</label>
+                <input type="date" class="form-input" id="adminFineDueDate">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Upload Document (Optional)</label>
+                <div class="file-upload" onclick="document.getElementById('adminFineFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload fine document</p>
+                    <input type="file" id="adminFineFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleAdminFineFile(this)">
+                </div>
+                <div id="adminFineFileName" class="file-name"></div>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn btn-success" onclick="updateFineWithDetails()">Save Fine Details</button>
+                <button class="btn btn-danger" onclick="clearFine()">No Fine / Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN STICKER UPLOAD MODAL -->
     <div id="adminStickerModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header"><div class="modal-title">Upload Sticker & Set Expiry</div><button class="close-btn" onclick="closeAdminStickerModal()">&times;</button></div>
             <input type="hidden" id="adminStickerRequestId">
             <input type="hidden" id="adminStickerUserId">
-            <div class="form-group"><label class="form-label">Sticker file</label><input type="file" id="stickerFile" class="form-input" accept=".jpg,.jpeg,.png,.pdf"></div>
+            <div class="form-group"><label class="form-label">Sticker file</label><input type="file" id="stickerFile" class="form-input" accept=".jpg,.jpeg,.png,.pdf" onchange="previewStickerFile(this)"></div>
+            <div id="stickerPreview" class="document-preview" style="display:none;"></div>
             <div class="form-group"><label class="form-label">Issue Date</label><input type="date" id="issueDate" class="form-input"></div>
             <div class="form-group"><label class="form-label">Expiry Date</label><input type="date" id="expiryDate" class="form-input"></div>
             <button class="btn btn-primary" onclick="uploadStickerWithExpiry()">Upload & Approve</button>
+        </div>
+    </div>
+
+    <!-- ADMIN DOCUMENT UPLOAD MODAL -->
+    <div id="adminDocumentModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><div class="modal-title">Upload Document to User Folder</div><button class="close-btn" onclick="closeAdminDocumentModal()">&times;</button></div>
+            <input type="hidden" id="adminDocUserId">
+            <div class="form-group">
+                <label class="form-label">Select User</label>
+                <select class="form-input" id="adminDocUserSelect"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Document Name</label>
+                <input type="text" id="adminDocName" class="form-input" placeholder="e.g., Insurance Certificate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Document Folder</label>
+                <select class="form-input" id="adminDocFolder">
+                    <option value="id_documents">ID Documents</option>
+                    <option value="sticker_documents">Sticker Documents</option>
+                    <option value="fine_documents">Fine Documents</option>
+                    <option value="payment_slips">Payment Slips</option>
+                    <option value="admin_uploads">Admin Uploads</option>
+                </select>
+            </div>
+            <div class="form-group"><label class="form-label">File</label><input type="file" id="adminDocFile" class="form-input" accept=".jpg,.jpeg,.png,.pdf" onchange="previewAdminDocFile(this)"></div>
+            <div id="adminDocPreview" class="document-preview" style="display:none;"></div>
+            <button class="btn btn-primary" onclick="uploadAdminDocument()">Upload to User</button>
         </div>
     </div>
 
@@ -593,9 +776,13 @@
         let currentAdminSection = 'dashboard';
         let vehicleTypes = {};
         let services = {};
+        let fineTypes = {};
         let bankDetails = {};
         let currentServiceFiles = {};
         let imagePreviews = {};
+        let currentFineFile = null;
+        let currentPayFineFile = null;
+        let currentAdminFineFile = null;
 
         // ==================== UTILITY FUNCTIONS ====================
         function showMessage(elementId, text, type) {
@@ -619,6 +806,26 @@
             navigator.clipboard.writeText(text).then(() => showNotification('Copied!'));
         }
 
+        function previewImage(file, previewElementId, nameElementId) {
+            if (file && file.type.startsWith('image/')) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let preview = document.getElementById(previewElementId);
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else if (file && file.type === 'application/pdf') {
+                let preview = document.getElementById(previewElementId);
+                preview.innerHTML = '<i class="fas fa-file-pdf" style="font-size:48px; color:#e74c3c;"></i><br>PDF Document';
+                preview.style.display = 'block';
+            }
+            
+            if (nameElementId) {
+                document.getElementById(nameElementId).innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${file.name.substring(0,30)}${file.name.length > 30 ? '...' : ''}`;
+            }
+        }
+
         // ==================== INITIALIZATION ====================
         window.onload = () => {
             setTimeout(() => {
@@ -636,6 +843,7 @@
         async function loadInitialData() {
             await loadVehicleTypes();
             await loadServices();
+            await loadFineTypes();
             await loadBankDetails();
         }
 
@@ -758,7 +966,6 @@
                 if (snap.exists()) {
                     vehicleTypes = snap.val();
                 } else {
-                    // Default types
                     vehicleTypes = {
                         car: { name: 'Car', icon: 'fa-car' },
                         bike: { name: 'Motorcycle', icon: 'fa-motorcycle' },
@@ -768,8 +975,6 @@
                     };
                     await db.ref('vehicle_types').set(vehicleTypes);
                 }
-                
-                // Update vehicle type dropdowns
                 updateVehicleTypeDropdowns();
             } catch (error) {
                 console.error('Error loading vehicle types:', error);
@@ -797,7 +1002,6 @@
                 if (snap.exists()) {
                     services = snap.val();
                 } else {
-                    // Default services - UPDATED Roadworthiness with proper document requirements
                     services = {
                         roadworthiness: {
                             name: 'Roadworthiness Sticker',
@@ -811,7 +1015,7 @@
                         insurance: {
                             name: 'Vehicle Insurance',
                             description: 'Comprehensive vehicle insurance',
-                            documents: ['ID Document', 'Vehicle Registration', 'Previous Insurance (if any)'],
+                            documents: ['ID Document', 'Vehicle Registration'],
                             requiresPhotos: false,
                             active: true,
                             icon: 'fa-shield-alt'
@@ -832,6 +1036,28 @@
             }
         }
 
+        // ==================== FINE TYPES MANAGEMENT ====================
+        async function loadFineTypes() {
+            try {
+                let snap = await db.ref('fine_types').once('value');
+                if (snap.exists()) {
+                    fineTypes = snap.val();
+                } else {
+                    fineTypes = {
+                        parking: { name: 'Parking Violation', baseAmount: 500, icon: 'fa-parking' },
+                        speeding: { name: 'Speeding', baseAmount: 1000, icon: 'fa-gauge-high' },
+                        red_light: { name: 'Red Light Violation', baseAmount: 1500, icon: 'fa-traffic-light' },
+                        no_license: { name: 'Driving without License', baseAmount: 2000, icon: 'fa-id-card' },
+                        expired_sticker: { name: 'Expired Sticker', baseAmount: 750, icon: 'fa-tag' },
+                        other: { name: 'Other Violation', baseAmount: 500, icon: 'fa-exclamation' }
+                    };
+                    await db.ref('fine_types').set(fineTypes);
+                }
+            } catch (error) {
+                console.error('Error loading fine types:', error);
+            }
+        }
+
         // ==================== BANK DETAILS MANAGEMENT ====================
         async function loadBankDetails() {
             try {
@@ -839,7 +1065,6 @@
                 if (snap.exists()) {
                     bankDetails = snap.val();
                 } else {
-                    // Default bank details
                     bankDetails = {
                         bankName: 'Bank of Maldives',
                         accountName: 'PayEasy Services',
@@ -849,8 +1074,6 @@
                     };
                     await db.ref('bank_details').set(bankDetails);
                 }
-                
-                // Update user bank details display
                 updateBankDetailsDisplay();
             } catch (error) {
                 console.error('Error loading bank details:', error);
@@ -891,6 +1114,7 @@
         async function loadUserDashboard() {
             await loadUserVehicles();
             await loadStickerStatus();
+            await loadDashboardFines();
         }
 
         // ==================== SIDEBAR TOGGLE ====================
@@ -908,9 +1132,9 @@
             
             if (section === 'vehicles') loadUserVehicles();
             else if (section === 'services') showServiceSelector();
+            else if (section === 'fines') loadUserFines();
             else if (section === 'folder') loadDocuments();
-            else if (section === 'requests') loadUserStickers();
-            else if (section === 'bank') updateBankDetailsDisplay();
+            else if (section === 'requests') loadUserRequests();
             
             if (window.innerWidth <= 500) toggleSidebar();
         };
@@ -922,26 +1146,26 @@
         
         window.closeAddVehicleModal = function() {
             document.getElementById('addVehicleModal').style.display = 'none';
+            document.getElementById('ownerIdPreview').style.display = 'none';
+            document.getElementById('vehicleRegPreview').style.display = 'none';
+            document.getElementById('ownerIdName').innerHTML = '';
+            document.getElementById('vehicleRegName').innerHTML = '';
         };
 
         window.handleOwnerIdFile = function(input) {
             let file = input.files[0];
             if (!file) return;
             if (file.size > 5 * 1024 * 1024) { showMessage('vehicleMessage', 'File too large. Max 5MB', 'error'); return; }
-            if (!file.type.match('image.*') && !file.type.match('application/pdf')) { showMessage('vehicleMessage', 'Only images and PDFs allowed', 'error'); return; }
             window.ownerIdFile = file;
-            let short = file.name.length > 20 ? file.name.substr(0,17) + '...' : file.name;
-            document.getElementById('ownerIdName').innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${short}`;
+            previewImage(file, 'ownerIdPreview', 'ownerIdName');
         };
 
         window.handleVehicleRegFile = function(input) {
             let file = input.files[0];
             if (!file) return;
             if (file.size > 5 * 1024 * 1024) { showMessage('vehicleMessage', 'File too large. Max 5MB', 'error'); return; }
-            if (!file.type.match('image.*') && !file.type.match('application/pdf')) { showMessage('vehicleMessage', 'Only images and PDFs allowed', 'error'); return; }
             window.vehicleRegFile = file;
-            let short = file.name.length > 20 ? file.name.substr(0,17) + '...' : file.name;
-            document.getElementById('vehicleRegName').innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${short}`;
+            previewImage(file, 'vehicleRegPreview', 'vehicleRegName');
         };
 
         window.addVehicle = async function() {
@@ -1036,9 +1260,28 @@
                         <button class="btn btn-info btn-small" style="margin-top:10px;" onclick="selectVehicleForService('${k}')">
                             <i class="fas fa-concierge-bell"></i> Services
                         </button>
+                        <button class="btn btn-warning btn-small" style="margin-top:5px;" onclick="selectVehicleForFine('${k}')">
+                            <i class="fas fa-exclamation-triangle"></i> Check Fine
+                        </button>
                     </div>
                 `;
             });
+            
+            // Update dashboard vehicles
+            let dashContainer = document.getElementById('dashboardVehicles');
+            if (dashContainer) {
+                dashContainer.innerHTML = '';
+                Object.keys(v).slice(0, 4).forEach(k => {
+                    let veh = v[k];
+                    dashContainer.innerHTML += `
+                        <div class="vehicle-card" onclick="showUserSection('vehicles')">
+                            <div class="vehicle-icon"><i class="fas ${vehicleTypes[veh.type]?.icon || 'fa-car'}"></i></div>
+                            <div class="vehicle-name">${veh.number}</div>
+                            <div class="vehicle-plate">${veh.model || ''}</div>
+                        </div>
+                    `;
+                });
+            }
         };
 
         window.selectVehicleForService = function(vehicleId) {
@@ -1049,6 +1292,13 @@
                     select.value = vehicleId;
                     loadServicesForVehicle();
                 }
+            }, 500);
+        };
+
+        window.selectVehicleForFine = function(vehicleId) {
+            showUserSection('fines');
+            setTimeout(() => {
+                showAddFineModalWithVehicle(vehicleId);
             }, 500);
         };
 
@@ -1063,7 +1313,6 @@
                 return;
             }
             
-            // Check for verified vehicles
             let hasVerified = false;
             select.innerHTML = '<option value="">Select a vehicle</option>';
             
@@ -1096,7 +1345,6 @@
             let grid = document.getElementById('serviceGrid');
             grid.innerHTML = '';
             
-            // Get service amounts for this vehicle type
             let amountsSnap = await db.ref(`service_amounts/${vehicle.type}`).once('value');
             let amounts = amountsSnap.exists() ? amountsSnap.val() : {};
             
@@ -1108,7 +1356,7 @@
                         <div class="service-card" onclick="openServiceRequest('${key}', '${service.name}', ${amount}, '${vehicleId}')">
                             <div class="service-icon"><i class="fas ${service.icon || 'fa-concierge-bell'}"></i></div>
                             <div class="service-name">${service.name}</div>
-                            ${amount > 0 ? `<div class="service-price">MVR ${amount}</div>` : '<div style="color:#aaa; font-size:0.8rem;">Contact admin for pricing</div>'}
+                            ${amount > 0 ? `<div class="service-price">MVR ${amount}</div>` : '<div style="color:#aaa; font-size:0.8rem;">Contact admin</div>'}
                             <div style="font-size:0.7rem; color:#aaa; margin-top:5px;">${service.description || ''}</div>
                         </div>
                     `;
@@ -1116,7 +1364,275 @@
             });
         }
 
-        // ==================== SERVICE REQUEST MODAL WITH IMAGE PREVIEW ====================
+        // ==================== FINE FUNCTIONS ====================
+        window.showAddFineModal = function() {
+            let select = document.getElementById('fineVehicleSelect');
+            select.innerHTML = '';
+            if (currentUser.vehicles) {
+                Object.keys(currentUser.vehicles).forEach(key => {
+                    let v = currentUser.vehicles[key];
+                    if (v.verified) {
+                        select.innerHTML += `<option value="${key}">${v.number}</option>`;
+                    }
+                });
+            }
+            document.getElementById('addFineModal').style.display = 'flex';
+        };
+
+        window.showAddFineModalWithVehicle = function(vehicleId) {
+            let select = document.getElementById('fineVehicleSelect');
+            select.innerHTML = '';
+            if (currentUser.vehicles) {
+                Object.keys(currentUser.vehicles).forEach(key => {
+                    let v = currentUser.vehicles[key];
+                    if (v.verified) {
+                        select.innerHTML += `<option value="${key}" ${key === vehicleId ? 'selected' : ''}>${v.number}</option>`;
+                    }
+                });
+            }
+            document.getElementById('addFineModal').style.display = 'flex';
+        };
+
+        window.closeAddFineModal = function() {
+            document.getElementById('addFineModal').style.display = 'none';
+            document.getElementById('fineDocPreview').style.display = 'none';
+            document.getElementById('fineDocName').innerHTML = '';
+            currentFineFile = null;
+        };
+
+        window.handleFineDoc = function(input) {
+            let file = input.files[0];
+            if (!file) return;
+            currentFineFile = file;
+            previewImage(file, 'fineDocPreview', 'fineDocName');
+        };
+
+        window.submitFineCheck = async function() {
+            let vehicleId = document.getElementById('fineVehicleSelect').value;
+            let ownerId = document.getElementById('fineOwnerId').value;
+            let contact = document.getElementById('fineContact').value;
+            let notes = document.getElementById('fineNotes').value;
+            
+            if (!vehicleId || !ownerId || !contact) {
+                showMessage('fineMessage', 'Please fill all required fields', 'error');
+                return;
+            }
+            
+            let vehicle = currentUser.vehicles[vehicleId];
+            let fineId = 'fine_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+            let timestamp = Date.now();
+            
+            try {
+                let docUrl = null;
+                if (currentFineFile) {
+                    let docRef = storage.ref(`fine_docs/${currentUser.uid}/${fineId}/${currentFineFile.name}`);
+                    await docRef.put(currentFineFile);
+                    docUrl = await docRef.getDownloadURL();
+                }
+                
+                let fineRequest = {
+                    userId: currentUser.uid,
+                    userName: currentUser.name,
+                    userEmail: currentUser.email,
+                    userContact: contact,
+                    vehicleId: vehicleId,
+                    vehicleNumber: vehicle.number,
+                    ownerId: ownerId,
+                    notes: notes,
+                    documentUrl: docUrl,
+                    status: 'pending_review',
+                    fineDetails: null,
+                    createdAt: timestamp,
+                    paid: false
+                };
+                
+                await db.ref(`fine_requests/${fineId}`).set(fineRequest);
+                
+                showMessage('fineMessage', 'Fine check submitted for review', 'success');
+                showNotification('Fine check submitted');
+                
+                setTimeout(() => {
+                    closeAddFineModal();
+                    loadUserFines();
+                }, 2000);
+                
+            } catch (error) {
+                showMessage('fineMessage', 'Error: ' + error.message, 'error');
+            }
+        };
+
+        window.loadUserFines = async function() {
+            let snap = await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+            let container = document.getElementById('userFinesList');
+            container.innerHTML = '';
+            
+            if (!snap.exists()) {
+                container.innerHTML = '<div class="card">No fine records found</div>';
+                return;
+            }
+            
+            snap.forEach(child => {
+                let fine = child.val();
+                fine.id = child.key;
+                
+                let statusClass = fine.paid ? 'verified' : (fine.status === 'approved' ? 'warning' : 'pending');
+                let statusText = fine.paid ? 'Paid' : (fine.status === 'approved' ? 'Pending Payment' : 'Under Review');
+                
+                let fineDetailsHtml = '';
+                if (fine.fineDetails) {
+                    fineDetailsHtml = `
+                        <div style="background:#1e2a3a; padding:10px; border-radius:12px; margin:10px 0;">
+                            <p><strong>${fine.fineDetails.typeName}</strong> <span class="fine-code">${fine.fineDetails.code || ''}</span></p>
+                            <p>${fine.fineDetails.description || ''}</p>
+                            <p>Fine Amount: <span style="color:#f39c12;">MVR ${fine.fineDetails.fineAmount}</span></p>
+                            <p>Service Fee: <span style="color:#f39c12;">MVR ${fine.fineDetails.serviceFee}</span></p>
+                            <p style="font-size:1.2rem;">Total: <span style="color:#27ae60;">MVR ${fine.fineDetails.fineAmount + fine.fineDetails.serviceFee}</span></p>
+                            ${fine.fineDetails.dueDate ? `<p>Due: ${new Date(fine.fineDetails.dueDate).toLocaleDateString()}</p>` : ''}
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML += `
+                    <div class="fine-item">
+                        <div style="display:flex; justify-content:space-between;">
+                            <div>
+                                <h4>${fine.vehicleNumber}</h4>
+                                <p><i class="fas fa-id-card"></i> Owner ID: ${fine.ownerId}</p>
+                                <p><i class="fas fa-calendar"></i> ${new Date(fine.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <span class="badge ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        ${fineDetailsHtml}
+                        
+                        ${fine.documentUrl ? `
+                            <button class="btn btn-info btn-small" onclick="window.open('${fine.documentUrl}')">
+                                <i class="fas fa-file"></i> View Document
+                            </button>
+                        ` : ''}
+                        
+                        ${fine.fineDetails && !fine.paid && fine.status === 'approved' ? `
+                            <button class="btn btn-warning" style="margin-top:10px;" onclick="openPayFineModal('${fine.id}', ${fine.fineDetails.fineAmount + fine.fineDetails.serviceFee}, '${fine.fineDetails.typeName}')">
+                                <i class="fas fa-money-bill"></i> Pay MVR ${fine.fineDetails.fineAmount + fine.fineDetails.serviceFee}
+                            </button>
+                        ` : ''}
+                        
+                        ${fine.paid ? `
+                            <span class="badge verified" style="margin-top:10px; display:inline-block;"><i class="fas fa-check-circle"></i> Payment Completed</span>
+                        ` : ''}
+                    </div>
+                `;
+            });
+        };
+
+        window.openPayFineModal = function(fineId, totalAmount, fineType) {
+            document.getElementById('payFineId').value = fineId;
+            document.getElementById('payFineAmount').value = totalAmount;
+            
+            let details = document.getElementById('payFineDetails');
+            details.innerHTML = `
+                <p>Fine Type: <strong>${fineType}</strong></p>
+                <p>Total Amount: <strong style="color:#f39c12;">MVR ${totalAmount}</strong></p>
+            `;
+            
+            let bankHtml = `
+                <div class="bank-row"><span class="bank-label">Bank</span><span class="bank-value">${bankDetails.bankName || 'N/A'}</span></div>
+                <div class="bank-row"><span class="bank-label">Account Name</span><span class="bank-value">${bankDetails.accountName || 'N/A'}</span></div>
+                <div class="bank-row"><span class="bank-label">Account Number</span><span class="bank-value">${bankDetails.accountNumber || 'N/A'} <button class="copy-btn" onclick="copyToClipboard('${bankDetails.accountNumber || ''}')">Copy</button></span></div>
+                <div class="bank-row"><span class="bank-label">Amount</span><span class="bank-value" style="color:#f39c12;">MVR ${totalAmount}</span></div>
+            `;
+            document.getElementById('payFineBankDetails').innerHTML = bankHtml;
+            
+            document.getElementById('payFineModal').style.display = 'flex';
+        };
+
+        window.closePayFineModal = function() {
+            document.getElementById('payFineModal').style.display = 'none';
+            document.getElementById('payFineSlipPreview').style.display = 'none';
+            document.getElementById('payFineSlipName').innerHTML = '';
+            currentPayFineFile = null;
+        };
+
+        window.handlePayFineSlip = function(input) {
+            let file = input.files[0];
+            if (!file) return;
+            currentPayFineFile = file;
+            previewImage(file, 'payFineSlipPreview', 'payFineSlipName');
+        };
+
+        window.submitFinePayment = async function() {
+            let fineId = document.getElementById('payFineId').value;
+            let amount = document.getElementById('payFineAmount').value;
+            
+            if (!currentPayFineFile) {
+                showMessage('payFineMessage', 'Please upload payment slip', 'error');
+                return;
+            }
+            
+            try {
+                let slipRef = storage.ref(`payment_slips/fines/${fineId}/${currentPayFineFile.name}`);
+                await slipRef.put(currentPayFineFile);
+                let slipUrl = await slipRef.getDownloadURL();
+                
+                await db.ref(`fine_requests/${fineId}`).update({
+                    paid: true,
+                    paidAt: Date.now(),
+                    paymentSlip: slipUrl,
+                    paymentAmount: parseInt(amount)
+                });
+                
+                await db.ref(`notifications/admin`).push({
+                    type: 'fine_payment',
+                    message: `Fine payment received for verification`,
+                    fineId: fineId,
+                    time: Date.now()
+                });
+                
+                showMessage('payFineMessage', 'Payment submitted for verification', 'success');
+                showNotification('Payment submitted');
+                
+                setTimeout(() => {
+                    closePayFineModal();
+                    loadUserFines();
+                }, 2000);
+                
+            } catch (error) {
+                showMessage('payFineMessage', 'Error: ' + error.message, 'error');
+            }
+        };
+
+        async function loadDashboardFines() {
+            let snap = await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+            let container = document.getElementById('dashboardFines');
+            container.innerHTML = '';
+            
+            let unpaidCount = 0;
+            let totalAmount = 0;
+            
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    let fine = child.val();
+                    if (fine.fineDetails && !fine.paid) {
+                        unpaidCount++;
+                        totalAmount += fine.fineDetails.fineAmount + fine.fineDetails.serviceFee;
+                    }
+                });
+            }
+            
+            if (unpaidCount > 0) {
+                container.innerHTML = `
+                    <div style="background:#e67e22; padding:15px; border-radius:16px;">
+                        <p><i class="fas fa-exclamation-circle"></i> You have ${unpaidCount} unpaid fine(s)</p>
+                        <p style="font-size:1.2rem;">Total Due: MVR ${totalAmount}</p>
+                        <button class="btn btn-warning btn-small" onclick="showUserSection('fines')">View Fines</button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<p style="color:#27ae60;"><i class="fas fa-check-circle"></i> No outstanding fines</p>';
+            }
+        }
+
+        // ==================== SERVICE REQUEST MODAL ====================
         window.openServiceRequest = function(serviceId, serviceName, amount, vehicleId) {
             if (amount <= 0) {
                 showNotification('Please contact admin for pricing', 'error');
@@ -1128,7 +1644,6 @@
             document.getElementById('serviceAmount').value = amount;
             document.getElementById('serviceModalTitle').innerHTML = `<i class="fas fa-concierge-bell"></i> ${serviceName}`;
             
-            // Set vehicle select
             let select = document.getElementById('serviceVehicle');
             select.innerHTML = '';
             Object.keys(currentUser.vehicles).forEach(key => {
@@ -1138,15 +1653,14 @@
                 }
             });
             
-            // Set document uploads
             let service = services[serviceId];
             let docsContainer = document.getElementById('serviceDocumentsContainer');
             docsContainer.innerHTML = '';
             
-            // Reset preview section
             document.getElementById('imagePreviewSection').style.display = 'none';
             document.getElementById('imagePreviewGrid').innerHTML = '';
             imagePreviews = {};
+            currentServiceFiles = {};
             
             if (service.documents) {
                 service.documents.forEach((doc, index) => {
@@ -1159,6 +1673,7 @@
                                 <input type="file" id="serviceDoc${index}" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleServiceDoc(${index}, this)">
                             </div>
                             <div id="serviceDocName${index}" class="file-name"></div>
+                            <div id="serviceDocPreview${index}" class="document-preview" style="display:none;"></div>
                         </div>
                     `;
                 });
@@ -1169,7 +1684,7 @@
                 docsContainer.innerHTML += `
                     <div class="form-group">
                         <label class="form-label">Vehicle Condition Photos (${photoCount}) <span style="color:#f39c12;">*</span></label>
-                        <p style="color:#aaa; font-size:0.8rem; margin-bottom:10px;">Take clear photos showing vehicle condition from all angles</p>
+                        <p style="color:#aaa; font-size:0.8rem; margin-bottom:10px;">Take clear photos showing vehicle condition</p>
                         <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">
                 `;
                 
@@ -1181,6 +1696,7 @@
                                 <input type="file" id="servicePhoto${i}" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleServicePhoto(${i}, this, ${photoCount})">
                             </div>
                             <div id="servicePhotoName${i}" class="file-name"></div>
+                            <div id="servicePhotoPreview${i}" class="document-preview" style="display:none;"></div>
                         </div>
                     `;
                 }
@@ -1191,7 +1707,6 @@
                 `;
             }
             
-            // Update bank details
             let bankHtml = `
                 <div class="bank-row"><span class="bank-label">Bank</span><span class="bank-value">${bankDetails.bankName || 'N/A'}</span></div>
                 <div class="bank-row"><span class="bank-label">Account Name</span><span class="bank-value">${bankDetails.accountName || 'N/A'}</span></div>
@@ -1201,14 +1716,14 @@
             document.getElementById('serviceBankDetails').innerHTML = bankHtml;
             
             // Reset steps
-            currentServiceFiles = {};
             document.getElementById('sstep1Div').style.display = 'block';
             document.getElementById('sstep2Div').style.display = 'none';
             document.getElementById('sstep3Div').style.display = 'none';
-            document.getElementById('sprogressFill').style.width = '25%';
-            document.querySelectorAll('#serviceRequestForm .step').forEach((s, idx) => {
-                s.className = idx === 0 ? 'step completed' : 'step';
-            });
+            
+            document.getElementById('trackStep1').className = 'tracker-step completed';
+            document.getElementById('trackStep2').className = 'tracker-step';
+            document.getElementById('trackStep3').className = 'tracker-step';
+            document.getElementById('trackStep4').className = 'tracker-step';
             
             document.getElementById('serviceRequestModal').style.display = 'flex';
         };
@@ -1221,10 +1736,8 @@
             let file = input.files[0];
             if (!file) return;
             currentServiceFiles[`doc${index}`] = file;
-            let short = file.name.length > 20 ? file.name.substr(0,17) + '...' : file.name;
-            document.getElementById(`serviceDocName${index}`).innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${short}`;
+            previewImage(file, `serviceDocPreview${index}`, `serviceDocName${index}`);
             
-            // Create preview for images
             if (file.type.startsWith('image/')) {
                 let reader = new FileReader();
                 reader.onload = function(e) {
@@ -1239,26 +1752,14 @@
             let file = input.files[0];
             if (!file) return;
             currentServiceFiles[`photo${num}`] = file;
-            let short = file.name.length > 15 ? file.name.substr(0,12) + '...' : file.name;
-            document.getElementById(`servicePhotoName${num}`).innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${short}`;
+            previewImage(file, `servicePhotoPreview${num}`, `servicePhotoName${num}`);
             
-            // Create preview for image
             let reader = new FileReader();
             reader.onload = function(e) {
                 imagePreviews[`photo${num}`] = e.target.result;
                 updateImagePreview();
             };
             reader.readAsDataURL(file);
-            
-            // Check if all photos uploaded
-            let uploadedPhotos = 0;
-            for(let i = 1; i <= totalPhotos; i++) {
-                if(currentServiceFiles[`photo${i}`]) uploadedPhotos++;
-            }
-            
-            if(uploadedPhotos === totalPhotos) {
-                showNotification(`All ${totalPhotos} photos uploaded successfully`);
-            }
         };
 
         function updateImagePreview() {
@@ -1285,8 +1786,7 @@
             let file = input.files[0];
             if (!file) return;
             currentServiceFiles.paymentSlip = file;
-            let short = file.name.length > 30 ? file.name.substr(0,27) + '...' : file.name;
-            document.getElementById('serviceSlipName').innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${short}`;
+            previewImage(file, 'serviceSlipPreview', 'serviceSlipName');
         };
 
         window.serviceNextStep = function(step) {
@@ -1297,11 +1797,9 @@
                 }
                 document.getElementById('sstep1Div').style.display = 'none';
                 document.getElementById('sstep2Div').style.display = 'block';
-                document.getElementById('sprogressFill').style.width = '50%';
-                document.getElementById('sstep2').className = 'step completed';
+                document.getElementById('trackStep2').className = 'tracker-step active';
                 
             } else if (step === 2) {
-                // Validate documents
                 let service = services[document.getElementById('serviceId').value];
                 let required = (service.documents?.length || 0) + (service.requiresPhotos ? (service.photoCount || 4) : 0);
                 let uploaded = Object.keys(currentServiceFiles).filter(k => k.startsWith('doc') || k.startsWith('photo')).length;
@@ -1313,8 +1811,8 @@
                 
                 document.getElementById('sstep2Div').style.display = 'none';
                 document.getElementById('sstep3Div').style.display = 'block';
-                document.getElementById('sprogressFill').style.width = '75%';
-                document.getElementById('sstep3').className = 'step completed';
+                document.getElementById('trackStep2').className = 'tracker-step completed';
+                document.getElementById('trackStep3').className = 'tracker-step active';
             }
         };
 
@@ -1322,13 +1820,12 @@
             if (step === 2) {
                 document.getElementById('sstep2Div').style.display = 'none';
                 document.getElementById('sstep1Div').style.display = 'block';
-                document.getElementById('sprogressFill').style.width = '25%';
-                document.getElementById('sstep2').className = 'step';
+                document.getElementById('trackStep2').className = 'tracker-step';
             } else if (step === 3) {
                 document.getElementById('sstep3Div').style.display = 'none';
                 document.getElementById('sstep2Div').style.display = 'block';
-                document.getElementById('sprogressFill').style.width = '50%';
-                document.getElementById('sstep3').className = 'step';
+                document.getElementById('trackStep3').className = 'tracker-step';
+                document.getElementById('trackStep2').className = 'tracker-step active';
             }
         };
 
@@ -1350,7 +1847,6 @@
                 let reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
                 let urls = {};
                 
-                // Upload all files
                 for (let key in currentServiceFiles) {
                     let file = currentServiceFiles[key];
                     let path = key.startsWith('photo') ? 'vehicle_photos' : (key === 'paymentSlip' ? 'payment_slips' : 'documents');
@@ -1373,20 +1869,21 @@
                     paid: true,
                     paymentVerified: false,
                     createdAt: Date.now(),
-                    documents: urls
+                    documents: urls,
+                    progress: 25
                 };
                 
                 await db.ref(`service_requests/${reqId}`).set(requestData);
                 
-                document.getElementById('sprogressFill').style.width = '100%';
-                document.getElementById('sstep4').className = 'step completed';
+                document.getElementById('trackStep3').className = 'tracker-step completed';
+                document.getElementById('trackStep4').className = 'tracker-step active';
                 
                 showMessage('serviceModalMessage', 'Request submitted successfully!', 'success');
                 showNotification('Service request submitted');
                 
                 setTimeout(() => {
                     closeServiceModal();
-                    loadUserStickers();
+                    loadUserRequests();
                 }, 2000);
                 
             } catch (error) {
@@ -1411,42 +1908,162 @@
                     let days = Math.ceil((r.expiryDate - Date.now()) / (86400000));
                     let status = days < 0 ? 'Expired' : days < 30 ? 'Expiring soon' : 'Active';
                     let cls = days < 0 ? 'expired' : days < 30 ? 'expiring' : 'active';
-                    list.innerHTML += `<div class="sticker-card"><div style="display:flex;justify-content:space-between"><span style="color:white;">${r.vehicleNumber}</span><span class="badge ${cls}">${status}</span></div><div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span><span class="days-badge">${days < 0 ? 'Overdue' : days + ' days left'}</span></div><div class="progress-bar"><div class="progress-fill ${cls}" style="width:${Math.min(100, Math.max(0, 100 - (days / 365) * 100))}%"></div></div></div>`;
+                    list.innerHTML += `
+                        <div class="sticker-card">
+                            <div style="display:flex;justify-content:space-between">
+                                <span style="color:white;">${r.vehicleNumber} - ${r.serviceName}</span>
+                                <span class="badge ${cls}">${status}</span>
+                            </div>
+                            <div class="expiry-row">
+                                <span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span>
+                                <span class="days-badge">${days < 0 ? 'Overdue' : days + ' days left'}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${cls}" style="width:${Math.min(100, Math.max(0, 100 - (days / 365) * 100))}%"></div>
+                            </div>
+                        </div>
+                    `;
                 }
             });
         }
 
-        // ==================== USER STICKERS LIST ====================
-        async function loadUserStickers() {
-            let snap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
-            let div = document.getElementById('userStickersList');
+        // ==================== USER REQUESTS LIST ====================
+        async function loadUserRequests() {
+            let serviceSnap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+            let fineSnap = await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+            let div = document.getElementById('userRequestsList');
             div.innerHTML = '';
             
-            if (!snap.exists()) { 
-                div.innerHTML = '<div class="card">No service requests</div>'; 
-                return; 
+            let requests = [];
+            
+            if (serviceSnap.exists()) {
+                serviceSnap.forEach(child => {
+                    let r = child.val();
+                    r.id = child.key;
+                    r.type = 'service';
+                    requests.push(r);
+                });
             }
             
-            snap.forEach(c => {
-                let r = c.val();
-                let expiryHtml = '';
-                
-                if (r.expiryDate) {
-                    let days = Math.ceil((r.expiryDate - Date.now()) / (86400000));
-                    expiryHtml = `<div class="expiry-row"><span>Exp: ${new Date(r.expiryDate).toLocaleDateString()}</span><span class="days-badge">${days < 0 ? 'Expired' : days + ' days'}</span></div><div class="progress-bar"><div class="progress-fill ${days < 0 ? 'expired' : days < 30 ? 'expiring' : 'active'}" style="width:${Math.min(100, Math.max(0, 100 - (days / 365) * 100))}%"></div></div>`;
+            if (fineSnap.exists()) {
+                fineSnap.forEach(child => {
+                    let r = child.val();
+                    r.id = child.key;
+                    r.type = 'fine';
+                    requests.push(r);
+                });
+            }
+            
+            if (requests.length === 0) {
+                div.innerHTML = '<div class="card">No requests found</div>';
+                return;
+            }
+            
+            requests.sort((a, b) => b.createdAt - a.createdAt);
+            
+            requests.forEach(r => {
+                if (r.type === 'service') {
+                    let progress = r.progress || 25;
+                    let statusClass = r.status === 'approved' ? 'status-approved' : (r.status === 'rejected' ? 'status-rejected' : 'status-pending');
+                    
+                    div.innerHTML += `
+                        <div class="card">
+                            <div style="display:flex;justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <span style="color:white; font-weight:600;">${r.serviceName} - ${r.vehicleNumber}</span>
+                                <span class="badge ${r.status === 'approved' ? 'verified' : 'pending'}">${r.status}</span>
+                            </div>
+                            
+                            <div class="status-tracker" style="margin:15px 0;">
+                                <div class="tracker-step ${r.progress >= 25 ? 'completed' : ''}"><i class="fas fa-check"></i> Submitted</div>
+                                <div class="tracker-step ${r.progress >= 50 ? 'completed' : ''}"><i class="fas fa-money-bill"></i> Payment</div>
+                                <div class="tracker-step ${r.progress >= 75 ? 'completed' : ''}"><i class="fas fa-search"></i> Review</div>
+                                <div class="tracker-step ${r.progress >= 100 ? 'completed' : ''}"><i class="fas fa-check-circle"></i> Completed</div>
+                            </div>
+                            
+                            <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+                            
+                            ${r.expiryDate ? `
+                                <div class="expiry-row">
+                                    <span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span>
+                                </div>
+                            ` : ''}
+                            
+                            ${r.documentURL ? `<button class="btn btn-info btn-small" onclick="window.open('${r.documentURL}')">View Sticker</button>` : ''}
+                            <button class="btn btn-secondary btn-small" onclick="viewRequestDocuments('${r.id}', 'service')">View Documents</button>
+                        </div>
+                    `;
+                } else {
+                    let statusClass = r.paid ? 'verified' : (r.status === 'approved' ? 'warning' : 'pending');
+                    let statusText = r.paid ? 'Paid' : (r.status === 'approved' ? 'Pending Payment' : 'Under Review');
+                    
+                    div.innerHTML += `
+                        <div class="card" style="border-left:4px solid ${r.paid ? '#27ae60' : '#e67e22'};">
+                            <div style="display:flex;justify-content:space-between;">
+                                <div>
+                                    <span style="font-weight:600;">Fine - ${r.vehicleNumber}</span>
+                                    <p><i class="fas fa-id-card"></i> ID: ${r.ownerId}</p>
+                                </div>
+                                <span class="badge ${statusClass}">${statusText}</span>
+                            </div>
+                            
+                            ${r.fineDetails ? `
+                                <div style="background:#1e2a3a; padding:10px; border-radius:12px; margin:10px 0;">
+                                    <p>${r.fineDetails.typeName} - ${r.fineDetails.code || ''}</p>
+                                    <p>Total: MVR ${r.fineDetails.fineAmount + r.fineDetails.serviceFee}</p>
+                                </div>
+                            ` : ''}
+                            
+                            ${r.paymentSlip ? `<button class="btn btn-info btn-small" onclick="window.open('${r.paymentSlip}')">View Payment</button>` : ''}
+                        </div>
+                    `;
                 }
-                
-                div.innerHTML += `<div class="card"><div style="display:flex;justify-content:space-between"><span style="color:white;">${r.vehicleNumber} - ${r.serviceName}</span><span class="badge ${r.status === 'approved' ? 'verified' : 'pending'}">${r.status}</span></div>${expiryHtml}${r.documentURL ? `<button class="btn btn-info btn-small" onclick="window.open('${r.documentURL}')">View document</button>` : ''}</div>`;
             });
         }
+
+        window.viewRequestDocuments = async function(requestId, type) {
+            let snap = await db.ref(type === 'service' ? `service_requests/${requestId}` : `fine_requests/${requestId}`).once('value');
+            let req = snap.val();
+            if (!req) return;
+            
+            let html = '<h4>Uploaded Documents</h4><div style="max-height:400px; overflow-y:auto;">';
+            
+            if (req.documents) {
+                for (let key in req.documents) {
+                    let label = key.startsWith('photo') ? `Photo ${key.replace('photo', '')}` : 
+                               (key === 'paymentSlip' ? 'Payment Slip' : 
+                                key === 'doc0' ? 'Owner ID' : 
+                                key === 'doc1' ? 'Registration' : key);
+                    html += `<div class="doc-item" onclick="window.open('${req.documents[key]}')"><i class="fas fa-file"></i> ${label}</div>`;
+                }
+            }
+            
+            if (req.documentUrl) {
+                html += `<div class="doc-item" onclick="window.open('${req.documentUrl}')"><i class="fas fa-file-pdf"></i> Fine Document</div>`;
+            }
+            
+            if (req.paymentSlip) {
+                html += `<div class="doc-item" onclick="window.open('${req.paymentSlip}')"><i class="fas fa-receipt"></i> Payment Slip</div>`;
+            }
+            
+            html += '</div><button class="btn btn-secondary" onclick="this.parentElement.parentElement.remove()">Close</button>';
+            
+            let modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.display = 'flex';
+            modal.innerHTML = `<div class="modal-content">${html}</div>`;
+            document.body.appendChild(modal);
+        };
 
         // ==================== DOCUMENTS ====================
         async function loadDocuments() {
-            let snap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
-            let idC = 0, stickerC = 0, slipC = 0;
+            let serviceSnap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+            let fineSnap = await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+            let adminDocsSnap = await db.ref(`admin_uploads/${currentUser.uid}`).once('value');
             
-            if (snap.exists()) {
-                snap.forEach(c => {
+            let idC = 0, stickerC = 0, fineC = 0, slipC = 0, adminC = 0;
+            
+            if (serviceSnap.exists()) {
+                serviceSnap.forEach(c => {
                     let r = c.val();
                     if (r.documents) {
                         if (r.documents.doc0) idC++;
@@ -1456,39 +2073,94 @@
                 });
             }
             
+            if (fineSnap.exists()) {
+                fineSnap.forEach(c => {
+                    let r = c.val();
+                    if (r.documentUrl) fineC++;
+                    if (r.paymentSlip) slipC++;
+                });
+            }
+            
+            if (adminDocsSnap.exists()) {
+                adminC = adminDocsSnap.numChildren();
+            }
+            
             document.getElementById('idCount').innerText = idC + ' files';
             document.getElementById('stickerCount').innerText = stickerC + ' files';
+            document.getElementById('fineCount').innerText = fineC + ' files';
             document.getElementById('slipCount').innerText = slipC + ' files';
+            document.getElementById('adminUploadCount').innerText = adminC + ' files';
         }
 
         window.openFolder = async function(name) {
             let container = document.getElementById('folderContents');
-            let snap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
             let files = [];
             
-            if (snap.exists()) {
-                snap.forEach(c => {
-                    let r = c.val();
-                    if (r.documents) {
-                        if (name === 'id_documents') {
-                            Object.keys(r.documents).forEach(key => {
-                                if (key.startsWith('doc') && r.documents[key]) {
-                                    files.push({ name: `ID Document - ${r.vehicleNumber}`, url: r.documents[key], date: r.createdAt });
-                                }
-                            });
-                        } else if (name === 'sticker_documents' && r.documentURL) {
-                            files.push({ name: `Sticker - ${r.vehicleNumber}`, url: r.documentURL, date: r.createdAt });
-                        } else if (name === 'bank_slips' && r.documents.paymentSlip) {
-                            files.push({ name: `Payment Slip - ${r.vehicleNumber}`, url: r.documents.paymentSlip, date: r.createdAt });
+            if (name === 'id_documents') {
+                let snap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        let r = c.val();
+                        if (r.documents && r.documents.doc0) {
+                            files.push({ name: `ID Document - ${r.vehicleNumber}`, url: r.documents.doc0, date: r.createdAt });
                         }
-                    }
-                });
+                    });
+                }
+            } else if (name === 'sticker_documents') {
+                let snap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        let r = c.val();
+                        if (r.documentURL) {
+                            files.push({ name: `${r.serviceName} - ${r.vehicleNumber}`, url: r.documentURL, date: r.createdAt });
+                        }
+                    });
+                }
+            } else if (name === 'fine_documents') {
+                let snap = await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        let r = c.val();
+                        if (r.documentUrl) {
+                            files.push({ name: `Fine Document - ${r.vehicleNumber}`, url: r.documentUrl, date: r.createdAt });
+                        }
+                    });
+                }
+            } else if (name === 'payment_slips') {
+                let serviceSnap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+                let fineSnap = await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
+                
+                if (serviceSnap.exists()) {
+                    serviceSnap.forEach(c => {
+                        let r = c.val();
+                        if (r.documents && r.documents.paymentSlip) {
+                            files.push({ name: `Payment - ${r.serviceName}`, url: r.documents.paymentSlip, date: r.createdAt });
+                        }
+                    });
+                }
+                if (fineSnap.exists()) {
+                    fineSnap.forEach(c => {
+                        let r = c.val();
+                        if (r.paymentSlip) {
+                            files.push({ name: `Fine Payment - ${r.vehicleNumber}`, url: r.paymentSlip, date: r.paidAt });
+                        }
+                    });
+                }
+            } else if (name === 'admin_uploads') {
+                let adminSnap = await db.ref(`admin_uploads/${currentUser.uid}`).once('value');
+                if (adminSnap.exists()) {
+                    adminSnap.forEach(child => {
+                        let doc = child.val();
+                        files.push({ name: doc.name, url: doc.url, date: doc.uploadedAt });
+                    });
+                }
             }
             
             let html = `<h4 style="color:white;margin:1rem 0;">${name.replace('_', ' ').toUpperCase()}</h4>`;
             if (files.length === 0) {
                 html += '<div class="card">No files</div>';
             } else {
+                files.sort((a,b) => b.date - a.date);
                 files.forEach(f => {
                     html += `<div class="doc-item" onclick="window.open('${f.url}')"><div class="doc-icon"><i class="fas fa-file"></i></div><div class="doc-info"><div class="doc-name">${f.name}</div><div class="doc-date">${new Date(f.date).toLocaleDateString()}</div></div><i class="fas fa-download" style="color:#f39c12;"></i></div>`;
                 });
@@ -1527,12 +2199,21 @@
             } else if (section === 'services') {
                 document.getElementById('adminServicesSection').classList.add('active');
                 loadServicesAdmin();
+            } else if (section === 'fineTypes') {
+                document.getElementById('adminFineTypesSection').classList.add('active');
+                loadFineTypesAdmin();
             } else if (section === 'bankDetails') {
                 document.getElementById('adminBankDetailsSection').classList.add('active');
                 loadBankDetailsAdmin();
             } else if (section === 'vehicleVerification') {
                 document.getElementById('adminVehicleVerificationSection').classList.add('active');
                 loadVehicleVerifications();
+            } else if (section === 'allRequests') {
+                document.getElementById('adminAllRequestsSection').classList.add('active');
+                loadAllRequests();
+            } else if (section === 'fineRequests') {
+                document.getElementById('adminFineRequestsSection').classList.add('active');
+                loadFineRequests();
             } else if (section === 'roadRequests') {
                 document.getElementById('adminRoadRequestsSection').classList.add('active');
                 loadRoadRequests();
@@ -1551,6 +2232,12 @@
             } else if (section === 'revenue') {
                 document.getElementById('adminRevenueSection').classList.add('active');
                 loadRevenueSection();
+            } else if (section === 'expiringStickers') {
+                document.getElementById('adminExpiringStickersSection').classList.add('active');
+                loadExpiringStickers();
+            } else if (section === 'adminDocuments') {
+                document.getElementById('adminDocumentsSection').classList.add('active');
+                loadAdminDocumentsSection();
             }
             
             if (window.innerWidth <= 768) toggleAdminSidebar();
@@ -1563,17 +2250,22 @@
             let vSnap = await db.ref('vehicle_verifications').orderByChild('status').equalTo('pending').once('value');
             document.getElementById('statPendingVerification').innerText = vSnap.numChildren();
             
+            let reqSnap = await db.ref('service_requests').orderByChild('status').equalTo('pending').once('value');
+            document.getElementById('statPendingRequests').innerText = reqSnap.numChildren();
+            
+            let fineSnap = await db.ref('fine_requests').orderByChild('status').equalTo('pending_review').once('value');
+            document.getElementById('statPendingFines').innerText = fineSnap.numChildren();
+            
             let vehCount = 0;
             uSnap.forEach(u => { if (u.val().vehicles) vehCount += Object.keys(u.val().vehicles).length; });
             document.getElementById('statVehicles').innerText = vehCount;
             
-            // Today's revenue
             let today = new Date();
             today.setHours(0,0,0,0);
             let revenue = 0;
-            let reqSnap = await db.ref('service_requests').once('value');
-            if (reqSnap.exists()) {
-                reqSnap.forEach(r => {
+            let allReqSnap = await db.ref('service_requests').once('value');
+            if (allReqSnap.exists()) {
+                allReqSnap.forEach(r => {
                     let req = r.val();
                     if (req.paid && req.createdAt >= today.getTime()) {
                         revenue += req.amount || 0;
@@ -1600,6 +2292,12 @@
                 </div>
             `).join('');
             
+            let pendingReqs = await db.ref('service_requests').orderByChild('status').equalTo('pending').once('value');
+            let pendingCount = pendingReqs.numChildren();
+            
+            let pendingFines = await db.ref('fine_requests').orderByChild('status').equalTo('pending_review').once('value');
+            let pendingFineCount = pendingFines.numChildren();
+            
             section.innerHTML = `
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
                     <div class="card">
@@ -1609,10 +2307,16 @@
                     <div class="card">
                         <h4 style="margin-bottom:15px;"><i class="fas fa-clock"></i> Quick Actions</h4>
                         <button class="btn btn-primary" style="margin-bottom:10px;" onclick="showAdminSection('vehicleVerification')">
-                            <i class="fas fa-clipboard-check"></i> Verify Vehicles
+                            <i class="fas fa-clipboard-check"></i> Verify Vehicles (${document.getElementById('statPendingVerification').innerText})
                         </button>
-                        <button class="btn btn-warning" onclick="showAdminSection('roadRequests')">
-                            <i class="fas fa-road"></i> Process Road Stickers
+                        <button class="btn btn-warning" style="margin-bottom:10px;" onclick="showAdminSection('allRequests')">
+                            <i class="fas fa-tasks"></i> Process Requests (${pendingCount})
+                        </button>
+                        <button class="btn btn-danger" style="margin-bottom:10px;" onclick="showAdminSection('fineRequests')">
+                            <i class="fas fa-exclamation-triangle"></i> Review Fines (${pendingFineCount})
+                        </button>
+                        <button class="btn btn-info" onclick="showAdminDocumentModal()">
+                            <i class="fas fa-upload"></i> Upload Document to User
                         </button>
                     </div>
                 </div>
@@ -1761,7 +2465,6 @@
                 </div>
             `;
             
-            // Show/hide photo count based on checkbox
             document.getElementById('newServicePhotos').addEventListener('change', function() {
                 document.getElementById('photoCountGroup').style.display = this.checked ? 'block' : 'none';
             });
@@ -1869,6 +2572,115 @@
             }
         };
 
+        // ==================== FINE TYPES ADMIN ====================
+        function loadFineTypesAdmin() {
+            let section = document.getElementById('adminFineTypesSection');
+            let typesHtml = Object.keys(fineTypes).map(key => {
+                let fine = fineTypes[key];
+                return `
+                    <div class="fine-type-item">
+                        <div>
+                            <i class="fas ${fine.icon || 'fa-exclamation-triangle'}"></i>
+                            <strong>${fine.name}</strong>
+                            <span style="color:#f39c12;">Base: MVR ${fine.baseAmount}</span>
+                        </div>
+                        <div class="fine-actions">
+                            <button class="btn btn-info btn-small" onclick="editFineType('${key}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger btn-small" onclick="deleteFineType('${key}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            section.innerHTML = `
+                <h3 style="margin-bottom:20px;">Fine Types Management</h3>
+                
+                <div class="fine-manager">
+                    <h4>Add New Fine Type</h4>
+                    <div class="form-group">
+                        <input type="text" id="newFineName" class="form-input" placeholder="Fine Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Base Amount (MVR)</label>
+                        <input type="number" id="newFineBase" class="form-input" min="0" value="500">
+                    </div>
+                    <div class="form-group">
+                        <select id="newFineIcon" class="form-input">
+                            <option value="fa-exclamation-triangle">General</option>
+                            <option value="fa-parking">Parking</option>
+                            <option value="fa-gauge-high">Speeding</option>
+                            <option value="fa-traffic-light">Red Light</option>
+                            <option value="fa-id-card">License</option>
+                            <option value="fa-tag">Sticker</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="addFineType()">Add Fine Type</button>
+                </div>
+                
+                <div class="fine-manager">
+                    <h4>Existing Fine Types</h4>
+                    ${typesHtml || '<p>No fine types defined</p>'}
+                </div>
+                
+                <div class="fine-manager">
+                    <h4>Service Fee for Fines (per fine)</h4>
+                    <div class="form-group">
+                        <label class="form-label">Service Fee Amount (MVR)</label>
+                        <input type="number" id="fineServiceFee" class="form-input" value="100" min="0">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveFineServiceFee()">Save Service Fee</button>
+                </div>
+            `;
+        }
+
+        window.addFineType = async function() {
+            let name = document.getElementById('newFineName').value;
+            let base = parseInt(document.getElementById('newFineBase').value);
+            let icon = document.getElementById('newFineIcon').value;
+            
+            if (!name) {
+                showNotification('Enter fine name', 'error');
+                return;
+            }
+            
+            let key = name.toLowerCase().replace(/\s+/g, '_');
+            fineTypes[key] = { name, baseAmount: base, icon };
+            
+            await db.ref('fine_types').set(fineTypes);
+            showNotification('Fine type added');
+            loadFineTypesAdmin();
+        };
+
+        window.editFineType = function(key) {
+            let fine = fineTypes[key];
+            let newName = prompt('Enter new name:', fine.name);
+            if (newName) {
+                fine.name = newName;
+                db.ref('fine_types').set(fineTypes);
+                loadFineTypesAdmin();
+            }
+        };
+
+        window.deleteFineType = async function(key) {
+            if (Object.keys(fineTypes).length <= 1) {
+                showNotification('Cannot delete last fine type', 'error');
+                return;
+            }
+            
+            if (confirm(`Delete ${fineTypes[key].name}?`)) {
+                delete fineTypes[key];
+                await db.ref('fine_types').set(fineTypes);
+                showNotification('Fine type deleted');
+                loadFineTypesAdmin();
+            }
+        };
+
+        window.saveFineServiceFee = async function() {
+            let fee = parseInt(document.getElementById('fineServiceFee').value);
+            await db.ref('settings/fine_service_fee').set(fee);
+            showNotification('Service fee saved');
+        };
+
         // ==================== BANK DETAILS ADMIN ====================
         function loadBankDetailsAdmin() {
             let section = document.getElementById('adminBankDetailsSection');
@@ -1898,27 +2710,7 @@
                     </div>
                     <button class="btn btn-success" onclick="saveBankDetails()">Save Bank Details</button>
                 </div>
-                
-                <div class="card" style="margin-top:20px;">
-                    <h4>Preview</h4>
-                    <div class="bank-details" id="bankPreview"></div>
-                </div>
             `;
-            
-            updateBankPreview();
-        }
-
-        function updateBankPreview() {
-            let preview = document.getElementById('bankPreview');
-            if (preview) {
-                preview.innerHTML = `
-                    <div class="bank-row"><span class="bank-label">Bank Name</span><span class="bank-value">${document.getElementById('bankName')?.value || ''}</span></div>
-                    <div class="bank-row"><span class="bank-label">Account Name</span><span class="bank-value">${document.getElementById('accountName')?.value || ''}</span></div>
-                    <div class="bank-row"><span class="bank-label">Account Number</span><span class="bank-value">${document.getElementById('accountNumber')?.value || ''}</span></div>
-                    ${document.getElementById('branch')?.value ? `<div class="bank-row"><span class="bank-label">Branch</span><span class="bank-value">${document.getElementById('branch').value}</span></div>` : ''}
-                    ${document.getElementById('swift')?.value ? `<div class="bank-row"><span class="bank-label">SWIFT</span><span class="bank-value">${document.getElementById('swift').value}</span></div>` : ''}
-                `;
-            }
         }
 
         window.saveBankDetails = async function() {
@@ -2010,6 +2802,268 @@
             loadAdminStats();
         };
 
+        // ==================== ALL REQUESTS ADMIN ====================
+        async function loadAllRequests() {
+            let section = document.getElementById('adminAllRequestsSection');
+            let snap = await db.ref('service_requests').orderByChild('status').equalTo('pending').once('value');
+            
+            if (!snap.exists()) {
+                section.innerHTML = '<div class="card">No pending requests</div>';
+                return;
+            }
+            
+            let html = '<h3 style="margin-bottom:20px;">All Pending Service Requests</h3>';
+            
+            snap.forEach(child => {
+                let req = child.val();
+                req.id = child.key;
+                
+                html += `
+                    <div class="admin-request-item" id="req_${req.id}">
+                        <div style="display:flex; justify-content:space-between;">
+                            <div>
+                                <h4>${req.serviceName} - ${req.vehicleNumber}</h4>
+                                <p><i class="fas fa-user"></i> ${req.userName}</p>
+                                <p><i class="fas fa-dollar-sign"></i> Amount: MVR ${req.amount}</p>
+                                <p><i class="fas fa-calendar"></i> ${new Date(req.createdAt).toLocaleString()}</p>
+                            </div>
+                            <span class="badge pending">PENDING</span>
+                        </div>
+                        
+                        <div style="margin:15px 0;">
+                            <button class="btn btn-info btn-small" onclick="viewRequestDetails('${req.id}')">View Documents</button>
+                            <button class="btn btn-success btn-small" onclick="markRequestPaid('${req.id}')">Mark Paid</button>
+                            <button class="btn btn-primary btn-small" onclick="openStickerModal('${req.id}', '${req.userId}')">Upload Sticker</button>
+                            <button class="btn btn-warning btn-small" onclick="rejectRequest('${req.id}')">Reject</button>
+                        </div>
+                        
+                        <div class="live-progress">
+                            <div style="display:flex; justify-content:space-between;">
+                                <span>Progress</span>
+                                <span>${req.progress || 25}%</span>
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${req.progress || 25}%"></div></div>
+                            <div style="margin-top:10px;">
+                                <input type="range" min="0" max="100" value="${req.progress || 25}" onchange="updateRequestProgress('${req.id}', this.value)" style="width:100%">
+                                <button class="btn btn-small btn-success" onclick="updateRequestProgress('${req.id}', document.getElementById('progress_${req.id}').value)">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            section.innerHTML = html;
+        }
+
+        window.viewRequestDetails = async function(requestId) {
+            let snap = await db.ref(`service_requests/${requestId}`).once('value');
+            let req = snap.val();
+            if (!req || !req.documents) return;
+            
+            let html = '<h4>All Uploaded Documents</h4>';
+            for (let key in req.documents) {
+                let label = key.startsWith('photo') ? `Vehicle Photo ${key.replace('photo', '')}` : 
+                           (key === 'paymentSlip' ? 'Payment Slip' : 
+                            key === 'doc0' ? 'Owner ID' : 
+                            key === 'doc1' ? 'Registration' : key);
+                html += `<div class="doc-item" onclick="window.open('${req.documents[key]}')"><i class="fas fa-file"></i> ${label}</div>`;
+            }
+            
+            let modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.display = 'flex';
+            modal.innerHTML = `<div class="modal-content">${html}<button class="btn btn-secondary" onclick="this.parentElement.parentElement.remove()">Close</button></div>`;
+            document.body.appendChild(modal);
+        };
+
+        window.updateRequestProgress = async function(requestId, progress) {
+            await db.ref(`service_requests/${requestId}`).update({ progress: parseInt(progress) });
+            showNotification('Progress updated');
+        };
+
+        window.rejectRequest = async function(requestId) {
+            let reason = prompt('Enter rejection reason:');
+            if (reason === null) return;
+            
+            await db.ref(`service_requests/${requestId}`).update({ 
+                status: 'rejected',
+                rejectionReason: reason,
+                progress: 0
+            });
+            
+            let snap = await db.ref(`service_requests/${requestId}`).once('value');
+            let req = snap.val();
+            
+            await db.ref(`notifications/${req.userId}`).push({
+                message: `Your request for ${req.serviceName} was rejected: ${reason}`,
+                time: Date.now()
+            });
+            
+            document.getElementById(`req_${requestId}`).remove();
+            showNotification('Request rejected');
+            loadAdminStats();
+        };
+
+        // ==================== FINE REQUESTS ADMIN ====================
+        async function loadFineRequests() {
+            let section = document.getElementById('adminFineRequestsSection');
+            let snap = await db.ref('fine_requests').orderByChild('status').equalTo('pending_review').once('value');
+            
+            if (!snap.exists()) {
+                section.innerHTML = '<div class="card">No pending fine reviews</div>';
+                return;
+            }
+            
+            let html = '<h3 style="margin-bottom:20px;">Fine Review Requests</h3>';
+            
+            snap.forEach(child => {
+                let req = child.val();
+                req.id = child.key;
+                
+                html += `
+                    <div class="admin-request-item" id="fine_${req.id}">
+                        <div style="display:flex; justify-content:space-between;">
+                            <div>
+                                <h4>Fine Check - ${req.vehicleNumber}</h4>
+                                <p><i class="fas fa-user"></i> ${req.userName}</p>
+                                <p><i class="fas fa-id-card"></i> Owner ID: ${req.ownerId}</p>
+                                <p><i class="fas fa-phone"></i> Contact: ${req.userContact}</p>
+                                <p><i class="fas fa-calendar"></i> ${new Date(req.createdAt).toLocaleString()}</p>
+                            </div>
+                            <span class="badge pending">PENDING</span>
+                        </div>
+                        
+                        <div style="margin:15px 0;">
+                            <p><strong>Notes:</strong> ${req.notes || 'No notes'}</p>
+                            ${req.documentUrl ? `<button class="btn btn-info btn-small" onclick="window.open('${req.documentUrl}')">View Document</button>` : ''}
+                        </div>
+                        
+                        <div style="margin-top:15px;">
+                            <button class="btn btn-primary" onclick="openFineUpdateModal('${req.id}', '${req.userId}', '${req.vehicleNumber}')">
+                                <i class="fas fa-edit"></i> Update Fine Details
+                            </button>
+                            <button class="btn btn-success" onclick="markFineNoViolation('${req.id}')">
+                                <i class="fas fa-check"></i> No Violation
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            section.innerHTML = html;
+        }
+
+        window.openFineUpdateModal = async function(requestId, userId, vehicleNumber) {
+            document.getElementById('adminFineRequestId').value = requestId;
+            document.getElementById('adminFineUserId').value = userId;
+            
+            let select = document.getElementById('adminFineType');
+            select.innerHTML = '';
+            Object.keys(fineTypes).forEach(key => {
+                select.innerHTML += `<option value="${key}">${fineTypes[key].name} (Base: MVR ${fineTypes[key].baseAmount})</option>`;
+            });
+            
+            let serviceFeeSnap = await db.ref('settings/fine_service_fee').once('value');
+            let serviceFee = serviceFeeSnap.exists() ? serviceFeeSnap.val() : 100;
+            document.getElementById('adminFineServiceFee').value = serviceFee;
+            
+            let today = new Date().toISOString().split('T')[0];
+            let nextMonth = new Date();
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            document.getElementById('adminFineDueDate').value = nextMonth.toISOString().split('T')[0];
+            
+            document.getElementById('adminFineModal').style.display = 'flex';
+        };
+
+        window.closeAdminFineModal = function() {
+            document.getElementById('adminFineModal').style.display = 'none';
+            document.getElementById('adminFineFileName').innerHTML = '';
+            currentAdminFineFile = null;
+        };
+
+        window.handleAdminFineFile = function(input) {
+            let file = input.files[0];
+            if (!file) return;
+            currentAdminFineFile = file;
+            document.getElementById('adminFineFileName').innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;"></i> ${file.name}`;
+        };
+
+        window.updateFineWithDetails = async function() {
+            let requestId = document.getElementById('adminFineRequestId').value;
+            let userId = document.getElementById('adminFineUserId').value;
+            let fineType = document.getElementById('adminFineType').value;
+            let code = document.getElementById('adminFineCode').value;
+            let fineAmount = parseInt(document.getElementById('adminFineAmount').value);
+            let serviceFee = parseInt(document.getElementById('adminFineServiceFee').value);
+            let desc = document.getElementById('adminFineDesc').value;
+            let dueDate = document.getElementById('adminFineDueDate').value;
+            
+            if (!fineType || !fineAmount) {
+                showMessage('adminFineMessage', 'Please fill required fields', 'error');
+                return;
+            }
+            
+            try {
+                let docUrl = null;
+                if (currentAdminFineFile) {
+                    let ref = storage.ref(`fine_docs/admin/${requestId}/${currentAdminFineFile.name}`);
+                    await ref.put(currentAdminFineFile);
+                    docUrl = await ref.getDownloadURL();
+                }
+                
+                let fineDetails = {
+                    type: fineType,
+                    typeName: fineTypes[fineType].name,
+                    code: code,
+                    fineAmount: fineAmount,
+                    serviceFee: serviceFee,
+                    description: desc,
+                    dueDate: dueDate ? new Date(dueDate).getTime() : null,
+                    documentUrl: docUrl,
+                    updatedAt: Date.now()
+                };
+                
+                await db.ref(`fine_requests/${requestId}`).update({
+                    status: 'approved',
+                    fineDetails: fineDetails,
+                    reviewedAt: Date.now()
+                });
+                
+                await db.ref(`notifications/${userId}`).push({
+                    message: `Your fine check has been reviewed. Fine amount: MVR ${fineAmount + serviceFee}`,
+                    time: Date.now()
+                });
+                
+                showNotification('Fine details updated');
+                closeAdminFineModal();
+                document.getElementById(`fine_${requestId}`).remove();
+                loadAdminStats();
+                
+            } catch (error) {
+                showMessage('adminFineMessage', 'Error: ' + error.message, 'error');
+            }
+        };
+
+        window.markFineNoViolation = async function(requestId) {
+            let snap = await db.ref(`fine_requests/${requestId}`).once('value');
+            let req = snap.val();
+            
+            await db.ref(`fine_requests/${requestId}`).update({
+                status: 'rejected',
+                fineDetails: null,
+                reviewedAt: Date.now(),
+                rejectionReason: 'No violation found'
+            });
+            
+            await db.ref(`notifications/${req.userId}`).push({
+                message: 'Your fine check found no violations',
+                time: Date.now()
+            });
+            
+            document.getElementById(`fine_${requestId}`).remove();
+            showNotification('Marked as no violation');
+        };
+
         // ==================== ROAD REQUESTS ADMIN ====================
         async function loadRoadRequests() {
             let section = document.getElementById('adminRoadRequestsSection');
@@ -2039,7 +3093,6 @@
                                 <p><i class="fas fa-user"></i> ${req.userName}</p>
                                 <p><i class="fas fa-dollar-sign"></i> Amount: MVR ${req.amount}</p>
                                 <p><i class="fas fa-camera"></i> Photos: ${photoCount} uploaded</p>
-                                <p><i class="fas fa-calendar"></i> ${new Date(req.createdAt).toLocaleString()}</p>
                             </div>
                             <span class="badge pending">PENDING</span>
                         </div>
@@ -2047,13 +3100,13 @@
                         <div style="margin:15px 0; display:flex; gap:10px; flex-wrap:wrap;">
                             ${req.documents && Object.keys(req.documents).map(key => {
                                 if(key.startsWith('photo')) {
-                                    return `<button class="btn btn-info btn-small" onclick="window.open('${req.documents[key]}')">View Photo ${key.replace('photo', '')}</button>`;
+                                    return `<button class="btn btn-info btn-small" onclick="window.open('${req.documents[key]}')">Photo ${key.replace('photo', '')}</button>`;
                                 }
                                 return '';
                             }).join('')}
-                            ${req.documents && req.documents.doc0 ? `<button class="btn btn-info btn-small" onclick="window.open('${req.documents.doc0}')">View Owner ID</button>` : ''}
-                            ${req.documents && req.documents.doc1 ? `<button class="btn btn-info btn-small" onclick="window.open('${req.documents.doc1}')">View Registration</button>` : ''}
-                            ${req.documents && req.documents.paymentSlip ? `<button class="btn btn-info btn-small" onclick="window.open('${req.documents.paymentSlip}')">View Payment Slip</button>` : ''}
+                            ${req.documents && req.documents.doc0 ? `<button class="btn btn-info btn-small" onclick="window.open('${req.documents.doc0}')">Owner ID</button>` : ''}
+                            ${req.documents && req.documents.doc1 ? `<button class="btn btn-info btn-small" onclick="window.open('${req.documents.doc1}')">Registration</button>` : ''}
+                            ${req.documents && req.documents.paymentSlip ? `<button class="btn btn-info btn-small" onclick="window.open('${req.documents.paymentSlip}')">Payment</button>` : ''}
                         </div>
                         
                         <div style="margin:15px 0;">
@@ -2068,9 +3121,10 @@
         }
 
         window.markRequestPaid = async function(requestId) {
-            await db.ref(`service_requests/${requestId}`).update({ paid: true });
+            await db.ref(`service_requests/${requestId}`).update({ paid: true, paymentVerified: true, progress: 50 });
             showNotification('Marked as paid');
             loadRoadRequests();
+            loadAllRequests();
         };
 
         window.openStickerModal = function(requestId, userId) {
@@ -2088,6 +3142,14 @@
 
         window.closeAdminStickerModal = function() {
             document.getElementById('adminStickerModal').style.display = 'none';
+            document.getElementById('stickerPreview').style.display = 'none';
+        };
+
+        window.previewStickerFile = function(input) {
+            let file = input.files[0];
+            if (file) {
+                previewImage(file, 'stickerPreview', null);
+            }
         };
 
         window.uploadStickerWithExpiry = async function() {
@@ -2097,7 +3159,10 @@
             let issue = document.getElementById('issueDate').value;
             let expiry = document.getElementById('expiryDate').value;
             
-            if (!file || !issue || !expiry) return;
+            if (!file || !issue || !expiry) {
+                showNotification('Please fill all fields', 'error');
+                return;
+            }
             
             let ref = storage.ref(`stickers/${rid}_${file.name}`);
             await ref.put(file);
@@ -2110,17 +3175,27 @@
                 documentURL: url,
                 status: 'approved',
                 issueDate: issueTime,
-                expiryDate: expiryTime
+                expiryDate: expiryTime,
+                progress: 100
+            });
+            
+            let docName = `Sticker_${new Date().toLocaleDateString()}`;
+            await db.ref(`admin_uploads/${uid}`).push({
+                name: docName,
+                url: url,
+                uploadedAt: Date.now(),
+                type: 'sticker'
             });
             
             await db.ref(`notifications/${uid}`).push({
-                message: 'Your request has been approved. Sticker available.',
+                message: 'Your request has been approved. Sticker available in your documents.',
                 time: Date.now()
             });
             
-            showNotification('Sticker uploaded');
+            showNotification('Sticker uploaded and assigned to user');
             closeAdminStickerModal();
             loadRoadRequests();
+            loadAllRequests();
         };
 
         // ==================== INSURANCE REQUESTS ADMIN ====================
@@ -2143,7 +3218,7 @@
             
             pending.forEach(req => {
                 html += `
-                    <div class="admin-request-item">
+                    <div class="admin-request-item" id="ins_${req.id}">
                         <div style="display:flex; justify-content:space-between;">
                             <div>
                                 <h4>${req.vehicleNumber}</h4>
@@ -2155,6 +3230,7 @@
                         
                         <div style="margin:15px 0;">
                             <button class="btn btn-success btn-small" onclick="markRequestPaid('${req.id}')">Mark Paid</button>
+                            <button class="btn btn-primary btn-small" onclick="openStickerModal('${req.id}', '${req.userId}')">Upload Insurance</button>
                         </div>
                     </div>
                 `;
@@ -2183,7 +3259,7 @@
             
             pending.forEach(req => {
                 html += `
-                    <div class="admin-request-item">
+                    <div class="admin-request-item" id="ann_${req.id}">
                         <div style="display:flex; justify-content:space-between;">
                             <div>
                                 <h4>${req.vehicleNumber}</h4>
@@ -2195,6 +3271,7 @@
                         
                         <div style="margin:15px 0;">
                             <button class="btn btn-success btn-small" onclick="markRequestPaid('${req.id}')">Mark Paid</button>
+                            <button class="btn btn-primary btn-small" onclick="openStickerModal('${req.id}', '${req.userId}')">Upload Sticker</button>
                         </div>
                     </div>
                 `;
@@ -2221,12 +3298,19 @@
                                 <h4>${u.name || 'No Name'}</h4>
                                 <p><i class="fas fa-envelope"></i> ${u.email}</p>
                                 <p><i class="fas fa-phone"></i> ${u.phone || 'N/A'}</p>
+                                <p><i class="fas fa-calendar"></i> Joined: ${new Date(u.createdAt).toLocaleDateString()}</p>
                             </div>
                             <span class="badge ${u.verified ? 'verified' : 'pending'}">${u.verified ? 'Verified' : 'Pending'}</span>
                         </div>
-                        <div style="margin-top:10px;">
+                        <div style="margin-top:10px; display:flex; gap:10px;">
                             <button class="btn btn-success btn-small" onclick="toggleUserVerify('${uid}', ${!u.verified})">
                                 ${u.verified ? 'Unverify' : 'Verify'}
+                            </button>
+                            <button class="btn btn-info btn-small" onclick="uploadDocumentToUser('${uid}')">
+                                <i class="fas fa-upload"></i> Upload Document
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="viewUserDocuments('${uid}')">
+                                <i class="fas fa-folder"></i> Documents
                             </button>
                         </div>
                     </div>
@@ -2241,6 +3325,33 @@
             showNotification('User verification updated');
             loadAllUsers();
             loadAdminStats();
+        };
+
+        window.viewUserDocuments = async function(uid) {
+            let snap = await db.ref(`admin_uploads/${uid}`).once('value');
+            let html = '<h4>User Documents</h4>';
+            
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    let doc = child.val();
+                    html += `<div class="doc-item" onclick="window.open('${doc.url}')">${doc.name} - ${new Date(doc.uploadedAt).toLocaleDateString()}</div>`;
+                });
+            } else {
+                html += '<p>No documents uploaded</p>';
+            }
+            
+            let modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.display = 'flex';
+            modal.innerHTML = `<div class="modal-content">${html}<button class="btn btn-secondary" onclick="this.parentElement.parentElement.remove()">Close</button></div>`;
+            document.body.appendChild(modal);
+        };
+
+        window.uploadDocumentToUser = function(uid) {
+            showAdminDocumentModal();
+            setTimeout(() => {
+                document.getElementById('adminDocUserSelect').value = uid;
+            }, 500);
         };
 
         // ==================== ALL VEHICLES ADMIN ====================
@@ -2268,6 +3379,10 @@
                                     </div>
                                     <span class="badge" style="background:${statusColor};">${v.verified ? 'Verified' : 'Pending'}</span>
                                 </div>
+                                <div style="margin-top:10px;">
+                                    <button class="btn btn-info btn-small" onclick="window.open('${v.documents?.ownerId}')">View ID</button>
+                                    <button class="btn btn-info btn-small" onclick="window.open('${v.documents?.registration}')">View Reg</button>
+                                </div>
                             </div>
                         `;
                     });
@@ -2280,7 +3395,8 @@
         // ==================== REVENUE SECTION ====================
         async function loadRevenueSection() {
             let section = document.getElementById('adminRevenueSection');
-            let snap = await db.ref('service_requests').once('value');
+            let serviceSnap = await db.ref('service_requests').once('value');
+            let fineSnap = await db.ref('fine_requests').once('value');
             
             let today = new Date();
             today.setHours(0,0,0,0);
@@ -2289,16 +3405,34 @@
             
             let dailyTotals = {};
             let weeklyTotal = 0;
+            let totalRevenue = 0;
             
-            if (snap.exists()) {
-                snap.forEach(child => {
+            if (serviceSnap.exists()) {
+                serviceSnap.forEach(child => {
                     let req = child.val();
                     if (req.paid && req.amount) {
                         let date = new Date(req.createdAt).toLocaleDateString();
                         dailyTotals[date] = (dailyTotals[date] || 0) + req.amount;
+                        totalRevenue += req.amount;
                         
                         if (req.createdAt >= weekAgo.getTime()) {
                             weeklyTotal += req.amount;
+                        }
+                    }
+                });
+            }
+            
+            if (fineSnap.exists()) {
+                fineSnap.forEach(child => {
+                    let req = child.val();
+                    if (req.paid && req.fineDetails) {
+                        let amount = req.fineDetails.fineAmount + req.fineDetails.serviceFee;
+                        let date = new Date(req.paidAt || req.createdAt).toLocaleDateString();
+                        dailyTotals[date] = (dailyTotals[date] || 0) + amount;
+                        totalRevenue += amount;
+                        
+                        if ((req.paidAt || req.createdAt) >= weekAgo.getTime()) {
+                            weeklyTotal += amount;
                         }
                     }
                 });
@@ -2317,7 +3451,7 @@
                 <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:30px;">
                     <div class="stat-card"><h4>Today</h4><h2 style="color:#f39c12;">MVR ${todayRevenue}</h2></div>
                     <div class="stat-card"><h4>Last 7 Days</h4><h2 style="color:#f39c12;">MVR ${weeklyTotal}</h2></div>
-                    <div class="stat-card"><h4>Total</h4><h2 style="color:#f39c12;">MVR ${Object.values(dailyTotals).reduce((a,b)=>a+b,0)}</h2></div>
+                    <div class="stat-card"><h4>Total</h4><h2 style="color:#f39c12;">MVR ${totalRevenue}</h2></div>
                 </div>
                 
                 <div class="card">
@@ -2329,6 +3463,193 @@
                 </div>
             `;
         }
+
+        // ==================== EXPIRING STICKERS SECTION ====================
+        async function loadExpiringStickers() {
+            let section = document.getElementById('adminExpiringStickersSection');
+            let snap = await db.ref('service_requests').once('value');
+            
+            let now = Date.now();
+            let expiringSoon = [];
+            let expired = [];
+            
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    let req = child.val();
+                    if (req.status === 'approved' && req.expiryDate) {
+                        let daysLeft = Math.ceil((req.expiryDate - now) / (86400000));
+                        if (daysLeft < 0) {
+                            expired.push({ ...req, id: child.key, daysLeft });
+                        } else if (daysLeft <= 30) {
+                            expiringSoon.push({ ...req, id: child.key, daysLeft });
+                        }
+                    }
+                });
+            }
+            
+            expiringSoon.sort((a,b) => a.daysLeft - b.daysLeft);
+            expired.sort((a,b) => a.daysLeft - b.daysLeft);
+            
+            let expiringHtml = expiringSoon.map(req => `
+                <div class="admin-request-item" style="border-left: 4px solid #e67e22;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <div>
+                            <h4>${req.vehicleNumber} (${req.serviceName})</h4>
+                            <p><i class="fas fa-user"></i> ${req.userName}</p>
+                            <p><i class="fas fa-calendar"></i> Expires: ${new Date(req.expiryDate).toLocaleDateString()}</p>
+                            <p><span class="badge expiring-soon">${req.daysLeft} days left</span></p>
+                        </div>
+                        <button class="btn btn-info btn-small" onclick="window.open('${req.documentURL}')">View Sticker</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            let expiredHtml = expired.map(req => `
+                <div class="admin-request-item" style="border-left: 4px solid #e74c3c;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <div>
+                            <h4>${req.vehicleNumber} (${req.serviceName})</h4>
+                            <p><i class="fas fa-user"></i> ${req.userName}</p>
+                            <p><i class="fas fa-calendar"></i> Expired: ${new Date(req.expiryDate).toLocaleDateString()}</p>
+                            <p><span class="badge expired">Expired</span></p>
+                        </div>
+                        <button class="btn btn-warning btn-small" onclick="notifyUserRenewal('${req.userId}', '${req.vehicleNumber}')">Send Reminder</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            section.innerHTML = `
+                <h3 style="margin-bottom:20px;">Expiring Soon (≤30 days)</h3>
+                ${expiringHtml || '<div class="card">No stickers expiring soon</div>'}
+                
+                <h3 style="margin:30px 0 20px;">Expired Stickers</h3>
+                ${expiredHtml || '<div class="card">No expired stickers</div>'}
+            `;
+        }
+
+        window.notifyUserRenewal = async function(userId, vehicleNumber) {
+            await db.ref(`notifications/${userId}`).push({
+                message: `Your sticker for vehicle ${vehicleNumber} has expired. Please renew.`,
+                time: Date.now()
+            });
+            showNotification('Reminder sent to user');
+        };
+
+        // ==================== ADMIN DOCUMENTS SECTION ====================
+        function loadAdminDocumentsSection() {
+            let section = document.getElementById('adminDocumentsSection');
+            
+            section.innerHTML = `
+                <h3 style="margin-bottom:20px;">Admin Document Management</h3>
+                <div class="card">
+                    <h4>Upload Document to User</h4>
+                    <button class="btn btn-primary" onclick="showAdminDocumentModal()">
+                        <i class="fas fa-upload"></i> Upload New Document
+                    </button>
+                </div>
+                
+                <div class="card">
+                    <h4>Recent Uploads</h4>
+                    <div id="recentAdminUploads"></div>
+                </div>
+            `;
+            
+            loadRecentAdminUploads();
+        }
+
+        async function loadRecentAdminUploads() {
+            let container = document.getElementById('recentAdminUploads');
+            let usersSnap = await db.ref('users').once('value');
+            let allUploads = [];
+            
+            for (let userSnap of Object.entries(usersSnap.val() || {})) {
+                let [uid, user] = userSnap;
+                let uploadsSnap = await db.ref(`admin_uploads/${uid}`).once('value');
+                
+                if (uploadsSnap.exists()) {
+                    uploadsSnap.forEach(child => {
+                        let doc = child.val();
+                        allUploads.push({
+                            ...doc,
+                            userName: user.name,
+                            userId: uid
+                        });
+                    });
+                }
+            }
+            
+            allUploads.sort((a,b) => b.uploadedAt - a.uploadedAt);
+            allUploads = allUploads.slice(0, 10);
+            
+            let html = allUploads.map(doc => `
+                <div class="doc-item" onclick="window.open('${doc.url}')">
+                    <div><i class="fas fa-file"></i> ${doc.name}</div>
+                    <div>User: ${doc.userName}</div>
+                    <div>${new Date(doc.uploadedAt).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html || '<p>No recent uploads</p>';
+        }
+
+        window.showAdminDocumentModal = function() {
+            let modal = document.getElementById('adminDocumentModal');
+            let select = document.getElementById('adminDocUserSelect');
+            
+            db.ref('users').once('value', snap => {
+                select.innerHTML = '';
+                snap.forEach(child => {
+                    let user = child.val();
+                    select.innerHTML += `<option value="${child.key}">${user.name} (${user.email})</option>`;
+                });
+            });
+            
+            modal.style.display = 'flex';
+        };
+
+        window.closeAdminDocumentModal = function() {
+            document.getElementById('adminDocumentModal').style.display = 'none';
+            document.getElementById('adminDocPreview').style.display = 'none';
+        };
+
+        window.previewAdminDocFile = function(input) {
+            let file = input.files[0];
+            if (file) {
+                previewImage(file, 'adminDocPreview', null);
+            }
+        };
+
+        window.uploadAdminDocument = async function() {
+            let userId = document.getElementById('adminDocUserSelect').value;
+            let docName = document.getElementById('adminDocName').value;
+            let folder = document.getElementById('adminDocFolder').value;
+            let file = document.getElementById('adminDocFile').files[0];
+            
+            if (!userId || !docName || !file) {
+                showNotification('Please fill all fields', 'error');
+                return;
+            }
+            
+            let ref = storage.ref(`admin_uploads/${userId}/${docName}_${file.name}`);
+            await ref.put(file);
+            let url = await ref.getDownloadURL();
+            
+            await db.ref(`admin_uploads/${userId}`).push({
+                name: docName,
+                url: url,
+                uploadedAt: Date.now(),
+                folder: folder
+            });
+            
+            await db.ref(`notifications/${userId}`).push({
+                message: `Admin uploaded document: ${docName}`,
+                time: Date.now()
+            });
+            
+            showNotification('Document uploaded to user');
+            closeAdminDocumentModal();
+            loadAdminDocumentsSection();
+        };
 
         // ==================== LOGOUT ====================
         window.logoutUser = function() {
