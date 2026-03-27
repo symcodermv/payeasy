@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Reg Assist </title>
+    <title>Reg Assist</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -150,10 +150,21 @@
         @keyframes pulse { 0%,100%{opacity:0.3;transform:scaleX(0.8);}50%{opacity:1;transform:scaleX(1);} }
         @keyframes blink { 0%{opacity:0.2;}50%{opacity:1;}100%{opacity:0.2;} }
 
-        /* ========== MAIN APP ========== */
-        .main-content { display:none; width:100%; max-width:500px; margin:0 auto; position:relative; z-index:100; }
-        .main-content.show { display:block; }
-        .login-container { background:#141b2b; border-radius:32px; box-shadow:0 20px 40px rgba(0,0,0,0.6); border:1px solid #2a3a55; margin:1rem; overflow:hidden; }
+        /* ========== MAIN APP — CENTERED LOGIN ========== */
+        .main-content {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 100;
+        }
+        .main-content.show { display: flex; align-items: center; justify-content: center; }
+        .login-wrapper {
+            width: 100%;
+            max-width: 460px;
+            padding: 1rem;
+        }
+        .login-container { background:#141b2b; border-radius:32px; box-shadow:0 20px 40px rgba(0,0,0,0.6); border:1px solid #2a3a55; overflow:hidden; }
         .login-box { padding:2rem 1.8rem; }
         .login-box h2 { color:white; margin-bottom:1.8rem; display:flex; align-items:center; gap:0.5rem; font-size:1.6rem; justify-content:center; }
         .login-box h2 i { color:#f39c12; }
@@ -184,10 +195,12 @@
         .sidebar-header .avatar { width:48px; height:48px; background:#1e2a47; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#f39c12; font-size:1.5rem; }
         .sidebar-header h3 { color:white; font-size:1.1rem; }
         .sidebar-header p { color:white; font-size:0.8rem; }
+        .sidebar-section-label { padding:0.5rem 1.5rem; font-size:0.7rem; font-weight:700; color:#f39c12; letter-spacing:1.5px; text-transform:uppercase; margin-top:0.5rem; }
         .sidebar-item { padding:1rem 1.5rem; display:flex; align-items:center; gap:1rem; color:white; cursor:pointer; transition:0.2s; }
         .sidebar-item:hover { background:#1e2a3a; color:white; }
         .sidebar-item i { width:24px; color:#f39c12; }
         .sidebar-item.active { background:#1e2a3a; color:white; border-left:4px solid #f39c12; }
+        .sidebar-divider { height:1px; background:#253241; margin:0.5rem 1rem; }
         .main-panel { flex:1; margin-left:0; transition:0.3s; width:100%; }
         .top-bar { background:#141b2b; padding:0.8rem 1rem; display:flex; align-items:center; gap:0.8rem; border-bottom:1px solid #253241; }
         .menu-toggle { background:none; border:none; color:white; font-size:1.6rem; cursor:pointer; width:44px; height:44px; border-radius:50%; }
@@ -269,11 +282,120 @@
         .price-row.total { border-bottom:none; font-size:1.2rem; font-weight:bold; color:#f39c12; }
         .price-label { color:#aaa; }
         .price-value { color:white; font-weight:600; }
+
+        /* ========== LIVE PROGRESS BAR ========== */
+        .live-progress-wrap {
+            background: #1e2a3a;
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .live-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .live-progress-label { color: white; font-size: 0.9rem; font-weight: 600; }
+        .live-progress-pct { color: #f39c12; font-size: 0.9rem; font-weight: 700; }
+        .live-progress-bar-outer {
+            height: 10px;
+            background: #2e3f55;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .live-progress-bar-inner {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            transition: width 1.2s cubic-bezier(.4,0,.2,1);
+            position: relative;
+        }
+        .live-progress-bar-inner::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0;
+            width: 30px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0%{opacity:0}50%{opacity:1}100%{opacity:0} }
+        .live-progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .live-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.65rem;
+            color: #607080;
+            gap: 4px;
+            flex: 1;
+            text-align: center;
+        }
+        .live-step.done { color: #27ae60; }
+        .live-step.current { color: #f39c12; }
+        .live-step .step-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #2e3f55;
+        }
+        .live-step.done .step-dot { background: #27ae60; }
+        .live-step.current .step-dot { background: #f39c12; box-shadow: 0 0 0 3px rgba(243,156,18,0.3); }
+
+        /* ========== TIME NOTICE BANNER ========== */
+        .time-notice-banner {
+            background: linear-gradient(135deg, #1a2a1a, #1e3320);
+            border: 1px solid #27ae60;
+            border-left: 5px solid #27ae60;
+            border-radius: 18px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        .time-notice-banner i { color: #27ae60; font-size: 1.4rem; margin-top: 2px; flex-shrink: 0; }
+        .time-notice-banner .notice-title { color: #2ecc71; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+        .time-notice-banner .notice-body { color: rgba(255,255,255,0.85); font-size: 0.85rem; line-height: 1.5; }
+        .time-notice-banner .notice-body strong { color: #f39c12; }
+
+        /* ========== BUSINESS SERVICES ========== */
+        .business-service-card {
+            background: linear-gradient(135deg, #1b2a3f, #22334d);
+            border-radius: 24px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid #2e4a6a;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .business-service-card:hover { background: linear-gradient(135deg, #22334d, #2a3f60); transform: translateY(-2px); border-color: #f39c12; }
+        .biz-icon { width: 54px; height: 54px; border-radius: 16px; background: rgba(243,156,18,0.15); border: 1px solid rgba(243,156,18,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #f39c12; flex-shrink: 0; }
+        .biz-info { flex: 1; }
+        .biz-title { color: white; font-weight: 700; font-size: 1rem; margin-bottom: 3px; }
+        .biz-desc { color: rgba(255,255,255,0.6); font-size: 0.8rem; line-height: 1.4; }
+        .biz-arrow { color: #f39c12; font-size: 1rem; }
+
         p,span,div,h1,h2,h3,h4,h5,h6,label { color:white; }
+
         @media (max-width:500px) {
             .vehicle-grid { grid-template-columns:1fr; }
             .folder-grid { grid-template-columns:1fr; }
             .home-content h1 { font-size:2.4rem; }
+            /* Login centered on mobile */
+            .main-content.show {
+                align-items: center;
+                min-height: 100vh;
+                background: #0a0f1e;
+            }
+            .login-wrapper { padding: 1rem; }
         }
     </style>
 </head>
@@ -293,7 +415,7 @@
         <h1>Vehicle <span>Registration</span><br>Made Easy</h1>
         <p>Your complete vehicle registration, sticker renewal, and traffic fine management system. Fast, secure, and hassle-free.</p>
         <div class="home-buttons">
-            <button class="btn-home" onclick="enterApp()"><i class="fa-solid fa-right-to-bracket"></i>Get Started</button>
+            <button class="btn-home" onclick="enterApp()"><i class="fa-solid fa-right-to-bracket"></i> Get Started</button>
             <button class="btn-home btn-home-outline" onclick="showLoginFromHome()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
         </div>
     </div>
@@ -312,30 +434,33 @@
     <div class="loading">RegAssist<span class="dots"><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span></div>
 </div>
 
-<!-- ========== MAIN APP CONTENT ========== -->
+<!-- ========== MAIN APP CONTENT (CENTERED LOGIN) ========== -->
 <div class="main-content" id="mainContent">
+    <div class="login-wrapper">
 
-    <!-- LOGIN SECTION -->
-    <div id="loginSection" class="login-container" style="display:none;">
-        <div class="login-box">
-            <div style="display:flex;align-items:center;justify-content:center;margin-bottom:25px;">
-                <div style="display:flex;align-items:center;gap:8px;background:#4a5568;padding:15px 25px;border-radius:15px;">
-                    <div style="width:45px;height:45px;background:#a0aec0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#2d3748;font-size:24px;"><i class="fas fa-check-circle"></i></div>
-                    <span style="color:#e2e8f0;font-size:28px;font-weight:700;">RegAssist</span>
+        <!-- LOGIN SECTION -->
+        <div id="loginSection" class="login-container" style="display:none;">
+            <div class="login-box">
+                <div style="display:flex;align-items:center;justify-content:center;margin-bottom:25px;">
+                    <div style="display:flex;align-items:center;gap:8px;background:rgba(243,156,18,0.15);padding:15px 25px;border-radius:15px;border:1px solid rgba(243,156,18,0.3);">
+                        <div style="width:45px;height:45px;background:#1e2a47;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f39c12;font-size:24px;border:2px solid #f39c12;"><i class="fas fa-clipboard-check"></i></div>
+                        <span style="color:white;font-size:28px;font-weight:700;">RegAssist</span>
+                    </div>
+                </div>
+                <div id="loginMessage" class="message"></div>
+                <form id="loginForm">
+                    <div class="form-group"><label class="form-label">Email / Phone</label><input type="text" class="form-input" id="loginUsername" placeholder="user@example.com"></div>
+                    <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="loginPassword" placeholder="••••••••"></div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+                </form>
+                <div class="login-options">
+                    <a onclick="showRegisterModal()">Create account</a>
+                    <a onclick="backToHomepage()">← Back to Home</a>
                 </div>
             </div>
-            <div id="loginMessage" class="message"></div>
-            <form id="loginForm">
-                <div class="form-group"><label class="form-label">Email / Phone</label><input type="text" class="form-input" id="loginUsername" placeholder="user@example.com"></div>
-                <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="loginPassword" placeholder="••••••••"></div>
-                <button type="submit" class="btn btn-primary">Sign In</button>
-            </form>
-            <div class="login-options">
-                <a onclick="showRegisterModal()">Create account</a>
-                <a onclick="backToHomepage()">← Back to Home</a>
-            </div>
+            <div class="developer-name">RegAssist © 2025</div>
         </div>
-        <div class="developer-name">RegAssist © 2025</div>
+
     </div>
 
     <!-- REGISTER MODAL -->
@@ -355,7 +480,7 @@
     </div>
 
     <!-- USER DASHBOARD -->
-    <div id="userDashboard" style="display:none;">
+    <div id="userDashboard" style="display:none; position:fixed; inset:0; z-index:200;">
         <div class="app-wrapper">
             <div class="overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
             <div class="sidebar" id="sidebar">
@@ -364,10 +489,20 @@
                     <div><h3 id="sidebarUserName">User</h3><p id="sidebarUserStatus">Pending</p></div>
                 </div>
                 <div class="sidebar-menu">
+                    <div class="sidebar-section-label">Main</div>
                     <div class="sidebar-item active" onclick="showUserSection('dashboard',this)"><i class="fas fa-home"></i> Dashboard</div>
+
+                    <div class="sidebar-section-label">Vehicle</div>
                     <div class="sidebar-item" onclick="showUserSection('vehicles',this)"><i class="fas fa-car"></i> My Vehicles</div>
                     <div class="sidebar-item" onclick="showUserSection('services',this)"><i class="fas fa-concierge-bell"></i> Vehicle Services</div>
                     <div class="sidebar-item" onclick="showUserSection('fines',this)"><i class="fas fa-exclamation-triangle"></i> Traffic Fines</div>
+
+                    <div class="sidebar-divider"></div>
+                    <div class="sidebar-section-label">Business</div>
+                    <div class="sidebar-item" onclick="showUserSection('business',this)"><i class="fas fa-briefcase"></i> Business Services</div>
+
+                    <div class="sidebar-divider"></div>
+                    <div class="sidebar-section-label">Account</div>
                     <div class="sidebar-item" onclick="showUserSection('folder',this)"><i class="fas fa-folder"></i> My Documents</div>
                     <div class="sidebar-item" onclick="showUserSection('requests',this)"><i class="fas fa-clipboard-list"></i> My Requests</div>
                     <div class="sidebar-item" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</div>
@@ -404,6 +539,19 @@
                     <!-- Services Section -->
                     <div id="servicesSection" class="user-section" style="display:none;">
                         <h4 class="section-title"><i class="fas fa-concierge-bell"></i> Vehicle Services</h4>
+
+                        <!-- Time Notice Banner -->
+                        <div class="time-notice-banner">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <div class="notice-title">⏰ Application Cut-off Time</div>
+                                <div class="notice-body">
+                                    Please apply before <strong>2:00 PM</strong> to ensure same-day processing.<br>
+                                    Applications submitted after 2:00 PM will be processed the <strong>next working day</strong>.
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="vehicleServiceSelector" style="margin-bottom:20px;display:none;">
                             <label class="form-label">Select Vehicle</label>
                             <select class="form-input" id="serviceVehicleSelect" onchange="loadServicesForVehicle()"></select>
@@ -429,6 +577,76 @@
                             <div class="folder-card" onclick="openFolder('admin_uploads')"><div class="folder-icon"><i class="fas fa-cloud-upload-alt"></i></div><div class="folder-name">ADMIN UPLOADS</div><div class="folder-count" id="adminUploadCount">0 files</div></div>
                         </div>
                         <div id="folderContents" style="margin-top:1.5rem;"></div>
+                    </div>
+
+                    <!-- Business Services Section -->
+                    <div id="businessSection" class="user-section" style="display:none;">
+                        <h4 class="section-title"><i class="fas fa-briefcase"></i> Business Services</h4>
+
+                        <div class="time-notice-banner" style="border-color:#3498db;border-left-color:#3498db;background:linear-gradient(135deg,#1a2234,#1a2840);">
+                            <i class="fas fa-info-circle" style="color:#3498db;"></i>
+                            <div>
+                                <div class="notice-title" style="color:#5dade2;">ℹ️ Business Service Hours</div>
+                                <div class="notice-body">
+                                    Business registration services are available <strong>Sunday – Thursday</strong>, <strong>8:00 AM – 2:00 PM</strong>.<br>
+                                    For assistance, contact us at <strong>+960 300-0000</strong>.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="business-service-card" onclick="openBusinessService('register_business')">
+                            <div class="biz-icon"><i class="fas fa-building"></i></div>
+                            <div class="biz-info">
+                                <div class="biz-title">Register Business</div>
+                                <div class="biz-desc">Register a new business entity with the relevant authorities. Get your business certificate issued.</div>
+                            </div>
+                            <i class="fas fa-chevron-right biz-arrow"></i>
+                        </div>
+
+                        <div class="business-service-card" onclick="openBusinessService('register_name')">
+                            <div class="biz-icon"><i class="fas fa-tag"></i></div>
+                            <div class="biz-info">
+                                <div class="biz-title">Register Name</div>
+                                <div class="biz-desc">Reserve and register a trade name for your business. Protect your brand identity officially.</div>
+                            </div>
+                            <i class="fas fa-chevron-right biz-arrow"></i>
+                        </div>
+
+                        <div class="business-service-card" onclick="openBusinessService('renew_name')">
+                            <div class="biz-icon"><i class="fas fa-sync-alt"></i></div>
+                            <div class="biz-info">
+                                <div class="biz-title">Renew Name</div>
+                                <div class="biz-desc">Renew your existing registered trade name before expiry to avoid cancellation.</div>
+                            </div>
+                            <i class="fas fa-chevron-right biz-arrow"></i>
+                        </div>
+
+                        <div class="business-service-card" onclick="openBusinessService('business_license')">
+                            <div class="biz-icon"><i class="fas fa-certificate"></i></div>
+                            <div class="biz-info">
+                                <div class="biz-title">Business License</div>
+                                <div class="biz-desc">Apply for a new business operating license or renew an existing one.</div>
+                            </div>
+                            <i class="fas fa-chevron-right biz-arrow"></i>
+                        </div>
+
+                        <div class="business-service-card" onclick="openBusinessService('update_info')">
+                            <div class="biz-icon"><i class="fas fa-edit"></i></div>
+                            <div class="biz-info">
+                                <div class="biz-title">Update Business Info</div>
+                                <div class="biz-desc">Update your registered business address, ownership details, or other official information.</div>
+                            </div>
+                            <i class="fas fa-chevron-right biz-arrow"></i>
+                        </div>
+
+                        <div class="business-service-card" onclick="openBusinessService('dissolve_business')">
+                            <div class="biz-icon"><i class="fas fa-times-circle"></i></div>
+                            <div class="biz-info">
+                                <div class="biz-title">Dissolve / Close Business</div>
+                                <div class="biz-desc">Submit a request to officially dissolve or close your registered business entity.</div>
+                            </div>
+                            <i class="fas fa-chevron-right biz-arrow"></i>
+                        </div>
                     </div>
 
                     <!-- Requests Section -->
@@ -542,6 +760,18 @@
     </div>
 </div>
 
+<!-- Business Service Modal -->
+<div id="businessServiceModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title" id="bizModalTitle"><i class="fas fa-briefcase"></i> Business Service</div>
+            <button class="close-btn" onclick="closeBusinessModal()">&times;</button>
+        </div>
+        <div id="bizModalMessage" class="message"></div>
+        <div id="bizModalBody"></div>
+    </div>
+</div>
+
 <script>
 // ========== FIREBASE CONFIG ==========
 const firebaseConfig = {
@@ -567,6 +797,150 @@ let currentServiceFiles = {};
 let imagePreviews = {};
 let currentFineFile = null;
 let currentPayFineFile = null;
+
+// ========== BUSINESS SERVICES CONFIG ==========
+const businessServices = {
+    register_business: {
+        title: 'Register Business',
+        icon: 'fa-building',
+        description: 'Register a new business entity with relevant authorities.',
+        fields: [
+            { label: 'Proposed Business Name', type: 'text', id: 'biz_name', placeholder: 'e.g. Sunrise Trading Pvt Ltd' },
+            { label: 'Business Type', type: 'select', id: 'biz_type', options: ['Sole Proprietorship', 'Partnership', 'Private Limited Company', 'NGO / Association'] },
+            { label: 'Owner Full Name', type: 'text', id: 'biz_owner', placeholder: 'Full legal name' },
+            { label: 'Owner National ID', type: 'text', id: 'biz_nid', placeholder: 'A 123456' },
+            { label: 'Contact Number', type: 'tel', id: 'biz_contact', placeholder: '+960 1234567' },
+            { label: 'Business Address', type: 'text', id: 'biz_address', placeholder: 'Full address' },
+        ],
+        docs: ['Owner ID / Passport', 'Proposed Business Name Reservation (if any)']
+    },
+    register_name: {
+        title: 'Register Name',
+        icon: 'fa-tag',
+        description: 'Reserve and register a trade name for your business.',
+        fields: [
+            { label: 'Proposed Trade Name', type: 'text', id: 'rn_name', placeholder: 'Trade name to register' },
+            { label: 'Applicant Full Name', type: 'text', id: 'rn_owner', placeholder: 'Full legal name' },
+            { label: 'National ID', type: 'text', id: 'rn_nid', placeholder: 'A 123456' },
+            { label: 'Contact Number', type: 'tel', id: 'rn_contact', placeholder: '+960 1234567' },
+        ],
+        docs: ['Owner ID / Passport']
+    },
+    renew_name: {
+        title: 'Renew Name',
+        icon: 'fa-sync-alt',
+        description: 'Renew your existing registered trade name.',
+        fields: [
+            { label: 'Registered Trade Name', type: 'text', id: 'ren_name', placeholder: 'Current registered name' },
+            { label: 'Registration Number', type: 'text', id: 'ren_reg', placeholder: 'e.g. TN-2022-00123' },
+            { label: 'Applicant Name', type: 'text', id: 'ren_owner', placeholder: 'Full legal name' },
+            { label: 'Contact Number', type: 'tel', id: 'ren_contact', placeholder: '+960 1234567' },
+        ],
+        docs: ['Owner ID / Passport', 'Current Registration Certificate']
+    },
+    business_license: {
+        title: 'Business License',
+        icon: 'fa-certificate',
+        description: 'Apply for or renew a business operating license.',
+        fields: [
+            { label: 'Business Name', type: 'text', id: 'bl_name', placeholder: 'Registered business name' },
+            { label: 'License Type', type: 'select', id: 'bl_type', options: ['New License', 'Renewal', 'Amendment'] },
+            { label: 'Owner Name', type: 'text', id: 'bl_owner', placeholder: 'Full legal name' },
+            { label: 'Contact Number', type: 'tel', id: 'bl_contact', placeholder: '+960 1234567' },
+        ],
+        docs: ['Business Registration Certificate', 'Owner ID', 'Payment Slip']
+    },
+    update_info: {
+        title: 'Update Business Info',
+        icon: 'fa-edit',
+        description: 'Update your official business details on record.',
+        fields: [
+            { label: 'Business Name', type: 'text', id: 'ui_name', placeholder: 'Registered business name' },
+            { label: 'Registration Number', type: 'text', id: 'ui_reg', placeholder: 'e.g. BIZ-2021-00456' },
+            { label: 'What to Update', type: 'select', id: 'ui_type', options: ['Address', 'Owner Information', 'Contact Details', 'Business Activity'] },
+            { label: 'New Value / Details', type: 'text', id: 'ui_value', placeholder: 'Describe the update' },
+            { label: 'Contact Number', type: 'tel', id: 'ui_contact', placeholder: '+960 1234567' },
+        ],
+        docs: ['Owner ID', 'Supporting Document for Change']
+    },
+    dissolve_business: {
+        title: 'Dissolve / Close Business',
+        icon: 'fa-times-circle',
+        description: 'Submit a request to officially close your business.',
+        fields: [
+            { label: 'Business Name', type: 'text', id: 'dis_name', placeholder: 'Registered business name' },
+            { label: 'Registration Number', type: 'text', id: 'dis_reg', placeholder: 'e.g. BIZ-2021-00456' },
+            { label: 'Reason for Closure', type: 'select', id: 'dis_reason', options: ['Ceased Operations', 'Ownership Transfer', 'Merger', 'Other'] },
+            { label: 'Owner Name', type: 'text', id: 'dis_owner', placeholder: 'Full legal name' },
+            { label: 'Contact Number', type: 'tel', id: 'dis_contact', placeholder: '+960 1234567' },
+        ],
+        docs: ['Owner ID', 'Original Business Registration Certificate']
+    }
+};
+
+let currentBizServiceKey = null;
+let bizDocFiles = {};
+
+window.openBusinessService = function(key) {
+    const svc = businessServices[key];
+    if (!svc) return;
+    currentBizServiceKey = key;
+    bizDocFiles = {};
+    document.getElementById('bizModalTitle').innerHTML = `<i class="fas ${svc.icon}"></i> ${svc.title}`;
+    let html = `<p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:1.2rem;">${svc.description}</p>`;
+    svc.fields.forEach(f => {
+        if (f.type === 'select') {
+            html += `<div class="form-group"><label class="form-label">${f.label}</label><select class="form-input" id="${f.id}">${f.options.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
+        } else {
+            html += `<div class="form-group"><label class="form-label">${f.label}</label><input type="${f.type}" class="form-input" id="${f.id}" placeholder="${f.placeholder||''}"></div>`;
+        }
+    });
+    if (svc.docs && svc.docs.length) {
+        html += `<h4 style="color:white;margin:1rem 0 0.5rem;">Required Documents</h4>`;
+        svc.docs.forEach((d, idx) => {
+            html += `<div class="form-group"><label class="form-label">${d} <span style="color:#f39c12;">*</span></label><div class="file-upload" onclick="document.getElementById('bizDoc${idx}').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload ${d}</p><input type="file" id="bizDoc${idx}" accept=".jpg,.jpeg,.png,.pdf" style="display:none;" onchange="handleBizDoc(${idx},this,'${d}')"></div><div id="bizDocName${idx}" class="file-name"></div><img id="bizDocPreview${idx}" class="document-preview" style="display:none;"></div>`;
+        });
+    }
+    html += `<button class="btn btn-primary" onclick="submitBusinessService('${key}')"><i class="fas fa-paper-plane"></i> Submit Request</button>`;
+    document.getElementById('bizModalBody').innerHTML = html;
+    document.getElementById('businessServiceModal').style.display = 'flex';
+};
+
+window.handleBizDoc = function(idx, input, name) {
+    let f = input.files[0]; if (!f) return;
+    bizDocFiles[idx] = { file: f, name };
+    previewImage(f, `bizDocPreview${idx}`, `bizDocName${idx}`);
+};
+
+window.closeBusinessModal = function() {
+    document.getElementById('businessServiceModal').style.display = 'none';
+    currentBizServiceKey = null; bizDocFiles = {};
+};
+
+window.submitBusinessService = async function(key) {
+    const svc = businessServices[key];
+    const reqDocs = svc.docs ? svc.docs.length : 0;
+    if (Object.keys(bizDocFiles).length < reqDocs) {
+        showMessage('bizModalMessage', `Please upload all required documents (${Object.keys(bizDocFiles).length}/${reqDocs})`, 'error'); return;
+    }
+    let formData = { serviceType: key, serviceName: svc.title, userId: currentUser.uid, userName: currentUser.name, userEmail: currentUser.email, createdAt: Date.now(), status: 'pending', fields: {} };
+    svc.fields.forEach(f => { let el = document.getElementById(f.id); if (el) formData.fields[f.label] = el.value; });
+    showMessage('bizModalMessage', 'Submitting...', 'success');
+    try {
+        let rid = 'biz_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        let docUrls = {};
+        for (let idx in bizDocFiles) {
+            let { file, name } = bizDocFiles[idx];
+            let ref = storage.ref(`business_requests/${rid}/${file.name}`);
+            await ref.put(file); docUrls[name] = await ref.getDownloadURL();
+        }
+        formData.documents = docUrls;
+        await db.ref(`business_requests/${rid}`).set(formData);
+        showMessage('bizModalMessage', 'Business service request submitted!', 'success');
+        showNotification('Business request submitted successfully');
+        setTimeout(() => { closeBusinessModal(); }, 2000);
+    } catch (err) { showMessage('bizModalMessage', 'Error: ' + err.message, 'error'); }
+};
 
 // ========== SLIDESHOW ==========
 let slides = [];
@@ -843,7 +1217,6 @@ window.addVehicle = async function() {
 };
 
 window.loadUserVehicles = async function() {
-    // Refresh user vehicles from DB
     let uSnap = await db.ref(`users/${currentUser.uid}/vehicles`).once('value');
     if (uSnap.exists()) currentUser.vehicles = uSnap.val();
     let v = currentUser.vehicles || {};
@@ -1156,7 +1529,7 @@ async function loadStickerStatus() {
     if (!found) list.innerHTML = '<p>No active stickers</p>';
 }
 
-// ========== USER REQUESTS ==========
+// ========== USER REQUESTS WITH LIVE PROGRESS BAR ==========
 window.loadUserRequests = async function() {
     let sSnap = await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
     let fSnap = await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
@@ -1170,14 +1543,110 @@ window.loadUserRequests = async function() {
     reqs.forEach(r => {
         if (r.type === 'service') {
             let prog = r.progress || 25;
-            div.innerHTML += `<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span style="font-weight:600;">${r.serviceName} - ${r.vehicleNumber}</span><span class="badge ${r.status==='approved'?'verified':(r.status==='rejected'?'rejected':'pending')}">${r.status}</span></div><div class="price-breakdown"><div class="price-row"><span class="price-label">Service Fee:</span><span class="price-value">MVR ${r.serviceAmount||0}</span></div><div class="price-row"><span class="price-label">Sticker Fee:</span><span class="price-value">MVR ${r.stickerAmount||0}</span></div><div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.totalAmount||0}</span></div></div><div class="status-tracker"><div class="tracker-step ${prog>=25?'completed':''}"><i class="fas fa-check"></i> Submitted</div><div class="tracker-step ${prog>=50?'completed':''}"><i class="fas fa-money-bill"></i> Payment</div><div class="tracker-step ${prog>=75?'completed':''}"><i class="fas fa-search"></i> Review</div><div class="tracker-step ${prog>=100?'completed':''}"><i class="fas fa-check-circle"></i> Done</div></div><div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>${r.expiryDate?`<div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span></div>`:''}${r.documentURL?`<button class="btn btn-info btn-small" onclick="window.open('${r.documentURL}')">View Sticker</button>`:''}</div>`;
+            let steps = [
+                { label: 'Submitted', pct: 25 },
+                { label: 'Payment', pct: 50 },
+                { label: 'Review', pct: 75 },
+                { label: 'Completed', pct: 100 }
+            ];
+            let stepsHtml = steps.map(st => {
+                let cls = prog >= st.pct ? 'done' : (prog >= st.pct - 25 && prog < st.pct ? 'current' : '');
+                return `<div class="live-step ${cls}"><div class="step-dot"></div>${st.label}</div>`;
+            }).join('');
+            let statusBadge = r.status==='approved' ? 'verified' : (r.status==='rejected' ? 'rejected' : 'pending');
+            div.innerHTML += `
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                    <span style="font-weight:600;">${r.serviceName} — ${r.vehicleNumber}</span>
+                    <span class="badge ${statusBadge}">${r.status}</span>
+                </div>
+                <div class="price-breakdown">
+                    <div class="price-row"><span class="price-label">Service Fee:</span><span class="price-value">MVR ${r.serviceAmount||0}</span></div>
+                    <div class="price-row"><span class="price-label">Sticker Fee:</span><span class="price-value">MVR ${r.stickerAmount||0}</span></div>
+                    <div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.totalAmount||0}</span></div>
+                </div>
+                <div class="live-progress-wrap">
+                    <div class="live-progress-header">
+                        <span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px;"></i> Progress</span>
+                        <span class="live-progress-pct" id="pctLabel_${r.id}">0%</span>
+                    </div>
+                    <div class="live-progress-bar-outer">
+                        <div class="live-progress-bar-inner" id="progBar_${r.id}" style="width:0%"></div>
+                    </div>
+                    <div class="live-progress-steps">${stepsHtml}</div>
+                </div>
+                ${r.expiryDate ? `<div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span></div>` : ''}
+                ${r.documentURL ? `<button class="btn btn-info btn-small" onclick="window.open('${r.documentURL}')"><i class="fas fa-file"></i> View Sticker</button>` : ''}
+            </div>`;
+            // Animate bar smoothly after render
+            setTimeout(() => {
+                let barEl = document.getElementById(`progBar_${r.id}`);
+                let pctEl = document.getElementById(`pctLabel_${r.id}`);
+                if (barEl) {
+                    barEl.style.width = prog + '%';
+                    animateCounter(pctEl, 0, prog, 1000);
+                }
+            }, 150);
         } else {
             let sc = r.paid ? 'verified' : (r.status==='approved' ? 'warning' : 'pending');
             let st = r.paid ? 'Paid' : (r.status==='approved' ? 'Pending Payment' : 'Under Review');
-            div.innerHTML += `<div class="card" style="border-left:4px solid ${r.paid?'#27ae60':'#e67e22'};"><div style="display:flex;justify-content:space-between;"><div><span style="font-weight:600;">Fine - ${r.vehicleNumber}</span><p><i class="fas fa-id-card"></i> ID: ${r.ownerId}</p></div><span class="badge ${sc}">${st}</span></div>${r.fineDetails?`<div class="price-breakdown"><div class="price-row"><span class="price-label">Fine Amount:</span><span class="price-value">MVR ${r.fineDetails.fineAmount}</span></div><div class="price-row"><span class="price-label">Service Fee:</span><span class="price-value">MVR ${r.fineDetails.serviceFee}</span></div><div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.fineDetails.fineAmount+r.fineDetails.serviceFee}</span></div></div>`:''}${r.paymentSlip?`<button class="btn btn-info btn-small" onclick="window.open('${r.paymentSlip}')">View Payment</button>`:''}</div>`;
+            let fineProgress = r.paid ? 100 : (r.status === 'approved' ? 75 : 40);
+            let fineSteps = [
+                { label: 'Submitted', pct: 40 },
+                { label: 'Reviewed', pct: 75 },
+                { label: 'Paid', pct: 100 }
+            ];
+            let fineStepsHtml = fineSteps.map(fs => {
+                let cls = fineProgress >= fs.pct ? 'done' : '';
+                return `<div class="live-step ${cls}"><div class="step-dot"></div>${fs.label}</div>`;
+            }).join('');
+            div.innerHTML += `
+            <div class="card" style="border-left:4px solid ${r.paid?'#27ae60':'#e67e22'};">
+                <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                    <div><span style="font-weight:600;">Fine — ${r.vehicleNumber}</span><p><i class="fas fa-id-card"></i> ID: ${r.ownerId}</p></div>
+                    <span class="badge ${sc}">${st}</span>
+                </div>
+                ${r.fineDetails ? `<div class="price-breakdown">
+                    <div class="price-row"><span class="price-label">Fine Amount:</span><span class="price-value">MVR ${r.fineDetails.fineAmount}</span></div>
+                    <div class="price-row"><span class="price-label">Service Fee:</span><span class="price-value">MVR ${r.fineDetails.serviceFee}</span></div>
+                    <div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.fineDetails.fineAmount+r.fineDetails.serviceFee}</span></div>
+                </div>` : ''}
+                <div class="live-progress-wrap">
+                    <div class="live-progress-header">
+                        <span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px;"></i> Progress</span>
+                        <span class="live-progress-pct" id="fpctLabel_${r.id}">0%</span>
+                    </div>
+                    <div class="live-progress-bar-outer">
+                        <div class="live-progress-bar-inner" id="fprogBar_${r.id}" style="width:0%"></div>
+                    </div>
+                    <div class="live-progress-steps">${fineStepsHtml}</div>
+                </div>
+                ${r.paymentSlip ? `<button class="btn btn-info btn-small" onclick="window.open('${r.paymentSlip}')"><i class="fas fa-receipt"></i> View Payment</button>` : ''}
+            </div>`;
+            setTimeout(() => {
+                let barEl = document.getElementById(`fprogBar_${r.id}`);
+                let pctEl = document.getElementById(`fpctLabel_${r.id}`);
+                if (barEl) {
+                    barEl.style.width = fineProgress + '%';
+                    animateCounter(pctEl, 0, fineProgress, 1000);
+                }
+            }, 150);
         }
     });
 };
+
+function animateCounter(el, from, to, duration) {
+    if (!el) return;
+    let start = null;
+    function step(timestamp) {
+        if (!start) start = timestamp;
+        let progress = Math.min((timestamp - start) / duration, 1);
+        let val = Math.floor(from + (to - from) * progress);
+        el.innerText = val + '%';
+        if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
 
 // ========== DOCUMENTS ==========
 async function loadDocuments() {
