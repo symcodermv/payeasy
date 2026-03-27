@@ -64,7 +64,6 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .btn-warning{background:#e67e22;color:white}
 .btn-info{background:#3498db;color:white}
 .btn-danger{background:#e74c3c;color:white}
-.btn-telegram{background:#0088cc;color:white}
 .btn-small{padding:8px 16px;font-size:0.85rem;width:auto}
 .message{padding:12px;border-radius:18px;margin-bottom:1.2rem;display:none;font-size:0.95rem;text-align:center;color:white}
 .message.success{background:rgba(39,174,96,0.2);display:block;border:1px solid #2ecc71}
@@ -86,7 +85,7 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .sidebar-item.active{background:#1e2a3a;border-left:4px solid #f39c12}
 .sidebar-divider{height:1px;background:#253241;margin:0.5rem 1rem}
 .main-panel{flex:1;width:100%}
-.top-bar{background:#141b2b;padding:0.8rem 1rem;display:flex;align-items:center;gap:0.8rem;border-bottom:1px solid #253241}
+.top-bar{background:#141b2b;padding:0.8rem 1rem;display:flex;align-items:center;gap:0.8rem;border-bottom:1px solid #253241;position:sticky;top:0;z-index:50}
 .menu-toggle{background:none;border:none;color:white;font-size:1.6rem;cursor:pointer;width:44px;height:44px;border-radius:50%}
 .menu-toggle:hover{background:#1e2a3a}
 .user-info-header{flex:1;display:flex;justify-content:flex-end;align-items:center;gap:0.8rem;color:white;font-weight:500}
@@ -201,9 +200,8 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .lightbox.show{display:flex}
 .lightbox img{max-width:90vw;max-height:80vh;border-radius:16px}
 .lightbox-close{position:absolute;top:20px;right:20px;background:none;border:none;color:white;font-size:2.5rem;cursor:pointer}
-.tg-float{position:fixed;bottom:24px;right:24px;z-index:8000;background:#0088cc;color:white;border:none;border-radius:50px;padding:12px 20px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 6px 24px rgba(0,136,204,0.5);transition:0.3s}
+.tg-float{position:fixed;bottom:24px;right:24px;z-index:8000;background:#0088cc;color:white;border:none;border-radius:50px;padding:12px 20px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 6px 24px rgba(0,136,204,0.5);transition:0.3s;text-decoration:none}
 .tg-float:hover{transform:translateY(-3px);background:#007ab8}
-/* UPLOAD PROGRESS MODAL */
 .upload-progress-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;z-index:9999;padding:1rem}
 .upload-progress-modal.show{display:flex}
 .upload-progress-box{background:#141b2b;border-radius:32px;width:100%;max-width:420px;padding:2rem 1.8rem;border:1px solid #2e3f55;text-align:center}
@@ -231,11 +229,70 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .upload-main-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:30px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4));animation:shimmer 1.2s infinite}
 .upload-success-checkmark{display:none;font-size:4rem;color:#27ae60;margin:1rem 0;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
 @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ===== NOTIFICATION BELL ===== */
+.notif-bell-wrap{position:relative;cursor:pointer}
+.notif-bell-btn{background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.3);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;color:#f39c12;font-size:1rem}
+.notif-bell-btn:hover{background:rgba(243,156,18,0.22)}
+.notif-red-dot{position:absolute;top:-3px;right:-3px;background:#e74c3c;color:white;border-radius:50%;width:18px;height:18px;font-size:0.6rem;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid #141b2b}
+.notif-red-dot.show{display:flex}
+
+/* ===== NOTIFICATION SIDE PANEL ===== */
+.notif-panel{position:fixed;top:0;right:-360px;width:340px;height:100vh;background:#141b2b;z-index:2000;border-left:1px solid #2a3a55;transition:right 0.3s;overflow-y:auto;display:flex;flex-direction:column}
+.notif-panel.open{right:0}
+.notif-panel-header{padding:1.2rem 1rem;border-bottom:1px solid #253241;display:flex;justify-content:space-between;align-items:center;background:#0f1624;position:sticky;top:0;z-index:10;flex-shrink:0}
+.notif-panel-title{color:white;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:8px}
+.notif-panel-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.8rem;cursor:pointer;line-height:1;padding:0}
+.notif-panel-body{flex:1;padding:0.8rem}
+.notif-mark-all{background:#1e2a3a;border:1px solid #2e3f55;color:rgba(255,255,255,0.6);padding:7px 14px;border-radius:20px;font-size:0.78rem;cursor:pointer;display:block;width:100%;margin-bottom:10px;transition:0.2s}
+.notif-mark-all:hover{background:#253445;color:white}
+.notif-item{background:#1b2537;border-radius:16px;padding:1rem;margin-bottom:0.7rem;border-left:4px solid #2e3f55;position:relative;transition:0.2s}
+.notif-item.unread{border-left-color:#f39c12;background:#1e2d42}
+.notif-item.type-complete{border-left-color:#27ae60}
+.notif-item.type-upload{border-left-color:#3498db}
+.notif-item.type-warning{border-left-color:#e67e22}
+.notif-item.type-error{border-left-color:#e74c3c}
+.notif-item-head{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.notif-item-icon{font-size:1rem;flex-shrink:0}
+.notif-item-title{color:white;font-weight:700;font-size:0.88rem;flex:1}
+.notif-unread-dot{width:8px;height:8px;border-radius:50%;background:#f39c12;flex-shrink:0}
+.notif-item-msg{color:rgba(255,255,255,0.7);font-size:0.8rem;line-height:1.45;margin-bottom:8px}
+.notif-item-time{color:rgba(255,255,255,0.3);font-size:0.7rem}
+.notif-dl-btn{display:inline-flex;align-items:center;gap:5px;background:#27ae60;color:white;border:none;border-radius:16px;padding:7px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;text-decoration:none;transition:0.2s;margin-top:6px}
+.notif-dl-btn:hover{background:#229954;transform:scale(1.04)}
+
+/* ===== TOAST ALERT ===== */
+.toast-wrap{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:9500;max-width:360px;width:92%;pointer-events:none}
+.toast-box{background:#1e2a3a;border-radius:22px;padding:1rem 1.1rem;border:1px solid #2e4057;box-shadow:0 12px 40px rgba(0,0,0,0.6);display:flex;align-items:flex-start;gap:12px;animation:toastIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);pointer-events:all}
+.toast-box.complete{border-color:rgba(39,174,96,0.4);background:linear-gradient(135deg,#0d2218,#142b1e)}
+.toast-box.upload{border-color:rgba(52,152,219,0.4);background:linear-gradient(135deg,#0d1a2e,#122035)}
+.toast-box.warn{border-color:rgba(230,126,34,0.4);background:linear-gradient(135deg,#231505,#2a1a08)}
+@keyframes toastIn{from{opacity:0;transform:translateY(-16px) scale(0.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+.toast-ico{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.toast-ico.complete{background:rgba(39,174,96,0.2);color:#27ae60}
+.toast-ico.upload{background:rgba(52,152,219,0.2);color:#3498db}
+.toast-ico.warn{background:rgba(230,126,34,0.2);color:#e67e22}
+.toast-body{flex:1}
+.toast-title{color:white;font-weight:700;font-size:0.9rem;margin-bottom:3px}
+.toast-msg{color:rgba(255,255,255,0.7);font-size:0.78rem;line-height:1.4;margin-bottom:8px}
+.toast-dl{display:inline-flex;align-items:center;gap:5px;background:#27ae60;color:white;border:none;border-radius:16px;padding:7px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;text-decoration:none;transition:0.2s}
+.toast-dl:hover{background:#229954}
+.toast-close-btn{background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.3rem;cursor:pointer;flex-shrink:0;line-height:1;padding:2px}
+
+/* ===== NOTIFICATIONS PAGE SECTION ===== */
+.notif-section-card{background:#1e2a3a;border-radius:22px;padding:1rem 1.2rem;margin-bottom:0.8rem;border-left:4px solid #2e4057}
+.notif-section-card.unread{border-left-color:#f39c12;background:#1e2d42}
+.notif-section-card.complete{border-left-color:#27ae60}
+.notif-section-card.upload{border-left-color:#3498db}
+.notif-section-card.warn{border-left-color:#e67e22}
+.notif-section-card.err{border-left-color:#e74c3c}
+
 p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 @media(max-width:500px){
   .vehicle-grid{grid-template-columns:1fr}
   .folder-grid{grid-template-columns:1fr 1fr}
   .home-content h1{font-size:2.4rem}
+  .notif-panel{width:100%;right:-100%}
 }
 </style>
 </head>
@@ -282,6 +339,22 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
     <div class="upload-success-checkmark" id="upCheckmark"><i class="fas fa-check-circle"></i></div>
   </div>
 </div>
+
+<!-- NOTIFICATION SIDE PANEL -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-header">
+    <div class="notif-panel-title"><i class="fas fa-bell" style="color:#f39c12"></i> Notifications</div>
+    <button class="notif-panel-close" onclick="closeNotifPanel()">&times;</button>
+  </div>
+  <div class="notif-panel-body">
+    <button class="notif-mark-all" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark all as read</button>
+    <div id="notifPanelList"><p style="color:rgba(255,255,255,0.4);text-align:center;padding:2rem;font-size:0.88rem">No notifications yet</p></div>
+  </div>
+</div>
+<div class="overlay" id="notifOverlay" style="z-index:1999" onclick="closeNotifPanel()"></div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap" style="display:none"></div>
 
 <!-- MAIN CONTENT -->
 <div class="main-content" id="mainContent">
@@ -349,15 +422,28 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
             <div class="sidebar-section-label">Account</div>
             <div class="sidebar-item" onclick="showUserSection('folder',this)"><i class="fas fa-folder"></i> My Documents</div>
             <div class="sidebar-item" onclick="showUserSection('requests',this)"><i class="fas fa-clipboard-list"></i> My Requests</div>
+            <div class="sidebar-item" onclick="showUserSection('notifications',this)">
+              <i class="fas fa-bell"></i> Notifications
+              <span id="sbNotifBadge" style="display:none;background:#e74c3c;color:white;border-radius:20px;padding:1px 8px;font-size:0.7rem;margin-left:4px;font-weight:700"></span>
+            </div>
             <div class="sidebar-item" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</div>
           </div>
         </div>
         <div class="main-panel">
           <div class="top-bar">
             <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <div class="user-info-header"><span id="headerUserName">User</span><span class="badge" id="headerVerifiedBadge">Pending</span></div>
+            <div class="user-info-header">
+              <span id="headerUserName">User</span>
+              <span class="badge" id="headerVerifiedBadge">Pending</span>
+              <!-- NOTIFICATION BELL -->
+              <div class="notif-bell-wrap" onclick="openNotifPanel()">
+                <div class="notif-bell-btn"><i class="fas fa-bell"></i></div>
+                <div class="notif-red-dot" id="notifRedDot"></div>
+              </div>
+            </div>
           </div>
           <div class="dashboard-content" id="userContent">
+
             <div id="dashboardSection" class="user-section">
               <h4 class="section-title"><i class="fas fa-home"></i> Dashboard</h4>
               <div class="card">
@@ -370,11 +456,13 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
               <div class="card"><h4 style="margin-bottom:1rem">Sticker Expiry Status</h4><div id="stickerStatusList"></div></div>
               <div class="card"><h4 style="margin-bottom:1rem">Outstanding Fines</h4><div id="dashboardFines"></div></div>
             </div>
+
             <div id="vehiclesSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-car"></i> My Vehicles</h4>
               <button class="btn btn-secondary" style="margin-bottom:1rem" onclick="showAddVehicleModal()"><i class="fas fa-plus"></i> Add New Vehicle</button>
               <div id="vehiclesList" class="vehicle-grid"></div>
             </div>
+
             <div id="servicesSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-concierge-bell"></i> Vehicle Services</h4>
               <div class="time-notice-banner">
@@ -390,11 +478,13 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
               </div>
               <div id="serviceGrid" class="vehicle-grid"></div>
             </div>
+
             <div id="finesSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-exclamation-triangle"></i> Traffic Fines</h4>
               <button class="btn btn-warning" style="margin-bottom:1rem" onclick="showAddFineModal()"><i class="fas fa-plus"></i> Submit Fine Check</button>
               <div id="userFinesList"></div>
             </div>
+
             <div id="businessSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-briefcase"></i> Business Services</h4>
               <div class="time-notice-banner" style="border-color:#3498db;border-left-color:#3498db;background:linear-gradient(135deg,#1a2234,#1a2840)">
@@ -410,6 +500,7 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
                 <div id="bizRequestsList"></div>
               </div>
             </div>
+
             <div id="folderSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-folder"></i> My Documents</h4>
               <div class="folder-grid">
@@ -422,10 +513,19 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
               </div>
               <div id="folderContents" style="margin-top:1.5rem"></div>
             </div>
+
             <div id="requestsSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-clipboard-list"></i> My Requests &amp; Status</h4>
               <div id="userRequestsList"></div>
             </div>
+
+            <!-- NOTIFICATIONS SECTION -->
+            <div id="notificationsSection" class="user-section" style="display:none">
+              <h4 class="section-title"><i class="fas fa-bell"></i> Notifications</h4>
+              <button class="btn btn-secondary btn-small" style="margin-bottom:1rem" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark all as read</button>
+              <div id="notifSectionList"><p style="color:rgba(255,255,255,0.4)">No notifications yet</p></div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -551,17 +651,15 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 </a>
 
 <script>
-// FIREBASE
 const firebaseConfig={apiKey:"AIzaSyA-di-_1PsrdRH_CiQCLsN4pLH-ERQxje4",authDomain:"autoease-f84b5.firebaseapp.com",databaseURL:"https://autoease-f84b5-default-rtdb.firebaseio.com",projectId:"autoease-f84b5",storageBucket:"autoease-f84b5.firebasestorage.app",messagingSenderId:"547912368245",appId:"1:547912368245:web:692e246c18ddcb2607783c"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const db=firebase.database(),storage=firebase.storage();
 
-// GLOBALS
 let currentUser=null,vehicleTypes={},services={},bankDetails={};
 let currentServiceFiles={},imagePreviews={},currentFineFile=null,currentPayFineFile=null;
 let bizDocFiles={},currentBizKey=null;
+let _notifListener=null,_shownToasts=new Set();
 
-// BUSINESS SERVICES CONFIG
 const BIZ_SERVICES={
   register_business:{title:'Register Business',icon:'fa-building',color:'#3498db',desc:'Register a new business entity with authorities.',fields:[{l:'Business Name',t:'text',id:'biz_name',p:'e.g. Sunrise Trading Pvt Ltd'},{l:'Business Type',t:'select',id:'biz_type',o:['Sole Proprietorship','Partnership','Private Limited','NGO / Association']},{l:'Owner Full Name',t:'text',id:'biz_owner',p:'Legal name'},{l:'Owner National ID',t:'text',id:'biz_nid',p:'A 123456'},{l:'Contact',t:'tel',id:'biz_contact',p:'+960 1234567'},{l:'Business Address',t:'text',id:'biz_address',p:'Full address'}],docs:['Owner ID / Passport','Name Reservation (if any)']},
   register_name:{title:'Register Name',icon:'fa-tag',color:'#9b59b6',desc:'Reserve and register a trade name.',fields:[{l:'Proposed Trade Name',t:'text',id:'rn_name',p:'Trade name'},{l:'Applicant Name',t:'text',id:'rn_owner',p:'Legal name'},{l:'National ID',t:'text',id:'rn_nid',p:'A 123456'},{l:'Contact',t:'tel',id:'rn_contact',p:'+960 1234567'}],docs:['Owner ID / Passport']},
@@ -571,68 +669,159 @@ const BIZ_SERVICES={
   dissolve_business:{title:'Dissolve / Close Business',icon:'fa-times-circle',color:'#e74c3c',desc:'Officially close your registered business.',fields:[{l:'Business Name',t:'text',id:'dis_name',p:'Registered name'},{l:'Registration No.',t:'text',id:'dis_reg',p:'BIZ-2021-00456'},{l:'Reason',t:'select',id:'dis_reason',o:['Ceased Operations','Ownership Transfer','Merger','Other']},{l:'Owner Name',t:'text',id:'dis_owner',p:'Legal name'},{l:'Contact',t:'tel',id:'dis_contact',p:'+960 1234567'}],docs:['Owner ID','Original Registration Certificate']}
 };
 
-// ===== UPLOAD PROGRESS SYSTEM =====
-let uploadProgressStages=[];
-let uploadCurrentStage=0;
-let uploadTotalStages=0;
-
+// ===== UPLOAD PROGRESS =====
+let uploadProgressStages=[],uploadTotalStages=0;
 function showUploadProgress(stages){
-  uploadProgressStages=stages;uploadCurrentStage=0;uploadTotalStages=stages.length;
+  uploadProgressStages=stages;uploadTotalStages=stages.length;
   document.getElementById('upTitle').innerText='Uploading Files';
   document.getElementById('upSubtitle').innerText='Please wait while we securely upload your documents...';
   document.getElementById('upMainBar').style.width='0%';
   document.getElementById('upCheckmark').style.display='none';
-  let icon=document.getElementById('upIcon');
-  icon.className='upload-progress-icon spin';icon.innerHTML='<i class="fas fa-cloud-upload-alt"></i>';
-  let stagesHtml=stages.map((s,i)=>`
-    <div class="upload-stage" id="upStage_${i}">
-      <div class="stage-icon" id="upStageIcon_${i}"><i class="fas fa-${s.icon||'file'}"></i></div>
-      <span class="stage-label">${s.label}</span>
-      <span class="stage-status" id="upStageStatus_${i}">Waiting</span>
-    </div>`).join('');
-  document.getElementById('upStages').innerHTML=stagesHtml;
+  let icon=document.getElementById('upIcon');icon.className='upload-progress-icon spin';icon.innerHTML='<i class="fas fa-cloud-upload-alt"></i>';
+  document.getElementById('upStages').innerHTML=stages.map((s,i)=>`<div class="upload-stage" id="upStage_${i}"><div class="stage-icon" id="upStageIcon_${i}"><i class="fas fa-${s.icon||'file'}"></i></div><span class="stage-label">${s.label}</span><span class="stage-status" id="upStageStatus_${i}">Waiting</span></div>`).join('');
   document.getElementById('uploadProgressModal').classList.add('show');
 }
-
 function setUploadStage(index,status){
   for(let i=0;i<uploadTotalStages;i++){
-    let el=document.getElementById(`upStage_${i}`);
-    let iconEl=document.getElementById(`upStageIcon_${i}`);
-    let statusEl=document.getElementById(`upStageStatus_${i}`);
-    if(!el)continue;
-    if(i<index){
-      el.className='upload-stage done';iconEl.innerHTML='<i class="fas fa-check"></i>';statusEl.innerText='Done';
-    } else if(i===index){
-      if(status==='active'){el.className='upload-stage active';iconEl.innerHTML='<i class="fas fa-spinner fa-spin"></i>';statusEl.innerText='Uploading...';}
-      else if(status==='done'){el.className='upload-stage done';iconEl.innerHTML='<i class="fas fa-check"></i>';statusEl.innerText='Done';}
-    } else {
-      el.className='upload-stage';statusEl.innerText='Waiting';
-    }
+    let el=document.getElementById(`upStage_${i}`),ic=document.getElementById(`upStageIcon_${i}`),st=document.getElementById(`upStageStatus_${i}`);if(!el)continue;
+    if(i<index){el.className='upload-stage done';ic.innerHTML='<i class="fas fa-check"></i>';st.innerText='Done';}
+    else if(i===index){if(status==='active'){el.className='upload-stage active';ic.innerHTML='<i class="fas fa-spinner fa-spin"></i>';st.innerText='Uploading...';}else if(status==='done'){el.className='upload-stage done';ic.innerHTML='<i class="fas fa-check"></i>';st.innerText='Done';}}
+    else{el.className='upload-stage';st.innerText='Waiting';}
   }
   let pct=status==='done'?Math.round(((index+1)/uploadTotalStages)*100):Math.round((index/uploadTotalStages)*100);
   document.getElementById('upMainBar').style.width=pct+'%';
 }
-
-function completeUploadProgress(successMsg){
-  for(let i=0;i<uploadTotalStages;i++){
-    let el=document.getElementById(`upStage_${i}`),iconEl=document.getElementById(`upStageIcon_${i}`),statusEl=document.getElementById(`upStageStatus_${i}`);
-    if(el){el.className='upload-stage done';iconEl.innerHTML='<i class="fas fa-check"></i>';statusEl.innerText='Done';}
-  }
+function completeUploadProgress(msg){
+  for(let i=0;i<uploadTotalStages;i++){let el=document.getElementById(`upStage_${i}`),ic=document.getElementById(`upStageIcon_${i}`),st=document.getElementById(`upStageStatus_${i}`);if(el){el.className='upload-stage done';ic.innerHTML='<i class="fas fa-check"></i>';st.innerText='Done';}}
   document.getElementById('upMainBar').style.width='100%';
   document.getElementById('upTitle').innerText='Upload Complete!';
-  document.getElementById('upSubtitle').innerText=successMsg||'All files uploaded successfully.';
-  let icon=document.getElementById('upIcon');
-  icon.className='upload-progress-icon success';icon.innerHTML='<i class="fas fa-check"></i>';
+  document.getElementById('upSubtitle').innerText=msg||'All files uploaded successfully.';
+  let icon=document.getElementById('upIcon');icon.className='upload-progress-icon success';icon.innerHTML='<i class="fas fa-check"></i>';
   document.getElementById('upCheckmark').style.display='block';
 }
-
 function hideUploadProgress(){document.getElementById('uploadProgressModal').classList.remove('show')}
 
-// SLIDESHOW
+// ===== NOTIFICATION SYSTEM =====
+function notifMeta(type){
+  const m={
+    progress_complete:{icon:'fa-flag-checkered',cls:'complete',col:'#27ae60'},
+    service_update:{icon:'fa-tasks',cls:'upload',col:'#f39c12'},
+    service_rejected:{icon:'fa-times-circle',cls:'err',col:'#e74c3c'},
+    admin_upload:{icon:'fa-cloud-download-alt',cls:'upload',col:'#3498db'},
+    vehicle_verified:{icon:'fa-car',cls:'complete',col:'#27ae60'},
+    vehicle_rejected:{icon:'fa-times-circle',cls:'err',col:'#e74c3c'},
+    fine_set:{icon:'fa-gavel',cls:'warn',col:'#e67e22'},
+    fine_paid:{icon:'fa-check-circle',cls:'complete',col:'#27ae60'},
+    biz_update:{icon:'fa-briefcase',cls:'upload',col:'#9b59b6'},
+    biz_rejected:{icon:'fa-times-circle',cls:'err',col:'#e74c3c'}
+  };
+  return m[type]||{icon:'fa-bell',cls:'upload',col:'#f39c12'};
+}
+
+function fmtAgo(ts){
+  let d=Date.now()-ts,s=Math.floor(d/1000),m=Math.floor(s/60),h=Math.floor(m/60),dy=Math.floor(h/24);
+  if(s<60)return'Just now';if(m<60)return m+'m ago';if(h<24)return h+'h ago';return dy+'d ago';
+}
+
+function dlButton(url,label='Download'){
+  if(!url)return'';
+  return`<a href="${url}" download target="_blank" class="notif-dl-btn"><i class="fas fa-download"></i> ${label}</a>`;
+}
+
+function listenNotifications(uid){
+  if(_notifListener){try{_notifListener()}catch(e){}}
+  _notifListener=db.ref(`user_notifications/${uid}`).on('value',snap=>{
+    let list=[];
+    if(snap.exists())snap.forEach(c=>{let n=c.val();n.id=c.key;list.push(n)});
+    list.sort((a,b)=>b.createdAt-a.createdAt);
+    let unread=list.filter(n=>!n.read).length;
+    // Bell badge
+    let dot=document.getElementById('notifRedDot');
+    if(dot){dot.innerText=unread>9?'9+':unread;dot.className='notif-red-dot'+(unread>0?' show':'');}
+    let sb=document.getElementById('sbNotifBadge');
+    if(sb){sb.innerText=unread;sb.style.display=unread>0?'inline':'none';}
+    renderNotifPanel(list);
+    renderNotifSection(list);
+    // Show toast for brand new (within last 12 seconds) unread notifs not yet toasted
+    list.filter(n=>!n.read&&(Date.now()-n.createdAt)<12000&&!_shownToasts.has(n.id)).forEach(n=>{
+      _shownToasts.add(n.id);showToast(n);
+    });
+  });
+}
+
+function renderNotifPanel(list){
+  let div=document.getElementById('notifPanelList');
+  if(!list.length){div.innerHTML='<p style="color:rgba(255,255,255,0.4);text-align:center;padding:2rem;font-size:0.88rem">No notifications yet</p>';return}
+  div.innerHTML=list.map(n=>{
+    let m=notifMeta(n.type);
+    return`<div class="notif-item ${n.read?'':'unread'} type-${m.cls}">
+      <div class="notif-item-head">
+        <i class="fas ${m.icon} notif-item-icon" style="color:${m.col}"></i>
+        <div class="notif-item-title">${n.title||'Notification'}</div>
+        ${!n.read?'<div class="notif-unread-dot"></div>':''}
+      </div>
+      <div class="notif-item-msg">${n.message||''}</div>
+      ${dlButton(n.documentURL)}
+      <div class="notif-item-time">${fmtAgo(n.createdAt)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderNotifSection(list){
+  let div=document.getElementById('notifSectionList');if(!div)return;
+  if(!list.length){div.innerHTML='<div class="card">No notifications yet</div>';return}
+  div.innerHTML=list.map(n=>{
+    let m=notifMeta(n.type);
+    return`<div class="notif-section-card ${n.read?'':'unread'} ${m.cls}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <i class="fas ${m.icon}" style="color:${m.col};font-size:1.1rem"></i>
+        <div style="flex:1"><div style="font-weight:700;font-size:0.92rem">${n.title||'Notification'}</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4)">${fmtAgo(n.createdAt)}</div></div>
+        ${!n.read?'<span class="badge pending" style="font-size:0.65rem">New</span>':''}
+      </div>
+      <p style="color:rgba(255,255,255,0.75);font-size:0.85rem;margin-bottom:8px">${n.message||''}</p>
+      ${dlButton(n.documentURL,'⬇ Download Document')}
+    </div>`;
+  }).join('');
+}
+
+function showToast(n){
+  let m=notifMeta(n.type);
+  let wrap=document.getElementById('toastWrap');
+  wrap.style.display='block';
+  wrap.innerHTML=`<div class="toast-box ${m.cls}">
+    <div class="toast-ico ${m.cls}"><i class="fas ${m.icon}"></i></div>
+    <div class="toast-body">
+      <div class="toast-title">${n.title||'Notification'}</div>
+      <div class="toast-msg">${n.message||''}</div>
+      ${n.documentURL?`<a href="${n.documentURL}" download target="_blank" class="toast-dl"><i class="fas fa-download"></i> Download Now</a>`:''}
+    </div>
+    <button class="toast-close-btn" onclick="document.getElementById('toastWrap').style.display='none'">&times;</button>
+  </div>`;
+  clearTimeout(wrap._t);wrap._t=setTimeout(()=>{wrap.style.display='none'},9000);
+}
+
+async function markAllRead(){
+  if(!currentUser)return;
+  let snap=await db.ref(`user_notifications/${currentUser.uid}`).once('value');
+  if(!snap.exists())return;
+  let upd={};snap.forEach(c=>{if(!c.val().read)upd[c.key+'/read']=true});
+  if(Object.keys(upd).length)await db.ref(`user_notifications/${currentUser.uid}`).update(upd);
+}
+
+function openNotifPanel(){
+  document.getElementById('notifPanel').classList.add('open');
+  document.getElementById('notifOverlay').classList.add('show');
+  markAllRead();
+}
+function closeNotifPanel(){
+  document.getElementById('notifPanel').classList.remove('open');
+  document.getElementById('notifOverlay').classList.remove('show');
+}
+
+// ===== SLIDESHOW =====
 let slides=[],currentSlide=0,slideInterval=null;
 function initSlideshow(){
-  slides=document.querySelectorAll('.slide');
-  let d=document.getElementById('slideDots');d.innerHTML='';
+  slides=document.querySelectorAll('.slide');let d=document.getElementById('slideDots');d.innerHTML='';
   slides.forEach((_,i)=>{let dot=document.createElement('div');dot.classList.add('dot-indicator');if(i===0)dot.classList.add('active');dot.onclick=()=>{clearInterval(slideInterval);currentSlide=i;showSlide(i);slideInterval=setInterval(nextSlide,5000)};d.appendChild(dot)});
   showSlide(0);slideInterval=setInterval(nextSlide,5000);
 }
@@ -652,39 +841,14 @@ async function loadInitialData(){await loadVehicleTypes();await loadServices();a
 
 // UTILS
 function showMessage(id,txt,type){let el=document.getElementById(id);if(!el)return;el.style.display='block';el.className='message '+type;el.innerText=txt;setTimeout(()=>el.style.display='none',3500)}
-function showNotification(msg,type='success'){let n=document.createElement('div');n.style.cssText=`position:fixed;bottom:80px;right:20px;background:${type==='success'?'#27ae60':'#c0392b'};color:white;padding:12px 20px;border-radius:20px;z-index:9999;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.4);animation:fadeInUp 0.3s`;n.innerText=msg;document.body.appendChild(n);setTimeout(()=>n.remove(),3500)}
-
-// ===== FIX: copyToClipboard — no page refresh, uses fallback =====
+function showNotification(msg,type='success'){let n=document.createElement('div');n.style.cssText=`position:fixed;bottom:80px;right:20px;background:${type==='success'?'#27ae60':'#c0392b'};color:white;padding:12px 20px;border-radius:20px;z-index:9999;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.4)`;n.innerText=msg;document.body.appendChild(n);setTimeout(()=>n.remove(),3500)}
 function copyToClipboard(txt){
-  // Prevent any default action that could cause page refresh
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt)
-      .then(()=>showNotification('Copied!'))
-      .catch(()=>fallbackCopy(txt));
-  } else {
-    fallbackCopy(txt);
-  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>showNotification('Copied!')).catch(()=>fallbackCopy(txt));}
+  else fallbackCopy(txt);
 }
-function fallbackCopy(txt){
-  let ta=document.createElement('textarea');
-  ta.value=txt;
-  ta.setAttribute('readonly','');
-  ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
-  try{
-    document.execCommand('copy');
-    showNotification('Copied!');
-  } catch(e){
-    showNotification('Copy failed','error');
-  }
-  document.body.removeChild(ta);
-}
-
+function fallbackCopy(txt){let ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');showNotification('Copied!');}catch(e){showNotification('Copy failed','error');}document.body.removeChild(ta);}
 function previewImage(file,previewId,nameId){if(file&&file.type.startsWith('image/')){let r=new FileReader();r.onload=e=>{let p=document.getElementById(previewId);if(p){p.src=e.target.result;p.style.display='block'}};r.readAsDataURL(file)}if(nameId)document.getElementById(nameId).innerHTML=`<i class="fas fa-check-circle" style="color:#27ae60"></i> ${file.name.substring(0,30)}`}
 function animateCounter(el,from,to,dur){if(!el)return;let start=null;function step(ts){if(!start)start=ts;let p=Math.min((ts-start)/dur,1),v=Math.floor(from+(to-from)*p);el.innerText=v+'%';if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
-
 window.openLightbox=function(src){document.getElementById('lightboxImg').src=src;document.getElementById('lightbox').classList.add('show')};
 window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('show')};
 
@@ -721,43 +885,16 @@ document.getElementById('registerForm').addEventListener('submit',async e=>{
 async function loadVehicleTypes(){let snap=await db.ref('vehicle_types').once('value');if(snap.exists())vehicleTypes=snap.val();else{vehicleTypes={car:{name:'Car',icon:'fa-car'},bike:{name:'Motorcycle',icon:'fa-motorcycle'},truck:{name:'Truck',icon:'fa-truck'},bus:{name:'Bus',icon:'fa-bus'}};await db.ref('vehicle_types').set(vehicleTypes)}updateVehicleTypeDropdowns()}
 function updateVehicleTypeDropdowns(){let s=document.getElementById('vehicleType');if(s){s.innerHTML='';Object.keys(vehicleTypes).forEach(k=>{s.innerHTML+=`<option value="${k}">${vehicleTypes[k].name}</option>`})}}
 async function loadServices(){let snap=await db.ref('services').once('value');if(snap.exists())services=snap.val();else{services={roadworthiness:{name:'Roadworthiness Sticker',documents:['Owner ID','Vehicle Registration'],requiresPhotos:true,photoCount:4,active:true,icon:'fa-road'},insurance:{name:'Vehicle Insurance',documents:['ID Document','Vehicle Registration'],requiresPhotos:false,active:true,icon:'fa-shield-alt'},annual_sticker:{name:'Annual Sticker',documents:['ID Document','Vehicle Registration'],requiresPhotos:false,active:true,icon:'fa-tag'}};await db.ref('services').set(services)}}
+async function loadBankDetails(){let snap=await db.ref('bank_details').once('value');if(snap.exists())bankDetails=snap.val();else{bankDetails={bankName:'Bank of Maldives',accountName:'RegAssist Services',accountNumber:'7711-3344-5566-8899',branch:'Male',swift:'BMLMMVMV'};await db.ref('bank_details').set(bankDetails)}}
+function listenBankDetails(){db.ref('bank_details').on('value',snap=>{if(snap.exists())bankDetails=snap.val()})}
 
-async function loadBankDetails(){
-  let snap=await db.ref('bank_details').once('value');
-  if(snap.exists()){bankDetails=snap.val();}
-  else{bankDetails={bankName:'Bank of Maldives',accountName:'RegAssist Services',accountNumber:'7711-3344-5566-8899',branch:'Male',swift:'BMLMMVMV'};await db.ref('bank_details').set(bankDetails);}
-}
-
-// Real-time bank details listener — updates whenever admin changes them
-function listenBankDetails(){
-  db.ref('bank_details').on('value',snap=>{
-    if(snap.exists()){bankDetails=snap.val();}
-  });
-}
-
-// ===== HELPER: Render bank details box =====
-// FIX: Added Account Name row so it always shows in payment panels
 function renderBankDetails(totalAmount){
   let acct=bankDetails.accountNumber||'N/A';
-  return `
-    <div class="bank-row">
-      <span class="bank-label">Bank</span>
-      <span class="bank-value">${bankDetails.bankName||'N/A'}</span>
-    </div>
-    <div class="bank-row">
-      <span class="bank-label">Account Name</span>
-      <span class="bank-value">${bankDetails.accountName||'N/A'}</span>
-    </div>
-    <div class="bank-row">
-      <span class="bank-label">Account No.</span>
-      <span class="bank-value">
-        ${acct}
-        <button class="copy-btn" type="button" onclick="copyToClipboard('${acct}');return false;">Copy</button>
-      </span>
-    </div>
-    ${bankDetails.branch?`<div class="bank-row"><span class="bank-label">Branch</span><span class="bank-value">${bankDetails.branch}</span></div>`:''}
-    ${totalAmount!=null?`<div class="bank-row"><span class="bank-label">Amount</span><span class="bank-value" style="color:#f39c12">MVR ${totalAmount}</span></div>`:''}
-  `;
+  return`<div class="bank-row"><span class="bank-label">Bank</span><span class="bank-value">${bankDetails.bankName||'N/A'}</span></div>
+  <div class="bank-row"><span class="bank-label">Account Name</span><span class="bank-value">${bankDetails.accountName||'N/A'}</span></div>
+  <div class="bank-row"><span class="bank-label">Account No.</span><span class="bank-value">${acct}<button class="copy-btn" type="button" onclick="copyToClipboard('${acct}');return false;">Copy</button></span></div>
+  ${bankDetails.branch?`<div class="bank-row"><span class="bank-label">Branch</span><span class="bank-value">${bankDetails.branch}</span></div>`:''}
+  ${totalAmount!=null?`<div class="bank-row"><span class="bank-label">Amount</span><span class="bank-value" style="color:#f39c12">MVR ${totalAmount}</span></div>`:''}`;
 }
 
 // USER DASHBOARD
@@ -773,14 +910,13 @@ function showUserDashboard(){
   document.getElementById('headerVerifiedBadge').innerText=st;
   document.getElementById('headerVerifiedBadge').className=`badge ${currentUser.verified?'verified':'pending'}`;
   listenBankDetails();
+  listenNotifications(currentUser.uid);
   loadUserDashboard();
   let g=document.getElementById('bizServiceCards');g.innerHTML='';
-  Object.keys(BIZ_SERVICES).forEach(k=>{let s=BIZ_SERVICES[k];g.innerHTML+=`<div class="business-service-card" onclick="openBusinessService('${k}')"><div class="biz-icon" style="background:rgba(${hexToRgb(s.color)},0.15);border-color:rgba(${hexToRgb(s.color)},0.35)"><i class="fas ${s.icon}" style="color:${s.color}"></i></div><div class="biz-info"><div class="biz-title">${s.title}</div><div class="biz-desc">${s.desc}</div></div><i class="fas fa-chevron-right biz-arrow"></i></div>`});
+  Object.keys(BIZ_SERVICES).forEach(k=>{let s=BIZ_SERVICES[k];g.innerHTML+=`<div class="business-service-card" onclick="openBusinessService('${k}')"><div class="biz-icon"><i class="fas ${s.icon}" style="color:${s.color}"></i></div><div class="biz-info"><div class="biz-title">${s.title}</div><div class="biz-desc">${s.desc}</div></div><i class="fas fa-chevron-right biz-arrow"></i></div>`});
 }
 function hexToRgb(hex){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`${r},${g},${b}`}
-
 async function loadUserDashboard(){await loadUserVehicles();await loadStickerStatus();await loadDashboardFines()}
-
 window.toggleSidebar=()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show')};
 
 window.showUserSection=function(s,el){
@@ -794,6 +930,7 @@ window.showUserSection=function(s,el){
   else if(s==='folder')loadDocuments();
   else if(s==='requests')loadUserRequests();
   else if(s==='business'){renderBizServiceCards();loadBizRequests()}
+  else if(s==='notifications')markAllRead();
   if(window.innerWidth<=500)toggleSidebar();
 };
 
@@ -823,13 +960,9 @@ window.addVehicle=async function(){
     let vehicle={number:num,type,model,addedAt:ts,verified:false,verificationStatus:'pending',documents:{ownerId:oUrl,registration:rUrl}};
     await db.ref(`users/${currentUser.uid}/vehicles/${vid}`).set(vehicle);
     await db.ref(`vehicle_verifications/${vid}`).set({userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,vehicleId:vid,vehicleNumber:num,vehicleModel:model,vehicleType:type,documents:{ownerId:oUrl,registration:rUrl},status:'pending',requestedAt:ts});
-    setUploadStage(2,'done');
-    completeUploadProgress('Vehicle submitted for admin verification!');
+    setUploadStage(2,'done');completeUploadProgress('Vehicle submitted for admin verification!');
     setTimeout(()=>{hideUploadProgress();loadUserVehicles();showNotification('Vehicle submitted for verification')},2000);
-  }catch(err){
-    hideUploadProgress();document.getElementById('addVehicleModal').style.display='flex';
-    showMessage('vehicleMessage','Upload failed: '+err.message,'error');
-  }
+  }catch(err){hideUploadProgress();document.getElementById('addVehicleModal').style.display='flex';showMessage('vehicleMessage','Upload failed: '+err.message,'error');}
 };
 
 window.loadUserVehicles=async function(){
@@ -886,26 +1019,15 @@ window.submitFineCheck=async function(){
   if(!vid||!oid||!con){showMessage('fineMessage','Fill all required fields','error');return}
   let vehicle=currentUser.vehicles[vid],fid='fine_'+Date.now()+'_'+Math.random().toString(36).substr(2,6),ts=Date.now();
   let stages=currentFineFile?[{label:'Uploading Document',icon:'file'},{label:'Saving Fine Request',icon:'database'}]:[{label:'Saving Fine Request',icon:'database'}];
-  document.getElementById('addFineModal').style.display='none';
-  showUploadProgress(stages);
+  document.getElementById('addFineModal').style.display='none';showUploadProgress(stages);
   try{
     let docUrl=null;
-    if(currentFineFile){
-      setUploadStage(0,'active');
-      let dref=storage.ref(`fine_docs/${currentUser.uid}/${fid}/${currentFineFile.name}`);
-      await dref.put(currentFineFile);docUrl=await dref.getDownloadURL();
-      setUploadStage(0,'done');setUploadStage(1,'active');
-    } else {
-      setUploadStage(0,'active');
-    }
+    if(currentFineFile){setUploadStage(0,'active');let dref=storage.ref(`fine_docs/${currentUser.uid}/${fid}/${currentFineFile.name}`);await dref.put(currentFineFile);docUrl=await dref.getDownloadURL();setUploadStage(0,'done');setUploadStage(1,'active');}
+    else{setUploadStage(0,'active');}
     await db.ref(`fine_requests/${fid}`).set({userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,userContact:con,vehicleId:vid,vehicleNumber:vehicle.number,ownerId:oid,notes,documentUrl:docUrl,status:'pending_review',fineDetails:null,createdAt:ts,paid:false});
-    setUploadStage(currentFineFile?1:0,'done');
-    completeUploadProgress('Fine check submitted successfully!');
+    setUploadStage(currentFineFile?1:0,'done');completeUploadProgress('Fine check submitted successfully!');
     setTimeout(()=>{hideUploadProgress();loadUserFines();showNotification('Fine check submitted')},2000);
-  }catch(err){
-    hideUploadProgress();document.getElementById('addFineModal').style.display='flex';
-    showMessage('fineMessage','Error: '+err.message,'error');
-  }
+  }catch(err){hideUploadProgress();document.getElementById('addFineModal').style.display='flex';showMessage('fineMessage','Error: '+err.message,'error');}
 };
 
 window.loadUserFines=async function(){
@@ -921,40 +1043,30 @@ window.loadUserFines=async function(){
 };
 
 window.openPayFineModal=function(fid,total,type){
-  document.getElementById('payFineId').value=fid;
-  document.getElementById('payFineAmount').value=total;
+  document.getElementById('payFineId').value=fid;document.getElementById('payFineAmount').value=total;
   document.getElementById('payFineDetails').innerHTML=`<p>Fine Type: <strong>${type}</strong></p><p>Total: <strong style="color:#f39c12">MVR ${total}</strong></p>`;
-  // FIX: Uses renderBankDetails so account name is shown
   document.getElementById('payFineBankDetails').innerHTML=renderBankDetails(total);
   document.getElementById('payFineModal').style.display='flex';
 };
 window.closePayFineModal=function(){document.getElementById('payFineModal').style.display='none';document.getElementById('payFineSlipPreview').style.display='none';document.getElementById('payFineSlipName').innerHTML='';currentPayFineFile=null};
 window.handlePayFineSlip=function(i){let f=i.files[0];if(!f)return;currentPayFineFile=f;previewImage(f,'payFineSlipPreview','payFineSlipName')};
-
 window.submitFinePayment=async function(){
   let fid=document.getElementById('payFineId').value,amt=document.getElementById('payFineAmount').value;
   if(!currentPayFineFile){showMessage('payFineMessage','Upload payment slip','error');return}
   document.getElementById('payFineModal').style.display='none';
   showUploadProgress([{label:'Uploading Payment Slip',icon:'receipt'},{label:'Confirming Payment',icon:'check-circle'}]);
   try{
-    setUploadStage(0,'active');
-    let sr=storage.ref(`payment_slips/fines/${fid}/${currentPayFineFile.name}`);
-    await sr.put(currentPayFineFile);let su=await sr.getDownloadURL();
+    setUploadStage(0,'active');let sr=storage.ref(`payment_slips/fines/${fid}/${currentPayFineFile.name}`);await sr.put(currentPayFineFile);let su=await sr.getDownloadURL();
     setUploadStage(0,'done');setUploadStage(1,'active');
     await db.ref(`fine_requests/${fid}`).update({paid:true,paidAt:Date.now(),paymentSlip:su,paymentAmount:parseInt(amt)});
-    setUploadStage(1,'done');
-    completeUploadProgress('Payment submitted successfully!');
+    setUploadStage(1,'done');completeUploadProgress('Payment submitted successfully!');
     setTimeout(()=>{hideUploadProgress();loadUserFines();showNotification('Payment submitted')},2000);
-  }catch(err){
-    hideUploadProgress();document.getElementById('payFineModal').style.display='flex';
-    showMessage('payFineMessage','Error: '+err.message,'error');
-  }
+  }catch(err){hideUploadProgress();document.getElementById('payFineModal').style.display='flex';showMessage('payFineMessage','Error: '+err.message,'error');}
 };
 
 async function loadDashboardFines(){
   let snap=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
-  let cont=document.getElementById('dashboardFines');cont.innerHTML='';
-  let uc=0,total=0;
+  let cont=document.getElementById('dashboardFines');cont.innerHTML='';let uc=0,total=0;
   if(snap.exists())snap.forEach(c=>{let f=c.val();if(f.fineDetails&&!f.paid){uc++;total+=f.fineDetails.fineAmount+f.fineDetails.serviceFee}});
   if(uc>0)cont.innerHTML=`<div style="background:#e67e22;padding:15px;border-radius:16px"><p><i class="fas fa-exclamation-circle"></i> ${uc} unpaid fine(s)</p><p style="font-size:1.2rem">Total Due: MVR ${total}</p><button class="btn btn-warning btn-small" onclick="showUserSection('fines')">View Fines</button></div>`;
   else cont.innerHTML='<p style="color:#27ae60"><i class="fas fa-check-circle"></i> No outstanding fines</p>';
@@ -974,7 +1086,6 @@ window.openServiceRequest=function(sid,sname,sAmt,stAmt,totAmt,vid){
   if(svc.requiresPhotos){let pc=svc.photoCount||4;docCont.innerHTML+=`<div class="form-group"><label class="form-label">Vehicle Photos (${pc}) <span style="color:#f39c12">*</span></label><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">`;for(let i=1;i<=pc;i++)docCont.innerHTML+=`<div><div class="file-upload" style="padding:10px" onclick="document.getElementById('sPhoto${i}').click()"><i class="fas fa-camera"></i> Photo ${i}<input type="file" id="sPhoto${i}" accept=".jpg,.jpeg,.png" style="display:none" onchange="handleServicePhoto(${i},this)"></div><div id="sPhotoName${i}" class="file-name"></div></div>`;docCont.innerHTML+='</div></div>'}
   let tot=sAmt+stAmt;
   document.getElementById('priceBreakdown').innerHTML=`<div class="price-row"><span class="price-label">Service Fee:</span><span class="price-value">MVR ${sAmt}</span></div><div class="price-row"><span class="price-label">Sticker Fee:</span><span class="price-value">MVR ${stAmt}</span></div><div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${tot}</span></div>`;
-  // FIX: Uses renderBankDetails so account name is shown
   document.getElementById('serviceBankDetails').innerHTML=renderBankDetails(tot);
   document.getElementById('sstep1Div').style.display='block';document.getElementById('sstep2Div').style.display='none';document.getElementById('sstep3Div').style.display='none';
   ['trackStep1','trackStep2','trackStep3','trackStep4'].forEach((id,i)=>document.getElementById(id).className='tracker-step'+(i===0?' completed':''));
@@ -997,23 +1108,15 @@ window.submitServiceRequest=async function(){
   let sAmt=parseInt(document.getElementById('serviceAmount').value),stAmt=parseInt(document.getElementById('stickerAmount').value);
   let vid=document.getElementById('serviceVehicle').value,vehicle=currentUser.vehicles[vid];
   let fileKeys=Object.keys(currentServiceFiles);
-  let stages=fileKeys.map(k=>{
-    if(k==='paymentSlip')return{label:'Uploading Payment Slip',icon:'receipt'};
-    if(k.startsWith('photo'))return{label:`Uploading Photo ${k.replace('photo','')}`,icon:'camera'};
-    return{label:`Uploading Document ${parseInt(k.replace('doc',''))+1}`,icon:'file-alt'};
-  });
+  let stages=fileKeys.map(k=>{if(k==='paymentSlip')return{label:'Uploading Payment Slip',icon:'receipt'};if(k.startsWith('photo'))return{label:`Uploading Photo ${k.replace('photo','')}`,icon:'camera'};return{label:`Uploading Document ${parseInt(k.replace('doc',''))+1}`,icon:'file-alt'}});
   stages.push({label:'Saving Request',icon:'database'});
-  document.getElementById('serviceRequestModal').style.display='none';
-  showUploadProgress(stages);
+  document.getElementById('serviceRequestModal').style.display='none';showUploadProgress(stages);
   try{
-    let rid='req_'+Date.now()+'_'+Math.random().toString(36).substr(2,6),urls={};
-    let stageIdx=0;
+    let rid='req_'+Date.now()+'_'+Math.random().toString(36).substr(2,6),urls={};let stageIdx=0;
     for(let k of fileKeys){
-      setUploadStage(stageIdx,'active');
-      let f=currentServiceFiles[k];
+      setUploadStage(stageIdx,'active');let f=currentServiceFiles[k];
       let path=k.startsWith('photo')?'vehicle_photos':k==='paymentSlip'?'payment_slips':'documents';
-      let ref=storage.ref(`requests/${rid}/${path}/${f.name}`);
-      await ref.put(f);urls[k]=await ref.getDownloadURL();
+      let ref=storage.ref(`requests/${rid}/${path}/${f.name}`);await ref.put(f);urls[k]=await ref.getDownloadURL();
       setUploadStage(stageIdx,'done');stageIdx++;
     }
     setUploadStage(stageIdx,'active');
@@ -1022,17 +1125,16 @@ window.submitServiceRequest=async function(){
     document.getElementById('trackStep3').className='tracker-step completed';document.getElementById('trackStep4').className='tracker-step active';
     completeUploadProgress('Service request submitted successfully!');
     setTimeout(()=>{hideUploadProgress();loadUserRequests();showNotification('Service request submitted')},2200);
-  }catch(err){
-    hideUploadProgress();document.getElementById('serviceRequestModal').style.display='flex';
-    showMessage('serviceModalMessage','Error: '+err.message,'error');
-  }
+  }catch(err){hideUploadProgress();document.getElementById('serviceRequestModal').style.display='flex';showMessage('serviceModalMessage','Error: '+err.message,'error');}
 };
 
 // STICKER STATUS
 async function loadStickerStatus(){
   let snap=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
   let list=document.getElementById('stickerStatusList');list.innerHTML='';let found=false;
-  if(snap.exists())snap.forEach(c=>{let r=c.val();if(r.status==='approved'&&r.expiryDate){found=true;let days=Math.ceil((r.expiryDate-Date.now())/86400000),st=days<0?'Expired':days<30?'Expiring soon':'Active',cls=days<0?'expired':days<30?'expiring':'';list.innerHTML+=`<div class="sticker-card"><div style="display:flex;justify-content:space-between"><span>${r.vehicleNumber} – ${r.serviceName}</span><span class="badge ${cls||'active'}">${st}</span></div><div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span><span class="days-badge">${days<0?'Overdue':days+' days'}</span></div><div class="progress-bar"><div class="progress-fill ${cls}" style="width:${Math.min(100,Math.max(0,100-(days/365)*100))}%"></div></div></div>`}});
+  if(snap.exists())snap.forEach(c=>{let r=c.val();if(r.status==='approved'&&r.expiryDate){found=true;let days=Math.ceil((r.expiryDate-Date.now())/86400000),st=days<0?'Expired':days<30?'Expiring soon':'Active',cls=days<0?'expired':days<30?'expiring':'';
+    let dlBtn=r.documentURL?`<a href="${r.documentURL}" download target="_blank" class="btn btn-success btn-small" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download Sticker</a>`:'';
+    list.innerHTML+=`<div class="sticker-card"><div style="display:flex;justify-content:space-between"><span>${r.vehicleNumber} – ${r.serviceName}</span><span class="badge ${cls||'active'}">${st}</span></div><div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span><span class="days-badge">${days<0?'Overdue':days+' days'}</span></div><div class="progress-bar"><div class="progress-fill ${cls}" style="width:${Math.min(100,Math.max(0,100-(days/365)*100))}%"></div></div>${dlBtn}</div>`}});
   if(!found)list.innerHTML='<p style="color:rgba(255,255,255,0.6)">No active stickers</p>';
 }
 
@@ -1059,31 +1161,23 @@ window.submitBusinessService=async function(key){
   if(anyEmpty){showMessage('bizModalMessage','Fill all fields','error');return}
   let stages=Object.keys(bizDocFiles).map(idx=>{let{name}=bizDocFiles[idx];return{label:`Uploading: ${name}`,icon:'file-alt'}});
   stages.push({label:'Saving Business Request',icon:'briefcase'});
-  document.getElementById('businessServiceModal').style.display='none';
-  showUploadProgress(stages);
+  document.getElementById('businessServiceModal').style.display='none';showUploadProgress(stages);
   try{
-    let rid='biz_'+Date.now()+'_'+Math.random().toString(36).substr(2,6),docUrls={};
-    let stageIdx=0;
+    let rid='biz_'+Date.now()+'_'+Math.random().toString(36).substr(2,6),docUrls={};let stageIdx=0;
     for(let idx in bizDocFiles){
-      setUploadStage(stageIdx,'active');
-      let{file,name}=bizDocFiles[idx];
-      let ref=storage.ref(`business_requests/${rid}/${file.name}`);
-      await ref.put(file);docUrls[name]=await ref.getDownloadURL();
+      setUploadStage(stageIdx,'active');let{file,name}=bizDocFiles[idx];
+      let ref=storage.ref(`business_requests/${rid}/${file.name}`);await ref.put(file);docUrls[name]=await ref.getDownloadURL();
       setUploadStage(stageIdx,'done');stageIdx++;
     }
     setUploadStage(stageIdx,'active');
     let data={serviceType:key,serviceName:svc.title,userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone,createdAt:Date.now(),status:'pending',progress:20,fields,documents:docUrls};
     await db.ref(`business_requests/${rid}`).set(data);
-    setUploadStage(stageIdx,'done');
-    completeUploadProgress('Business request submitted!');
+    setUploadStage(stageIdx,'done');completeUploadProgress('Business request submitted!');
     setTimeout(()=>{hideUploadProgress();loadBizRequests();showNotification('Business request submitted')},2200);
-  }catch(err){
-    hideUploadProgress();document.getElementById('businessServiceModal').style.display='flex';
-    showMessage('bizModalMessage','Error: '+err.message,'error');
-  }
+  }catch(err){hideUploadProgress();document.getElementById('businessServiceModal').style.display='flex';showMessage('bizModalMessage','Error: '+err.message,'error');}
 };
 
-// BIZ REQUESTS LIST
+// BIZ REQUESTS
 async function loadBizRequests(){
   let snap=await db.ref('business_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
   let div=document.getElementById('bizRequestsList');div.innerHTML='';
@@ -1091,8 +1185,7 @@ async function loadBizRequests(){
   let reqs=[];snap.forEach(c=>{let r=c.val();r.id=c.key;reqs.push(r)});
   reqs.sort((a,b)=>b.createdAt-a.createdAt);
   reqs.forEach(r=>{
-    let prog=r.progress||20;
-    let statusClass=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';
+    let prog=r.progress||20,statusClass=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';
     let svc=BIZ_SERVICES[r.serviceType]||{};
     let steps=[{l:'Submitted',p:20},{l:'Reviewing',p:50},{l:'Processing',p:75},{l:'Completed',p:100}];
     let stepsHtml=steps.map(st=>{let cls=prog>=st.p?'done':(prog>=st.p-30?'current':'');return`<div class="live-step ${cls}"><div class="step-dot"></div>${st.l}</div>`}).join('');
@@ -1100,8 +1193,9 @@ async function loadBizRequests(){
     if(r.documents&&Object.keys(r.documents).length){imgs='<div style="margin:10px 0"><p style="color:rgba(255,255,255,0.7);font-size:0.8rem;margin-bottom:6px"><i class="fas fa-images"></i> Uploaded Documents</p><div class="biz-image-gallery">';Object.keys(r.documents).forEach(name=>{let url=r.documents[name];let isImg=/\.(jpg|jpeg|png|gif|webp)$/i.test(url.split('?')[0])||url.includes('jpg')||url.includes('png')||url.includes('jpeg');imgs+=isImg?`<img class="biz-gallery-img" src="${url}" alt="${name}" onclick="openLightbox('${url}')" title="${name}">` :`<div style="background:#1e2a3a;border-radius:12px;padding:10px;text-align:center;cursor:pointer" onclick="window.open('${url}')"><i class="fas fa-file" style="font-size:2rem;color:#f39c12"></i><p style="font-size:0.7rem;margin-top:5px">${name}</p></div>`});imgs+='</div></div>'}
     let fieldsHtml='';
     if(r.fields){fieldsHtml='<div style="margin:10px 0">';Object.keys(r.fields).forEach(k=>{fieldsHtml+=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #2e3f55;font-size:0.85rem"><span style="color:rgba(255,255,255,0.6)">${k}</span><span style="color:white;font-weight:600">${r.fields[k]}</span></div>`});fieldsHtml+='</div>'}
-    div.innerHTML+=`
-    <div class="biz-request-card ${r.status==='approved'?'approved':r.status==='rejected'?'rejected':''}">
+    // Download button for approved biz doc
+    let bizDlBtn=r.bizDocumentURL?`<a href="${r.bizDocumentURL}" download target="_blank" class="btn btn-success btn-small" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download Document</a>`:'';
+    div.innerHTML+=`<div class="biz-request-card ${r.status==='approved'?'approved':r.status==='rejected'?'rejected':''}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:40px;height:40px;border-radius:12px;background:rgba(243,156,18,0.15);display:flex;align-items:center;justify-content:center"><i class="fas ${svc.icon||'fa-briefcase'}" style="color:${svc.color||'#f39c12'}"></i></div>
@@ -1109,9 +1203,9 @@ async function loadBizRequests(){
         </div>
         <span class="badge ${statusClass}">${r.status}</span>
       </div>
-      ${fieldsHtml}
-      ${imgs}
+      ${fieldsHtml}${imgs}
       ${r.adminNote?`<div style="background:rgba(52,152,219,0.15);border-left:3px solid #3498db;border-radius:10px;padding:10px;margin:10px 0"><p style="color:#5dade2;font-size:0.8rem;font-weight:600">Admin Note</p><p style="font-size:0.85rem">${r.adminNote}</p></div>`:''}
+      ${bizDlBtn}
       <div class="live-progress-wrap">
         <div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="bpct_${r.id}">0%</span></div>
         <div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="bbar_${r.id}" style="width:0%"></div></div>
@@ -1139,7 +1233,9 @@ window.loadUserRequests=async function(){
       let prog=r.progress||25,sb=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';
       let steps=[{l:'Submitted',p:25},{l:'Payment',p:50},{l:'Review',p:75},{l:'Done',p:100}];
       let sh=steps.map(st=>{let cls=prog>=st.p?'done':(prog>=st.p-25?'current':'');return`<div class="live-step ${cls}"><div class="step-dot"></div>${st.l}</div>`}).join('');
-      div.innerHTML+=`<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="font-weight:700">${r.serviceName} – ${r.vehicleNumber}</span><span class="badge ${sb}">${r.status}</span></div><div class="price-breakdown"><div class="price-row"><span class="price-label">Service:</span><span class="price-value">MVR ${r.serviceAmount||0}</span></div><div class="price-row"><span class="price-label">Sticker:</span><span class="price-value">MVR ${r.stickerAmount||0}</span></div><div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.totalAmount||0}</span></div></div><div class="live-progress-wrap"><div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="spct_${r.id}">0%</span></div><div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="sbar_${r.id}" style="width:0%"></div></div><div class="live-progress-steps">${sh}</div></div>${r.expiryDate?`<div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span></div>`:''} ${r.documentURL?`<button class="btn btn-info btn-small" onclick="window.open('${r.documentURL}')"><i class="fas fa-file"></i> View Sticker</button>`:''}</div>`;
+      // One-click download sticker button
+      let dlBtn=r.documentURL?`<a href="${r.documentURL}" download target="_blank" class="btn btn-success btn-small" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download Sticker</a>`:'';
+      div.innerHTML+=`<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="font-weight:700">${r.serviceName} – ${r.vehicleNumber}</span><span class="badge ${sb}">${r.status}</span></div><div class="price-breakdown"><div class="price-row"><span class="price-label">Service:</span><span class="price-value">MVR ${r.serviceAmount||0}</span></div><div class="price-row"><span class="price-label">Sticker:</span><span class="price-value">MVR ${r.stickerAmount||0}</span></div><div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.totalAmount||0}</span></div></div><div class="live-progress-wrap"><div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="spct_${r.id}">0%</span></div><div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="sbar_${r.id}" style="width:0%"></div></div><div class="live-progress-steps">${sh}</div></div>${r.expiryDate?`<div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span></div>`:''} ${dlBtn}</div>`;
       setTimeout(()=>{let b=document.getElementById(`sbar_${r.id}`),p=document.getElementById(`spct_${r.id}`);if(b){b.style.width=prog+'%';animateCounter(p,0,prog,1200)}},200);
     } else if(r.type==='fine'){
       let sc=r.paid?'verified':r.status==='approved'?'warning':'pending',st=r.paid?'Paid':r.status==='approved'?'Pending Payment':'Under Review';
@@ -1151,7 +1247,8 @@ window.loadUserRequests=async function(){
       let prog=r.progress||20,svc=BIZ_SERVICES[r.serviceType]||{};
       let bs=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';
       let bsh=[{l:'Submitted',p:20},{l:'Reviewing',p:50},{l:'Processing',p:75},{l:'Done',p:100}].map(st=>{let cls=prog>=st.p?'done':(prog>=st.p-30?'current':'');return`<div class="live-step ${cls}"><div class="step-dot"></div>${st.l}</div>`}).join('');
-      div.innerHTML+=`<div class="card" style="border-left:4px solid #3498db"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px"><i class="fas ${svc.icon||'fa-briefcase'}" style="color:${svc.color||'#3498db'}"></i><span style="font-weight:700">${r.serviceName}</span></div><span class="badge ${bs}">${r.status}</span></div><div class="live-progress-wrap"><div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="bpct2_${r.id}">0%</span></div><div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="bbar2_${r.id}" style="width:0%"></div></div><div class="live-progress-steps">${bsh}</div></div>${r.adminNote?`<div style="background:rgba(52,152,219,0.15);border-left:3px solid #3498db;border-radius:10px;padding:10px;margin:10px 0"><p style="font-size:0.85rem">${r.adminNote}</p></div>`:''}</div>`;
+      let dlBtn=r.bizDocumentURL?`<a href="${r.bizDocumentURL}" download target="_blank" class="btn btn-success btn-small" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download Document</a>`:'';
+      div.innerHTML+=`<div class="card" style="border-left:4px solid #3498db"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px"><i class="fas ${svc.icon||'fa-briefcase'}" style="color:${svc.color||'#3498db'}"></i><span style="font-weight:700">${r.serviceName}</span></div><span class="badge ${bs}">${r.status}</span></div><div class="live-progress-wrap"><div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="bpct2_${r.id}">0%</span></div><div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="bbar2_${r.id}" style="width:0%"></div></div><div class="live-progress-steps">${bsh}</div></div>${r.adminNote?`<div style="background:rgba(52,152,219,0.15);border-left:3px solid #3498db;border-radius:10px;padding:10px;margin:10px 0"><p style="font-size:0.85rem">${r.adminNote}</p></div>`:''} ${dlBtn}</div>`;
       setTimeout(()=>{let b=document.getElementById(`bbar2_${r.id}`),p=document.getElementById(`bpct2_${r.id}`);if(b){b.style.width=prog+'%';animateCounter(p,0,prog,1200)}},200);
     }
   });
@@ -1174,14 +1271,14 @@ async function loadDocuments(){
 window.openFolder=async function(name){
   let cont=document.getElementById('folderContents'),files=[];
   if(name==='id_documents'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documents&&r.documents.doc0)files.push({name:`ID - ${r.vehicleNumber}`,url:r.documents.doc0,date:r.createdAt})})}
-  else if(name==='sticker_documents'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documentURL)files.push({name:`${r.serviceName} - ${r.vehicleNumber}`,url:r.documentURL,date:r.createdAt})})}
+  else if(name==='sticker_documents'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documentURL)files.push({name:`${r.serviceName} - ${r.vehicleNumber}`,url:r.documentURL,date:r.createdAt,download:true})})}
   else if(name==='fine_documents'){let f=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(f.exists())f.forEach(c=>{let r=c.val();if(r.documentUrl)files.push({name:`Fine - ${r.vehicleNumber}`,url:r.documentUrl,date:r.createdAt})})}
   else if(name==='payment_slips'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documents&&r.documents.paymentSlip)files.push({name:`Payment - ${r.serviceName}`,url:r.documents.paymentSlip,date:r.createdAt})});let f=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(f.exists())f.forEach(c=>{let r=c.val();if(r.paymentSlip)files.push({name:`Fine Payment - ${r.vehicleNumber}`,url:r.paymentSlip,date:r.paidAt})})}
-  else if(name==='business_docs'){let b=await db.ref('business_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(b.exists())b.forEach(c=>{let r=c.val();if(r.documents)Object.keys(r.documents).forEach(dk=>{files.push({name:`${r.serviceName} - ${dk}`,url:r.documents[dk],date:r.createdAt})})})}
-  else if(name==='admin_uploads'){let ad=await db.ref(`admin_uploads/${currentUser.uid}`).once('value');if(ad.exists())ad.forEach(c=>{let d=c.val();files.push({name:d.name,url:d.url,date:d.uploadedAt})})}
+  else if(name==='business_docs'){let b=await db.ref('business_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(b.exists())b.forEach(c=>{let r=c.val();if(r.documents)Object.keys(r.documents).forEach(dk=>{files.push({name:`${r.serviceName} - ${dk}`,url:r.documents[dk],date:r.createdAt})});if(r.bizDocumentURL)files.push({name:`${r.serviceName} - Official Doc`,url:r.bizDocumentURL,date:r.createdAt,download:true})})}
+  else if(name==='admin_uploads'){let ad=await db.ref(`admin_uploads/${currentUser.uid}`).once('value');if(ad.exists())ad.forEach(c=>{let d=c.val();files.push({name:d.name,url:d.url,date:d.uploadedAt,download:true})})}
   let html=`<h4 style="margin:1rem 0">${name.replace(/_/g,' ').toUpperCase()}</h4>`;
   if(!files.length)html+='<div class="card">No files in this folder</div>';
-  else{files.sort((a,b)=>b.date-a.date);files.forEach(f=>{html+=`<div class="doc-item" onclick="window.open('${f.url}')"><div class="doc-icon"><i class="fas fa-file"></i></div><div class="doc-info"><div class="doc-name">${f.name}</div><div class="doc-date">${new Date(f.date).toLocaleDateString()}</div></div><i class="fas fa-download" style="color:#f39c12"></i></div>`})}
+  else{files.sort((a,b)=>b.date-a.date);files.forEach(f=>{html+=`<div class="doc-item"><div class="doc-icon"><i class="fas fa-file"></i></div><div class="doc-info"><div class="doc-name">${f.name}</div><div class="doc-date">${new Date(f.date).toLocaleDateString()}</div></div><a href="${f.url}" ${f.download?'download ':''} target="_blank" style="color:#f39c12;text-decoration:none"><i class="fas fa-${f.download?'download':'external-link-alt'}"></i></a></div>`})}
   cont.innerHTML=html;
 };
 
