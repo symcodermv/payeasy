@@ -169,6 +169,8 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .live-progress-pct{color:#f39c12;font-size:0.9rem;font-weight:700}
 .live-progress-bar-outer{height:12px;background:#2e3f55;border-radius:10px;overflow:hidden}
 .live-progress-bar-inner{height:100%;border-radius:10px;background:linear-gradient(90deg,#f39c12,#e67e22);transition:width 1.4s cubic-bezier(.4,0,.2,1);position:relative}
+.live-progress-bar-inner.complete{background:linear-gradient(90deg,#27ae60,#2ecc71)}
+.progress-complete-label{display:inline-flex;align-items:center;gap:5px;background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.4);color:#2ecc71;border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:700;margin-left:8px}
 .live-progress-bar-inner::after{content:'';position:absolute;top:0;right:0;bottom:0;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.35));animation:shimmer 1.8s infinite}
 @keyframes shimmer{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
 .live-progress-steps{display:flex;justify-content:space-between;margin-top:10px}
@@ -196,45 +198,33 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .biz-image-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
 .biz-gallery-img{width:100%;height:90px;object-fit:cover;border-radius:12px;cursor:pointer;border:1px solid #2e3f55;transition:0.2s}
 .biz-gallery-img:hover{border-color:#f39c12;transform:scale(1.03)}
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9000;align-items:center;justify-content:center;flex-direction:column}
+
+/* ===== LIGHTBOX ===== */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9000;align-items:center;justify-content:center;flex-direction:column;padding:1rem}
 .lightbox.show{display:flex}
-.lightbox img{max-width:90vw;max-height:80vh;border-radius:16px}
-.lightbox-close{position:absolute;top:20px;right:20px;background:none;border:none;color:white;font-size:2.5rem;cursor:pointer}
-.tg-float{position:fixed;bottom:24px;right:24px;z-index:8000;background:#0088cc;color:white;border:none;border-radius:50px;padding:12px 20px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 6px 24px rgba(0,136,204,0.5);transition:0.3s;text-decoration:none}
-.tg-float:hover{transform:translateY(-3px);background:#007ab8}
-.upload-progress-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;z-index:9999;padding:1rem}
-.upload-progress-modal.show{display:flex}
-.upload-progress-box{background:#141b2b;border-radius:32px;width:100%;max-width:420px;padding:2rem 1.8rem;border:1px solid #2e3f55;text-align:center}
-.upload-progress-icon{width:72px;height:72px;border-radius:50%;background:rgba(243,156,18,0.15);border:3px solid #f39c12;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:2rem;color:#f39c12}
-.upload-progress-icon.success{background:rgba(39,174,96,0.15);border-color:#27ae60;color:#27ae60}
-.upload-progress-icon.spin i{animation:spin 1s linear infinite}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.upload-progress-title{color:white;font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
-.upload-progress-subtitle{color:rgba(255,255,255,0.6);font-size:0.88rem;margin-bottom:1.5rem}
-.upload-stages{display:flex;flex-direction:column;gap:10px;margin:1.2rem 0}
-.upload-stage{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:16px;background:#1a2535;border:1px solid #2a3a55;transition:all 0.3s}
-.upload-stage.active{border-color:#f39c12;background:rgba(243,156,18,0.08)}
-.upload-stage.done{border-color:#27ae60;background:rgba(39,174,96,0.08)}
-.stage-icon{width:32px;height:32px;border-radius:50%;background:#2e3f55;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#607080;flex-shrink:0;transition:all 0.3s}
-.upload-stage.active .stage-icon{background:rgba(243,156,18,0.2);color:#f39c12}
-.upload-stage.done .stage-icon{background:rgba(39,174,96,0.2);color:#27ae60}
-.stage-label{color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:500;text-align:left;flex:1;transition:color 0.3s}
-.upload-stage.active .stage-label{color:white}
-.upload-stage.done .stage-label{color:#27ae60}
-.stage-status{font-size:0.75rem;color:#607080}
-.upload-stage.active .stage-status{color:#f39c12}
-.upload-stage.done .stage-status{color:#27ae60}
-.upload-main-bar{height:10px;background:#2e3f55;border-radius:10px;overflow:hidden;margin:1rem 0}
-.upload-main-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#27ae60,#2ecc71);transition:width 0.6s ease;position:relative}
-.upload-main-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:30px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4));animation:shimmer 1.2s infinite}
-.upload-success-checkmark{display:none;font-size:4rem;color:#27ae60;margin:1rem 0;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
-@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.lightbox img{max-width:90vw;max-height:80vh;border-radius:16px;box-shadow:0 0 60px rgba(0,0,0,0.8)}
+.lightbox-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.8rem;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.lightbox-title{color:rgba(255,255,255,0.7);font-size:0.9rem;margin-top:1rem;text-align:center}
+.lightbox-actions{display:flex;gap:1rem;margin-top:1rem}
+
+/* ===== DOC LIST (My Documents folder) ===== */
+.doc-preview-grid{display:flex;flex-direction:column;gap:10px;margin-top:1rem}
+.doc-preview-card{background:#1b2537;border-radius:18px;overflow:hidden;border:1px solid #2e3f55;transition:0.2s;display:flex;align-items:center;gap:12px;padding:10px 14px}
+.doc-preview-card:hover{border-color:#f39c12}
+.doc-preview-thumb-wrap{width:52px;height:52px;border-radius:12px;overflow:hidden;flex-shrink:0;background:#253445;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid #2e3f55}
+.doc-preview-thumb{width:52px;height:52px;object-fit:cover;display:block}
+.doc-preview-pdf{width:52px;height:52px;background:linear-gradient(135deg,#2a1a1a,#3a1a1a);display:flex;align-items:center;justify-content:center}
+.doc-preview-pdf i{font-size:1.6rem;color:#e74c3c}
+.doc-preview-info{flex:1;min-width:0}
+.doc-preview-name{color:white;font-weight:600;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-preview-date{color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:2px}
+.doc-preview-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
 
 /* ===== NOTIFICATION BELL ===== */
 .notif-bell-wrap{position:relative;cursor:pointer}
 .notif-bell-btn{background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.3);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;color:#f39c12;font-size:1rem}
 .notif-bell-btn:hover{background:rgba(243,156,18,0.22)}
-.notif-red-dot{position:absolute;top:-3px;right:-3px;background:#e74c3c;color:white;border-radius:50%;width:18px;height:18px;font-size:0.6rem;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid #141b2b}
+.notif-red-dot{position:absolute;top:-5px;right:-5px;background:#e74c3c;color:white;border-radius:50px;min-width:20px;height:20px;padding:0 5px;font-size:0.65rem;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid #141b2b;line-height:1}
 .notif-red-dot.show{display:flex}
 
 /* ===== NOTIFICATION SIDE PANEL ===== */
@@ -244,8 +234,10 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .notif-panel-title{color:white;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:8px}
 .notif-panel-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.8rem;cursor:pointer;line-height:1;padding:0}
 .notif-panel-body{flex:1;padding:0.8rem}
-.notif-mark-all{background:#1e2a3a;border:1px solid #2e3f55;color:rgba(255,255,255,0.6);padding:7px 14px;border-radius:20px;font-size:0.78rem;cursor:pointer;display:block;width:100%;margin-bottom:10px;transition:0.2s}
-.notif-mark-all:hover{background:#253445;color:white}
+.notif-panel-actions{display:flex;gap:8px;margin-bottom:10px}
+.notif-action-btn{flex:1;background:#1e2a3a;border:1px solid #2e3f55;color:rgba(255,255,255,0.7);padding:8px 10px;border-radius:20px;font-size:0.78rem;cursor:pointer;transition:0.2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.notif-action-btn:hover{background:#253445;color:white}
+.notif-action-btn.danger:hover{background:rgba(231,76,60,0.2);border-color:#e74c3c;color:#e74c3c}
 .notif-item{background:#1b2537;border-radius:16px;padding:1rem;margin-bottom:0.7rem;border-left:4px solid #2e3f55;position:relative;transition:0.2s}
 .notif-item.unread{border-left-color:#f39c12;background:#1e2d42}
 .notif-item.type-complete{border-left-color:#27ae60}
@@ -258,7 +250,10 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .notif-unread-dot{width:8px;height:8px;border-radius:50%;background:#f39c12;flex-shrink:0}
 .notif-item-msg{color:rgba(255,255,255,0.7);font-size:0.8rem;line-height:1.45;margin-bottom:8px}
 .notif-item-time{color:rgba(255,255,255,0.3);font-size:0.7rem}
-.notif-dl-btn{display:inline-flex;align-items:center;gap:5px;background:#27ae60;color:white;border:none;border-radius:16px;padding:7px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;text-decoration:none;transition:0.2s;margin-top:6px}
+.notif-item-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px}
+.notif-clear-single{background:none;border:none;color:rgba(255,255,255,0.25);font-size:0.72rem;cursor:pointer;padding:4px 8px;border-radius:12px;transition:0.2s;display:flex;align-items:center;gap:4px}
+.notif-clear-single:hover{background:rgba(231,76,60,0.15);color:#e74c3c}
+.notif-dl-btn{display:inline-flex;align-items:center;gap:5px;background:#27ae60;color:white;border:none;border-radius:16px;padding:7px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;text-decoration:none;transition:0.2s}
 .notif-dl-btn:hover{background:#229954;transform:scale(1.04)}
 
 /* ===== TOAST ALERT ===== */
@@ -280,19 +275,100 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .toast-close-btn{background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.3rem;cursor:pointer;flex-shrink:0;line-height:1;padding:2px}
 
 /* ===== NOTIFICATIONS PAGE SECTION ===== */
-.notif-section-card{background:#1e2a3a;border-radius:22px;padding:1rem 1.2rem;margin-bottom:0.8rem;border-left:4px solid #2e4057}
+.notif-section-card{background:#1e2a3a;border-radius:22px;padding:1rem 1.2rem;margin-bottom:0.8rem;border-left:4px solid #2e4057;position:relative}
 .notif-section-card.unread{border-left-color:#f39c12;background:#1e2d42}
 .notif-section-card.complete{border-left-color:#27ae60}
 .notif-section-card.upload{border-left-color:#3498db}
 .notif-section-card.warn{border-left-color:#e67e22}
 .notif-section-card.err{border-left-color:#e74c3c}
+.notif-section-clear{position:absolute;top:10px;right:10px;background:none;border:none;color:rgba(255,255,255,0.2);font-size:1rem;cursor:pointer;padding:4px 6px;border-radius:10px;transition:0.2s}
+.notif-section-clear:hover{color:#e74c3c;background:rgba(231,76,60,0.1)}
 
+/* ===== REQUEST CARD - APPROVED COMPLETE ===== */
+.request-approved-banner{background:linear-gradient(135deg,#0d2218,#142b1e);border:2px solid #27ae60;border-radius:20px;padding:1.2rem;margin:10px 0;text-align:center}
+.request-approved-icon{font-size:2.5rem;color:#27ae60;margin-bottom:8px;animation:popIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275)}
+.request-approved-title{color:#2ecc71;font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.request-approved-sub{color:rgba(255,255,255,0.6);font-size:0.82rem;margin-bottom:12px}
+.doc-big-preview{width:100%;max-height:200px;object-fit:contain;border-radius:14px;border:1px solid #2e3f55;margin:8px 0;cursor:pointer}
+.doc-pdf-preview-box{background:#1a2535;border-radius:14px;padding:1.5rem;text-align:center;margin:8px 0;cursor:pointer;border:1px solid #2e3f55;transition:0.2s}
+.doc-pdf-preview-box:hover{border-color:#27ae60}
+.doc-pdf-preview-box i{font-size:3rem;color:#e74c3c;display:block;margin-bottom:8px}
+
+/* ===== UPLOAD PROGRESS ===== */
+.upload-progress-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;z-index:9999;padding:1rem}
+.upload-progress-modal.show{display:flex}
+.upload-progress-box{background:#141b2b;border-radius:32px;width:100%;max-width:420px;padding:2rem 1.8rem;border:1px solid #2e3f55;text-align:center}
+.upload-progress-icon{width:72px;height:72px;border-radius:50%;background:rgba(243,156,18,0.15);border:3px solid #f39c12;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:2rem;color:#f39c12}
+.upload-progress-icon.success{background:rgba(39,174,96,0.15);border-color:#27ae60;color:#27ae60}
+.upload-progress-icon.spin i{animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.upload-progress-title{color:white;font-size:1.2rem;font-weight:700;margin-bottom:0.5rem}
+.upload-progress-subtitle{color:rgba(255,255,255,0.6);font-size:0.88rem;margin-bottom:1.5rem}
+.upload-main-bar{height:10px;background:#2e3f55;border-radius:10px;overflow:hidden;margin:1rem 0}
+.upload-main-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#27ae60,#2ecc71);transition:width 0.6s ease;position:relative}
+.upload-main-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:30px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4));animation:shimmer 1.2s infinite}
+.upload-stages{display:flex;flex-direction:column;gap:10px;margin:1.2rem 0}
+.upload-stage{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:16px;background:#1a2535;border:1px solid #2a3a55;transition:all 0.3s}
+.upload-stage.active{border-color:#f39c12;background:rgba(243,156,18,0.08)}
+.upload-stage.done{border-color:#27ae60;background:rgba(39,174,96,0.08)}
+.stage-icon{width:32px;height:32px;border-radius:50%;background:#2e3f55;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#607080;flex-shrink:0;transition:all 0.3s}
+.upload-stage.active .stage-icon{background:rgba(243,156,18,0.2);color:#f39c12}
+.upload-stage.done .stage-icon{background:rgba(39,174,96,0.2);color:#27ae60}
+.stage-label{color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:500;text-align:left;flex:1;transition:color 0.3s}
+.upload-stage.active .stage-label{color:white}
+.upload-stage.done .stage-label{color:#27ae60}
+.stage-status{font-size:0.75rem;color:#607080}
+.upload-stage.active .stage-status{color:#f39c12}
+.upload-stage.done .stage-status{color:#27ae60}
+.upload-success-checkmark{display:none;font-size:4rem;color:#27ae60;margin:1rem 0;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+.tg-float{position:fixed;bottom:24px;right:24px;z-index:8000;background:#0088cc;color:white;border:none;border-radius:50px;padding:12px 20px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 6px 24px rgba(0,136,204,0.5);transition:0.3s;text-decoration:none}
+.tg-float:hover{transform:translateY(-3px);background:#007ab8}
+
+/* ===== INVOICE STYLES ===== */
+.inv-wrap{font-family:'Segoe UI',Roboto,sans-serif;color:#1a2535;background:white;border-radius:16px;overflow:hidden}
+.inv-header{background:linear-gradient(135deg,#0a0f1e,#1a2a4a);padding:1.6rem;display:flex;justify-content:space-between;align-items:flex-start}
+.inv-logo{display:flex;align-items:center;gap:10px}
+.inv-logo-icon{width:46px;height:46px;background:rgba(243,156,18,0.2);border:2px solid #f39c12;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f39c12;font-size:1.3rem}
+.inv-logo-text{color:white;font-size:1.3rem;font-weight:800;letter-spacing:0.5px}
+.inv-logo-sub{color:rgba(255,255,255,0.5);font-size:0.72rem;margin-top:1px}
+.inv-badge{background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.4);border-radius:30px;padding:6px 14px;text-align:right}
+.inv-badge-label{color:rgba(255,255,255,0.5);font-size:0.65rem;letter-spacing:1px;text-transform:uppercase}
+.inv-badge-num{color:#f39c12;font-size:1rem;font-weight:700;margin-top:2px}
+.inv-body{padding:1.4rem}
+.inv-meta{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}
+.inv-meta-box{background:#f8fafc;border-radius:12px;padding:12px 14px;border:1px solid #e8edf3}
+.inv-meta-label{color:#8899aa;font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.inv-meta-val{color:#1a2535;font-size:0.88rem;font-weight:600;line-height:1.5}
+.inv-meta-val.small{font-size:0.8rem;font-weight:500}
+.inv-divider{height:1px;background:#e8edf3;margin:1rem 0}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+.inv-table th{background:#f0f4f8;color:#6677aa;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 12px;text-align:left}
+.inv-table th:last-child{text-align:right}
+.inv-table td{padding:10px 12px;border-bottom:1px solid #f0f4f8;color:#1a2535;font-size:0.88rem}
+.inv-table td:last-child{text-align:right;font-weight:600}
+.inv-table tr:last-child td{border-bottom:none}
+.inv-total-row{background:#f8fafc;border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.inv-total-label{color:#6677aa;font-size:0.85rem;font-weight:600}
+.inv-total-val{color:#1a2535;font-size:1.3rem;font-weight:800}
+.inv-status-paid{display:inline-flex;align-items:center;gap:6px;background:#e8f8ef;border:1.5px solid #27ae60;border-radius:20px;padding:6px 14px;color:#27ae60;font-size:0.78rem;font-weight:700}
+.inv-footer{background:#f8fafc;padding:1rem 1.4rem;border-top:1px solid #e8edf3;text-align:center}
+.inv-footer p{color:#8899aa;font-size:0.75rem;line-height:1.6}
+.inv-footer strong{color:#4455aa}
+.inv-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:4rem;font-weight:900;color:rgba(39,174,96,0.07);letter-spacing:4px;pointer-events:none;white-space:nowrap}
+@media print{
+  body>*{display:none!important}
+  #printInvoiceArea{display:block!important;position:fixed;inset:0;background:white;z-index:99999;padding:0}
+  .inv-wrap{border-radius:0}
+}
 p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 @media(max-width:500px){
   .vehicle-grid{grid-template-columns:1fr}
   .folder-grid{grid-template-columns:1fr 1fr}
   .home-content h1{font-size:2.4rem}
   .notif-panel{width:100%;right:-100%}
+  .inv-meta{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -343,11 +419,14 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 <!-- NOTIFICATION SIDE PANEL -->
 <div class="notif-panel" id="notifPanel">
   <div class="notif-panel-header">
-    <div class="notif-panel-title"><i class="fas fa-bell" style="color:#f39c12"></i> Notifications</div>
+    <div class="notif-panel-title"><i class="fas fa-bell" style="color:#f39c12"></i> Notifications <span id="notifPanelCount" style="background:#e74c3c;color:white;border-radius:20px;padding:2px 8px;font-size:0.7rem;font-weight:700;display:none;margin-left:4px"></span></div>
     <button class="notif-panel-close" onclick="closeNotifPanel()">&times;</button>
   </div>
   <div class="notif-panel-body">
-    <button class="notif-mark-all" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark all as read</button>
+    <div class="notif-panel-actions">
+      <button class="notif-action-btn" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark all read</button>
+      <button class="notif-action-btn danger" onclick="clearAllNotifications()"><i class="fas fa-trash-alt"></i> Clear all</button>
+    </div>
     <div id="notifPanelList"><p style="color:rgba(255,255,255,0.4);text-align:center;padding:2rem;font-size:0.88rem">No notifications yet</p></div>
   </div>
 </div>
@@ -435,7 +514,6 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
             <div class="user-info-header">
               <span id="headerUserName">User</span>
               <span class="badge" id="headerVerifiedBadge">Pending</span>
-              <!-- NOTIFICATION BELL -->
               <div class="notif-bell-wrap" onclick="openNotifPanel()">
                 <div class="notif-bell-btn"><i class="fas fa-bell"></i></div>
                 <div class="notif-red-dot" id="notifRedDot"></div>
@@ -504,6 +582,7 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
             <div id="folderSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-folder"></i> My Documents</h4>
               <div class="folder-grid">
+                <div class="folder-card" onclick="openFolder('invoices')" style="border-color:rgba(243,156,18,0.4);background:linear-gradient(135deg,#1e2a1a,#1e2e10)"><div class="folder-icon"><i class="fas fa-file-invoice-dollar" style="color:#f39c12"></i></div><div class="folder-name">INVOICES</div><div class="folder-count" id="invoiceCount">0 invoices</div></div>
                 <div class="folder-card" onclick="openFolder('id_documents')"><div class="folder-icon"><i class="fas fa-id-card"></i></div><div class="folder-name">ID DOCS</div><div class="folder-count" id="idCount">0 files</div></div>
                 <div class="folder-card" onclick="openFolder('sticker_documents')"><div class="folder-icon"><i class="fas fa-tag"></i></div><div class="folder-name">STICKERS</div><div class="folder-count" id="stickerCount">0 files</div></div>
                 <div class="folder-card" onclick="openFolder('fine_documents')"><div class="folder-icon"><i class="fas fa-file-invoice"></i></div><div class="folder-name">FINES</div><div class="folder-count" id="fineCount">0 files</div></div>
@@ -522,7 +601,10 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
             <!-- NOTIFICATIONS SECTION -->
             <div id="notificationsSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-bell"></i> Notifications</h4>
-              <button class="btn btn-secondary btn-small" style="margin-bottom:1rem" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark all as read</button>
+              <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
+                <button class="btn btn-secondary btn-small" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark all read</button>
+                <button class="btn btn-danger btn-small" onclick="clearAllNotifications()"><i class="fas fa-trash-alt"></i> Clear all</button>
+              </div>
               <div id="notifSectionList"><p style="color:rgba(255,255,255,0.4)">No notifications yet</p></div>
             </div>
 
@@ -639,10 +721,31 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
   </div>
 </div>
 
-<!-- LIGHTBOX -->
+<!-- INVOICE MODAL -->
+<div id="invoiceModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9100;align-items:center;justify-content:center;padding:1rem;overflow-y:auto">
+  <div style="width:100%;max-width:560px;margin:auto">
+    <div style="background:#141b2b;border-radius:28px;border:1px solid #2e3f55;overflow:hidden">
+      <!-- Invoice Action Bar -->
+      <div style="background:#0f1624;padding:1rem 1.2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #253241">
+        <div style="display:flex;align-items:center;gap:8px"><i class="fas fa-file-invoice" style="color:#f39c12;font-size:1.1rem"></i><span style="color:white;font-weight:700;font-size:1rem">Invoice</span></div>
+        <div style="display:flex;gap:8px">
+          <button onclick="printInvoice()" style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.5);color:#5dade2;border-radius:20px;padding:7px 16px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px"><i class="fas fa-print"></i> Print</button>
+          <button onclick="downloadInvoicePDF()" style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.5);color:#2ecc71;border-radius:20px;padding:7px 16px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px"><i class="fas fa-download"></i> Save PDF</button>
+          <button onclick="closeInvoice()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.6rem;cursor:pointer;line-height:1;padding:0 4px">&times;</button>
+        </div>
+      </div>
+      <!-- Invoice Content -->
+      <div id="invoiceContent" style="padding:1.6rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCUMENT PREVIEW LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
   <img id="lightboxImg" src="" alt="Preview">
+  <div class="lightbox-title" id="lightboxTitle"></div>
+  <div class="lightbox-actions" id="lightboxActions" onclick="event.stopPropagation()"></div>
 </div>
 
 <!-- TELEGRAM FLOAT -->
@@ -717,12 +820,10 @@ function notifMeta(type){
   };
   return m[type]||{icon:'fa-bell',cls:'upload',col:'#f39c12'};
 }
-
 function fmtAgo(ts){
   let d=Date.now()-ts,s=Math.floor(d/1000),m=Math.floor(s/60),h=Math.floor(m/60),dy=Math.floor(h/24);
   if(s<60)return'Just now';if(m<60)return m+'m ago';if(h<24)return h+'h ago';return dy+'d ago';
 }
-
 function dlButton(url,label='Download'){
   if(!url)return'';
   return`<a href="${url}" download target="_blank" class="notif-dl-btn"><i class="fas fa-download"></i> ${label}</a>`;
@@ -735,14 +836,19 @@ function listenNotifications(uid){
     if(snap.exists())snap.forEach(c=>{let n=c.val();n.id=c.key;list.push(n)});
     list.sort((a,b)=>b.createdAt-a.createdAt);
     let unread=list.filter(n=>!n.read).length;
-    // Bell badge
+    // Bell badge — show total count
     let dot=document.getElementById('notifRedDot');
-    if(dot){dot.innerText=unread>9?'9+':unread;dot.className='notif-red-dot'+(unread>0?' show':'');}
+    if(dot){
+      if(unread>0){dot.innerText=unread>99?'99+':unread;dot.className='notif-red-dot show';}
+      else dot.className='notif-red-dot';
+    }
     let sb=document.getElementById('sbNotifBadge');
-    if(sb){sb.innerText=unread;sb.style.display=unread>0?'inline':'none';}
+    if(sb){sb.innerText=unread>99?'99+':unread;sb.style.display=unread>0?'inline':'none';}
+    // Panel count
+    let pc=document.getElementById('notifPanelCount');
+    if(pc){if(unread>0){pc.innerText=unread>99?'99+':unread;pc.style.display='inline';}else pc.style.display='none';}
     renderNotifPanel(list);
     renderNotifSection(list);
-    // Show toast for brand new (within last 12 seconds) unread notifs not yet toasted
     list.filter(n=>!n.read&&(Date.now()-n.createdAt)<12000&&!_shownToasts.has(n.id)).forEach(n=>{
       _shownToasts.add(n.id);showToast(n);
     });
@@ -754,7 +860,7 @@ function renderNotifPanel(list){
   if(!list.length){div.innerHTML='<p style="color:rgba(255,255,255,0.4);text-align:center;padding:2rem;font-size:0.88rem">No notifications yet</p>';return}
   div.innerHTML=list.map(n=>{
     let m=notifMeta(n.type);
-    return`<div class="notif-item ${n.read?'':'unread'} type-${m.cls}">
+    return`<div class="notif-item ${n.read?'':'unread'} type-${m.cls}" id="npanel_${n.id}">
       <div class="notif-item-head">
         <i class="fas ${m.icon} notif-item-icon" style="color:${m.col}"></i>
         <div class="notif-item-title">${n.title||'Notification'}</div>
@@ -762,7 +868,10 @@ function renderNotifPanel(list){
       </div>
       <div class="notif-item-msg">${n.message||''}</div>
       ${dlButton(n.documentURL)}
-      <div class="notif-item-time">${fmtAgo(n.createdAt)}</div>
+      <div class="notif-item-footer">
+        <div class="notif-item-time">${fmtAgo(n.createdAt)}</div>
+        <button class="notif-clear-single" onclick="clearSingleNotif('${n.id}')"><i class="fas fa-times"></i> Clear</button>
+      </div>
     </div>`;
   }).join('');
 }
@@ -772,7 +881,8 @@ function renderNotifSection(list){
   if(!list.length){div.innerHTML='<div class="card">No notifications yet</div>';return}
   div.innerHTML=list.map(n=>{
     let m=notifMeta(n.type);
-    return`<div class="notif-section-card ${n.read?'':'unread'} ${m.cls}">
+    return`<div class="notif-section-card ${n.read?'':'unread'} ${m.cls}" id="nsec_${n.id}">
+      <button class="notif-section-clear" onclick="clearSingleNotif('${n.id}')" title="Clear"><i class="fas fa-times"></i></button>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <i class="fas ${m.icon}" style="color:${m.col};font-size:1.1rem"></i>
         <div style="flex:1"><div style="font-weight:700;font-size:0.92rem">${n.title||'Notification'}</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4)">${fmtAgo(n.createdAt)}</div></div>
@@ -808,6 +918,19 @@ async function markAllRead(){
   if(Object.keys(upd).length)await db.ref(`user_notifications/${currentUser.uid}`).update(upd);
 }
 
+async function clearSingleNotif(nid){
+  if(!currentUser)return;
+  await db.ref(`user_notifications/${currentUser.uid}/${nid}`).remove();
+  // Remove from DOM immediately
+  ['npanel_','nsec_'].forEach(pre=>{let el=document.getElementById(pre+nid);if(el)el.remove()});
+}
+
+async function clearAllNotifications(){
+  if(!currentUser)return;
+  if(!confirm('Clear all notifications?'))return;
+  await db.ref(`user_notifications/${currentUser.uid}`).remove();
+}
+
 function openNotifPanel(){
   document.getElementById('notifPanel').classList.add('open');
   document.getElementById('notifOverlay').classList.add('show');
@@ -817,6 +940,200 @@ function closeNotifPanel(){
   document.getElementById('notifPanel').classList.remove('open');
   document.getElementById('notifOverlay').classList.remove('show');
 }
+
+// ===== LIGHTBOX (enhanced) =====
+window.openLightbox=function(src,title,downloadUrl){
+  let lb=document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src=src;
+  document.getElementById('lightboxTitle').innerText=title||'';
+  let acts=document.getElementById('lightboxActions');
+  acts.innerHTML=downloadUrl?`<a href="${downloadUrl}" download target="_blank" class="btn btn-success btn-small" style="display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download</a>`:'';
+  lb.classList.add('show');
+};
+window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('show')};
+
+// ===== INVOICE SYSTEM =====
+let _currentInvoiceData=null;
+
+function generateInvoiceNum(rid){
+  let d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  let suffix=(rid||'').slice(-5).toUpperCase();
+  return`INV-${y}${m}${day}-${suffix}`;
+}
+
+function generateInvoiceHTML(data){
+  let {rid,userName,userEmail,userPhone,vehicleNumber,vehicleType,serviceName,serviceAmount,stickerAmount,totalAmount,createdAt,invoiceNum}=data;
+  let date=new Date(createdAt||Date.now());
+  let dateStr=date.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  let timeStr=date.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  let vTypeName=vehicleTypes[vehicleType]?.name||vehicleType||'Vehicle';
+  let bd=bankDetails||{};
+
+  return`<div class="inv-wrap" id="invoiceInnerContent" style="position:relative">
+    <div class="inv-watermark">PAID</div>
+    <div class="inv-header">
+      <div class="inv-logo">
+        <div class="inv-logo-icon"><i class="fas fa-clipboard-check"></i></div>
+        <div><div class="inv-logo-text">RegAssist</div><div class="inv-logo-sub">Vehicle Registration Services</div></div>
+      </div>
+      <div class="inv-badge">
+        <div class="inv-badge-label">Invoice No.</div>
+        <div class="inv-badge-num">${invoiceNum}</div>
+      </div>
+    </div>
+    <div class="inv-body">
+      <div class="inv-meta">
+        <div class="inv-meta-box">
+          <div class="inv-meta-label">Bill To</div>
+          <div class="inv-meta-val">${userName||'Customer'}</div>
+          ${userEmail?`<div class="inv-meta-val small" style="color:#6677aa">${userEmail}</div>`:''}
+          ${userPhone?`<div class="inv-meta-val small" style="color:#6677aa">${userPhone}</div>`:''}
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-label">Invoice Date</div>
+          <div class="inv-meta-val">${dateStr}</div>
+          <div class="inv-meta-val small" style="color:#6677aa">${timeStr}</div>
+          <div style="margin-top:8px"><span class="inv-status-paid"><i class="fas fa-check-circle"></i> PAID</span></div>
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-label">Vehicle</div>
+          <div class="inv-meta-val">${vehicleNumber}</div>
+          <div class="inv-meta-val small" style="color:#6677aa">${vTypeName}</div>
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-label">Reference</div>
+          <div class="inv-meta-val small">${rid||'—'}</div>
+        </div>
+      </div>
+      <div class="inv-divider"></div>
+      <table class="inv-table">
+        <thead><tr><th>Description</th><th>Qty</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr><td><strong>${serviceName}</strong><br><span style="color:#8899aa;font-size:0.78rem">Service Processing Fee</span></td><td style="color:#6677aa">1</td><td>MVR ${(serviceAmount||0).toFixed(2)}</td></tr>
+          ${stickerAmount>0?`<tr><td><strong>Sticker Fee</strong><br><span style="color:#8899aa;font-size:0.78rem">${serviceName} Sticker</span></td><td style="color:#6677aa">1</td><td>MVR ${stickerAmount.toFixed(2)}</td></tr>`:''}
+        </tbody>
+      </table>
+      <div class="inv-divider"></div>
+      <div class="inv-total-row">
+        <div><div class="inv-total-label">Total Amount Paid</div><div style="color:#8899aa;font-size:0.72rem;margin-top:2px">Inclusive of all fees</div></div>
+        <div class="inv-total-val">MVR ${(totalAmount||0).toFixed(2)}</div>
+      </div>
+      ${bd.bankName?`<div style="background:#f0f4f8;border-radius:12px;padding:12px 14px;margin-top:4px">
+        <div style="color:#8899aa;font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Payment Details</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="font-size:0.78rem;color:#6677aa">Bank</div><div style="font-size:0.78rem;font-weight:600;color:#1a2535">${bd.bankName}</div>
+          <div style="font-size:0.78rem;color:#6677aa">Account Name</div><div style="font-size:0.78rem;font-weight:600;color:#1a2535">${bd.accountName}</div>
+          <div style="font-size:0.78rem;color:#6677aa">Account No.</div><div style="font-size:0.78rem;font-weight:600;color:#1a2535">${bd.accountNumber}</div>
+          ${bd.branch?`<div style="font-size:0.78rem;color:#6677aa">Branch</div><div style="font-size:0.78rem;font-weight:600;color:#1a2535">${bd.branch}</div>`:''}
+        </div>
+      </div>`:''}
+    </div>
+    <div class="inv-footer">
+      <p>Thank you for using <strong>RegAssist</strong> · Vehicle Registration Services<br>
+      For support contact us via <strong>Telegram: @9121220</strong><br>
+      <span style="font-size:0.7rem">This is a computer-generated invoice and does not require a physical signature.</span></p>
+    </div>
+  </div>`;
+}
+
+window.showInvoice=function(data){
+  _currentInvoiceData=data;
+  let html=generateInvoiceHTML(data);
+  document.getElementById('invoiceContent').innerHTML=html;
+  document.getElementById('invoiceModal').style.display='flex';
+};
+
+window.closeInvoice=function(){
+  document.getElementById('invoiceModal').style.display='none';
+};
+
+window.printInvoice=function(){
+  if(!_currentInvoiceData)return;
+  let html=generateInvoiceHTML(_currentInvoiceData);
+  let w=window.open('','_blank','width=620,height=800');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif}
+    body{background:white;padding:20px}
+    .inv-wrap{font-family:'Segoe UI',Roboto,sans-serif;color:#1a2535;background:white;border-radius:16px;overflow:hidden;border:1px solid #e0e8f0;position:relative}
+    .inv-header{background:linear-gradient(135deg,#0a0f1e,#1a2a4a);padding:1.6rem;display:flex;justify-content:space-between;align-items:flex-start}
+    .inv-logo{display:flex;align-items:center;gap:10px}
+    .inv-logo-icon{width:46px;height:46px;background:rgba(243,156,18,0.2);border:2px solid #f39c12;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f39c12;font-size:1.3rem}
+    .inv-logo-text{color:white;font-size:1.3rem;font-weight:800}
+    .inv-logo-sub{color:rgba(255,255,255,0.5);font-size:0.72rem;margin-top:1px}
+    .inv-badge{background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.4);border-radius:30px;padding:6px 14px;text-align:right}
+    .inv-badge-label{color:rgba(255,255,255,0.5);font-size:0.65rem;letter-spacing:1px;text-transform:uppercase}
+    .inv-badge-num{color:#f39c12;font-size:1rem;font-weight:700;margin-top:2px}
+    .inv-body{padding:1.4rem}
+    .inv-meta{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}
+    .inv-meta-box{background:#f8fafc;border-radius:12px;padding:12px 14px;border:1px solid #e8edf3}
+    .inv-meta-label{color:#8899aa;font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+    .inv-meta-val{color:#1a2535;font-size:0.88rem;font-weight:600;line-height:1.5}
+    .inv-meta-val.small{font-size:0.8rem;font-weight:500}
+    .inv-divider{height:1px;background:#e8edf3;margin:1rem 0}
+    .inv-table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+    .inv-table th{background:#f0f4f8;color:#6677aa;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 12px;text-align:left}
+    .inv-table th:last-child{text-align:right}
+    .inv-table td{padding:10px 12px;border-bottom:1px solid #f0f4f8;color:#1a2535;font-size:0.88rem}
+    .inv-table td:last-child{text-align:right;font-weight:600}
+    .inv-table tr:last-child td{border-bottom:none}
+    .inv-total-row{background:#f8fafc;border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+    .inv-total-label{color:#6677aa;font-size:0.85rem;font-weight:600}
+    .inv-total-val{color:#1a2535;font-size:1.3rem;font-weight:800}
+    .inv-status-paid{display:inline-flex;align-items:center;gap:6px;background:#e8f8ef;border:1.5px solid #27ae60;border-radius:20px;padding:6px 14px;color:#27ae60;font-size:0.78rem;font-weight:700}
+    .inv-footer{background:#f8fafc;padding:1rem 1.4rem;border-top:1px solid #e8edf3;text-align:center}
+    .inv-footer p{color:#8899aa;font-size:0.75rem;line-height:1.6}
+    .inv-footer strong{color:#4455aa}
+    .inv-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:5rem;font-weight:900;color:rgba(39,174,96,0.06);letter-spacing:4px;pointer-events:none;white-space:nowrap}
+  </style></head><body>${html}<script>window.onload=()=>{window.print();window.close()}<\/script></body></html>`);
+  w.document.close();
+};
+
+window.downloadInvoicePDF=function(){
+  if(!_currentInvoiceData)return;
+  let html=generateInvoiceHTML(_currentInvoiceData);
+  let num=_currentInvoiceData.invoiceNum||'invoice';
+  let w=window.open('','_blank','width=620,height=800');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${num}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif}
+    body{background:white;padding:16px}
+    .inv-wrap{font-family:'Segoe UI',Roboto,sans-serif;color:#1a2535;background:white;overflow:hidden;position:relative}
+    .inv-header{background:linear-gradient(135deg,#0a0f1e,#1a2a4a);padding:1.6rem;display:flex;justify-content:space-between;align-items:flex-start}
+    .inv-logo{display:flex;align-items:center;gap:10px}
+    .inv-logo-icon{width:46px;height:46px;background:rgba(243,156,18,0.2);border:2px solid #f39c12;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f39c12;font-size:1.3rem}
+    .inv-logo-text{color:white;font-size:1.3rem;font-weight:800}
+    .inv-logo-sub{color:rgba(255,255,255,0.5);font-size:0.72rem}
+    .inv-badge{background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.4);border-radius:30px;padding:6px 14px;text-align:right}
+    .inv-badge-label{color:rgba(255,255,255,0.5);font-size:0.65rem;letter-spacing:1px;text-transform:uppercase}
+    .inv-badge-num{color:#f39c12;font-size:1rem;font-weight:700;margin-top:2px}
+    .inv-body{padding:1.4rem}
+    .inv-meta{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}
+    .inv-meta-box{background:#f8fafc;border-radius:12px;padding:12px 14px;border:1px solid #e8edf3}
+    .inv-meta-label{color:#8899aa;font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+    .inv-meta-val{color:#1a2535;font-size:0.88rem;font-weight:600;line-height:1.5}
+    .inv-meta-val.small{font-size:0.8rem;font-weight:500}
+    .inv-divider{height:1px;background:#e8edf3;margin:1rem 0}
+    .inv-table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+    .inv-table th{background:#f0f4f8;color:#6677aa;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 12px;text-align:left}
+    .inv-table th:last-child{text-align:right}
+    .inv-table td{padding:10px 12px;border-bottom:1px solid #f0f4f8;color:#1a2535;font-size:0.88rem}
+    .inv-table td:last-child{text-align:right;font-weight:600}
+    .inv-table tr:last-child td{border-bottom:none}
+    .inv-total-row{background:#f8fafc;border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+    .inv-total-label{color:#6677aa;font-size:0.85rem;font-weight:600}
+    .inv-total-val{color:#1a2535;font-size:1.3rem;font-weight:800}
+    .inv-status-paid{display:inline-flex;align-items:center;gap:6px;background:#e8f8ef;border:1.5px solid #27ae60;border-radius:20px;padding:6px 14px;color:#27ae60;font-size:0.78rem;font-weight:700}
+    .inv-footer{background:#f8fafc;padding:1rem 1.4rem;border-top:1px solid #e8edf3;text-align:center}
+    .inv-footer p{color:#8899aa;font-size:0.75rem;line-height:1.6}
+    .inv-footer strong{color:#4455aa}
+    .inv-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:5rem;font-weight:900;color:rgba(39,174,96,0.06);letter-spacing:4px;pointer-events:none;white-space:nowrap}
+    @media print{@page{margin:0}body{padding:0}}
+  </style></head><body>${html}<script>window.onload=()=>{window.print()}<\/script></body></html>`);
+  w.document.close();
+};
 
 // ===== SLIDESHOW =====
 let slides=[],currentSlide=0,slideInterval=null;
@@ -839,7 +1156,6 @@ window.onload=()=>{
 
 async function loadInitialData(){await loadVehicleTypes();await loadServices();await loadBankDetails()}
 
-// UTILS
 function showMessage(id,txt,type){let el=document.getElementById(id);if(!el)return;el.style.display='block';el.className='message '+type;el.innerText=txt;setTimeout(()=>el.style.display='none',3500)}
 function showNotification(msg,type='success'){let n=document.createElement('div');n.style.cssText=`position:fixed;bottom:80px;right:20px;background:${type==='success'?'#27ae60':'#c0392b'};color:white;padding:12px 20px;border-radius:20px;z-index:9999;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.4)`;n.innerText=msg;document.body.appendChild(n);setTimeout(()=>n.remove(),3500)}
 function copyToClipboard(txt){
@@ -849,14 +1165,11 @@ function copyToClipboard(txt){
 function fallbackCopy(txt){let ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');showNotification('Copied!');}catch(e){showNotification('Copy failed','error');}document.body.removeChild(ta);}
 function previewImage(file,previewId,nameId){if(file&&file.type.startsWith('image/')){let r=new FileReader();r.onload=e=>{let p=document.getElementById(previewId);if(p){p.src=e.target.result;p.style.display='block'}};r.readAsDataURL(file)}if(nameId)document.getElementById(nameId).innerHTML=`<i class="fas fa-check-circle" style="color:#27ae60"></i> ${file.name.substring(0,30)}`}
 function animateCounter(el,from,to,dur){if(!el)return;let start=null;function step(ts){if(!start)start=ts;let p=Math.min((ts-start)/dur,1),v=Math.floor(from+(to-from)*p);el.innerText=v+'%';if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
-window.openLightbox=function(src){document.getElementById('lightboxImg').src=src;document.getElementById('lightbox').classList.add('show')};
-window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('show')};
+function isImageUrl(url){return /\.(jpg|jpeg|png|gif|webp)/i.test(url.split('?')[0])||url.includes('jpg')||url.includes('png')||url.includes('jpeg')||url.includes('gif')||url.includes('webp')}
 
-// SESSION
 function checkSession(){let s=localStorage.getItem('ra_session');if(!s)return;let d=JSON.parse(s);if(d.expiry>Date.now()&&d.type==='user'){db.ref('users/'+d.uid).once('value',snap=>{if(snap.exists()){currentUser=snap.val();currentUser.uid=d.uid;document.getElementById('homepageContainer').style.display='none';document.getElementById('mainContent').classList.add('show');showUserDashboard()}else localStorage.removeItem('ra_session')})}}
 function saveSession(type,uid){localStorage.setItem('ra_session',JSON.stringify({type,expiry:Date.now()+86400000,uid}))}
 
-// LOGIN
 document.getElementById('loginForm').addEventListener('submit',async e=>{
   e.preventDefault();
   let un=document.getElementById('loginUsername').value,pw=document.getElementById('loginPassword').value;
@@ -869,7 +1182,6 @@ document.getElementById('loginForm').addEventListener('submit',async e=>{
   currentUser=user;currentUser.uid=uid;saveSession('user',uid);showUserDashboard();
 });
 
-// REGISTER
 document.getElementById('registerForm').addEventListener('submit',async e=>{
   e.preventDefault();
   let n=document.getElementById('regName').value,e1=document.getElementById('regEmail').value,p=document.getElementById('regPhone').value,pw=document.getElementById('regPassword').value,c=document.getElementById('regConfirm').value;
@@ -881,7 +1193,6 @@ document.getElementById('registerForm').addEventListener('submit',async e=>{
   catch(er){showMessage('registerMessage',er.message,'error')}
 });
 
-// DATA LOADERS
 async function loadVehicleTypes(){let snap=await db.ref('vehicle_types').once('value');if(snap.exists())vehicleTypes=snap.val();else{vehicleTypes={car:{name:'Car',icon:'fa-car'},bike:{name:'Motorcycle',icon:'fa-motorcycle'},truck:{name:'Truck',icon:'fa-truck'},bus:{name:'Bus',icon:'fa-bus'}};await db.ref('vehicle_types').set(vehicleTypes)}updateVehicleTypeDropdowns()}
 function updateVehicleTypeDropdowns(){let s=document.getElementById('vehicleType');if(s){s.innerHTML='';Object.keys(vehicleTypes).forEach(k=>{s.innerHTML+=`<option value="${k}">${vehicleTypes[k].name}</option>`})}}
 async function loadServices(){let snap=await db.ref('services').once('value');if(snap.exists())services=snap.val();else{services={roadworthiness:{name:'Roadworthiness Sticker',documents:['Owner ID','Vehicle Registration'],requiresPhotos:true,photoCount:4,active:true,icon:'fa-road'},insurance:{name:'Vehicle Insurance',documents:['ID Document','Vehicle Registration'],requiresPhotos:false,active:true,icon:'fa-shield-alt'},annual_sticker:{name:'Annual Sticker',documents:['ID Document','Vehicle Registration'],requiresPhotos:false,active:true,icon:'fa-tag'}};await db.ref('services').set(services)}}
@@ -897,7 +1208,6 @@ function renderBankDetails(totalAmount){
   ${totalAmount!=null?`<div class="bank-row"><span class="bank-label">Amount</span><span class="bank-value" style="color:#f39c12">MVR ${totalAmount}</span></div>`:''}`;
 }
 
-// USER DASHBOARD
 function showUserDashboard(){
   document.getElementById('loginSection').style.display='none';
   document.getElementById('userDashboard').style.display='block';
@@ -912,10 +1222,9 @@ function showUserDashboard(){
   listenBankDetails();
   listenNotifications(currentUser.uid);
   loadUserDashboard();
-  let g=document.getElementById('bizServiceCards');g.innerHTML='';
-  Object.keys(BIZ_SERVICES).forEach(k=>{let s=BIZ_SERVICES[k];g.innerHTML+=`<div class="business-service-card" onclick="openBusinessService('${k}')"><div class="biz-icon"><i class="fas ${s.icon}" style="color:${s.color}"></i></div><div class="biz-info"><div class="biz-title">${s.title}</div><div class="biz-desc">${s.desc}</div></div><i class="fas fa-chevron-right biz-arrow"></i></div>`});
+  renderBizServiceCards();
 }
-function hexToRgb(hex){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`${r},${g},${b}`}
+
 async function loadUserDashboard(){await loadUserVehicles();await loadStickerStatus();await loadDashboardFines()}
 window.toggleSidebar=()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show')};
 
@@ -990,7 +1299,6 @@ window.loadUserVehicles=async function(){
 window.selectVehicleForService=function(id){showUserSection('services');setTimeout(()=>{let s=document.getElementById('serviceVehicleSelect');if(s){s.value=id;loadServicesForVehicle()}},500)};
 window.selectVehicleForFine=function(id){showUserSection('fines');setTimeout(()=>showAddFineModalWithVehicle(id),500)};
 
-// SERVICES
 async function showServiceSelector(){
   let selDiv=document.getElementById('vehicleServiceSelector'),sel=document.getElementById('serviceVehicleSelect');
   if(!currentUser.vehicles||!Object.keys(currentUser.vehicles).length){selDiv.style.display='none';document.getElementById('serviceGrid').innerHTML='<div class="card">Please add a vehicle first</div>';return}
@@ -1120,11 +1428,15 @@ window.submitServiceRequest=async function(){
       setUploadStage(stageIdx,'done');stageIdx++;
     }
     setUploadStage(stageIdx,'active');
-    await db.ref(`service_requests/${rid}`).set({userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,vehicleId:vid,vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceId:sid,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,status:'pending',paid:true,paymentVerified:false,createdAt:Date.now(),documents:urls,progress:25});
+    let rid_ts=Date.now();
+    let invoiceNum=generateInvoiceNum(rid);
+    let invoiceData={rid,invoiceNum,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone||'',vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,createdAt:rid_ts};
+    await db.ref(`service_requests/${rid}`).set({userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone||'',vehicleId:vid,vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceId:sid,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,status:'pending',paid:true,paymentVerified:false,createdAt:rid_ts,documents:urls,progress:25,invoiceNum});
+    await db.ref(`user_invoices/${currentUser.uid}/${rid}`).set(invoiceData);
     setUploadStage(stageIdx,'done');
     document.getElementById('trackStep3').className='tracker-step completed';document.getElementById('trackStep4').className='tracker-step active';
     completeUploadProgress('Service request submitted successfully!');
-    setTimeout(()=>{hideUploadProgress();loadUserRequests();showNotification('Service request submitted')},2200);
+    setTimeout(()=>{hideUploadProgress();loadUserRequests();showInvoice(invoiceData)},2200);
   }catch(err){hideUploadProgress();document.getElementById('serviceRequestModal').style.display='flex';showMessage('serviceModalMessage','Error: '+err.message,'error');}
 };
 
@@ -1190,11 +1502,19 @@ async function loadBizRequests(){
     let steps=[{l:'Submitted',p:20},{l:'Reviewing',p:50},{l:'Processing',p:75},{l:'Completed',p:100}];
     let stepsHtml=steps.map(st=>{let cls=prog>=st.p?'done':(prog>=st.p-30?'current':'');return`<div class="live-step ${cls}"><div class="step-dot"></div>${st.l}</div>`}).join('');
     let imgs='';
-    if(r.documents&&Object.keys(r.documents).length){imgs='<div style="margin:10px 0"><p style="color:rgba(255,255,255,0.7);font-size:0.8rem;margin-bottom:6px"><i class="fas fa-images"></i> Uploaded Documents</p><div class="biz-image-gallery">';Object.keys(r.documents).forEach(name=>{let url=r.documents[name];let isImg=/\.(jpg|jpeg|png|gif|webp)$/i.test(url.split('?')[0])||url.includes('jpg')||url.includes('png')||url.includes('jpeg');imgs+=isImg?`<img class="biz-gallery-img" src="${url}" alt="${name}" onclick="openLightbox('${url}')" title="${name}">` :`<div style="background:#1e2a3a;border-radius:12px;padding:10px;text-align:center;cursor:pointer" onclick="window.open('${url}')"><i class="fas fa-file" style="font-size:2rem;color:#f39c12"></i><p style="font-size:0.7rem;margin-top:5px">${name}</p></div>`});imgs+='</div></div>'}
+    if(r.documents&&Object.keys(r.documents).length){imgs='<div style="margin:10px 0"><p style="color:rgba(255,255,255,0.7);font-size:0.8rem;margin-bottom:6px"><i class="fas fa-images"></i> Uploaded Documents</p><div class="biz-image-gallery">';Object.keys(r.documents).forEach(name=>{let url=r.documents[name];let isImg=isImageUrl(url);imgs+=isImg?`<img class="biz-gallery-img" src="${url}" alt="${name}" onclick="openLightbox('${url}','${name}','${url}')" title="${name}">` :`<div style="background:#1e2a3a;border-radius:12px;padding:10px;text-align:center;cursor:pointer" onclick="window.open('${url}')"><i class="fas fa-file" style="font-size:2rem;color:#f39c12"></i><p style="font-size:0.7rem;margin-top:5px">${name}</p></div>`});imgs+='</div></div>'}
     let fieldsHtml='';
     if(r.fields){fieldsHtml='<div style="margin:10px 0">';Object.keys(r.fields).forEach(k=>{fieldsHtml+=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #2e3f55;font-size:0.85rem"><span style="color:rgba(255,255,255,0.6)">${k}</span><span style="color:white;font-weight:600">${r.fields[k]}</span></div>`});fieldsHtml+='</div>'}
-    // Download button for approved biz doc
-    let bizDlBtn=r.bizDocumentURL?`<a href="${r.bizDocumentURL}" download target="_blank" class="btn btn-success btn-small" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download Document</a>`:'';
+    let bizDlBtn='';
+    if(r.bizDocumentURL){
+      let isImg=isImageUrl(r.bizDocumentURL);
+      let safeUrl=r.bizDocumentURL.replace(/'/g,'%27');
+      let safeTitle=r.serviceName.replace(/'/g,'&apos;');
+      bizDlBtn=`<div style="display:flex;gap:8px;margin:8px 0">
+        <button onclick="${isImg?`openLightbox('${safeUrl}','${safeTitle}','${safeUrl}')`:`window.open('${safeUrl}')`}" style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.5);color:#5dade2;border-radius:20px;padding:7px 14px;font-size:0.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px"><i class="fas fa-eye"></i> View</button>
+        <a href="${r.bizDocumentURL}" download target="_blank" style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.5);color:#2ecc71;border-radius:20px;padding:7px 14px;font-size:0.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px"><i class="fas fa-download"></i> Save</a>
+      </div>`;
+    }
     div.innerHTML+=`<div class="biz-request-card ${r.status==='approved'?'approved':r.status==='rejected'?'rejected':''}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="display:flex;align-items:center;gap:10px">
@@ -1207,8 +1527,8 @@ async function loadBizRequests(){
       ${r.adminNote?`<div style="background:rgba(52,152,219,0.15);border-left:3px solid #3498db;border-radius:10px;padding:10px;margin:10px 0"><p style="color:#5dade2;font-size:0.8rem;font-weight:600">Admin Note</p><p style="font-size:0.85rem">${r.adminNote}</p></div>`:''}
       ${bizDlBtn}
       <div class="live-progress-wrap">
-        <div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="bpct_${r.id}">0%</span></div>
-        <div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="bbar_${r.id}" style="width:0%"></div></div>
+        <div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress${prog>=100?'<span class="progress-complete-label"><i class="fas fa-check-circle"></i> Complete</span>':''}</span><span class="live-progress-pct" id="bpct_${r.id}">0%</span></div>
+        <div class="live-progress-bar-outer"><div class="live-progress-bar-inner ${prog>=100?'complete':''}" id="bbar_${r.id}" style="width:0%"></div></div>
         <div class="live-progress-steps">${stepsHtml}</div>
       </div>
     </div>`;
@@ -1216,7 +1536,7 @@ async function loadBizRequests(){
   });
 }
 
-// USER REQUESTS
+// ===== MY REQUESTS & STATUS — enhanced (no payment rows, approved=100%+preview) =====
 window.loadUserRequests=async function(){
   let sSnap=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
   let fSnap=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
@@ -1228,63 +1548,239 @@ window.loadUserRequests=async function(){
   if(bSnap.exists())bSnap.forEach(c=>{let r=c.val();r.id=c.key;r.type='business';reqs.push(r)});
   if(!reqs.length){div.innerHTML='<div class="card">No requests found</div>';return}
   reqs.sort((a,b)=>b.createdAt-a.createdAt);
+
   reqs.forEach(r=>{
     if(r.type==='service'){
-      let prog=r.progress||25,sb=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';
-      let steps=[{l:'Submitted',p:25},{l:'Payment',p:50},{l:'Review',p:75},{l:'Done',p:100}];
+      // If approved and 100%, show big approved banner + preview/download
+      let isComplete=(r.status==='approved'&&(r.progress||0)>=100)||r.status==='approved';
+      let prog=isComplete?100:(r.progress||25);
+      let sb=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';
+      let steps=[{l:'Submitted',p:25},{l:'Verified',p:50},{l:'Processing',p:75},{l:'Done',p:100}];
       let sh=steps.map(st=>{let cls=prog>=st.p?'done':(prog>=st.p-25?'current':'');return`<div class="live-step ${cls}"><div class="step-dot"></div>${st.l}</div>`}).join('');
-      // One-click download sticker button
-      let dlBtn=r.documentURL?`<a href="${r.documentURL}" download target="_blank" class="btn btn-success btn-small" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download Sticker</a>`:'';
-      div.innerHTML+=`<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="font-weight:700">${r.serviceName} – ${r.vehicleNumber}</span><span class="badge ${sb}">${r.status}</span></div><div class="price-breakdown"><div class="price-row"><span class="price-label">Service:</span><span class="price-value">MVR ${r.serviceAmount||0}</span></div><div class="price-row"><span class="price-label">Sticker:</span><span class="price-value">MVR ${r.stickerAmount||0}</span></div><div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.totalAmount||0}</span></div></div><div class="live-progress-wrap"><div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="spct_${r.id}">0%</span></div><div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="sbar_${r.id}" style="width:0%"></div></div><div class="live-progress-steps">${sh}</div></div>${r.expiryDate?`<div class="expiry-row"><span>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span></div>`:''} ${dlBtn}</div>`;
+
+      // Build document section for approved requests — NO visible image, buttons only
+      let docPreviewHtml='';
+      if(r.status==='approved'&&r.documentURL){
+        let isImg=isImageUrl(r.documentURL);
+        let safeUrl=r.documentURL.replace(/'/g,'%27');
+        let safeTitle=(r.serviceName+' – '+r.vehicleNumber).replace(/'/g,'&apos;');
+        docPreviewHtml=`<div style="background:linear-gradient(135deg,rgba(39,174,96,0.1),rgba(39,174,96,0.05));border:1px solid rgba(39,174,96,0.35);border-radius:16px;padding:12px 14px;margin:10px 0;display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:38px;height:38px;border-radius:50%;background:rgba(39,174,96,0.2);border:2px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-check" style="color:#27ae60;font-size:1rem"></i></div>
+            <div><div style="color:#2ecc71;font-weight:700;font-size:0.88rem">✅ Approved</div><div style="color:rgba(255,255,255,0.5);font-size:0.75rem">${r.serviceName} · ${r.vehicleNumber}</div></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <button onclick="${isImg?`openLightbox('${safeUrl}','${safeTitle}','${safeUrl}')`:`window.open('${safeUrl}')`}" style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.5);color:#5dade2;border-radius:20px;padding:7px 14px;font-size:0.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap"><i class="fas fa-eye"></i> View</button>
+            <a href="${r.documentURL}" download target="_blank" style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.5);color:#2ecc71;border-radius:20px;padding:7px 14px;font-size:0.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap"><i class="fas fa-download"></i> Save</a>
+          </div>
+        </div>`;
+      } else if(r.status==='approved'){
+        docPreviewHtml=`<div style="background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.3);border-radius:16px;padding:10px 14px;margin:10px 0;display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(39,174,96,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-check" style="color:#27ae60"></i></div><div><div style="color:#2ecc71;font-weight:700;font-size:0.85rem">✅ Approved</div><div style="color:rgba(255,255,255,0.5);font-size:0.75rem">Document coming soon — check Notifications</div></div></div>`;
+      }
+
+      div.innerHTML+=`<div class="card" style="border-left:4px solid ${r.status==='approved'?'#27ae60':r.status==='rejected'?'#e74c3c':'#f39c12'}">
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px;align-items:flex-start">
+          <div><span style="font-weight:700;font-size:1rem">${r.serviceName}</span><br><span style="color:rgba(255,255,255,0.6);font-size:0.82rem">${r.vehicleNumber} · ${new Date(r.createdAt).toLocaleDateString()}</span></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            <span class="badge ${sb}">${r.status}</span>
+            <button onclick="showInvoice({rid:'${r.id}',invoiceNum:'${r.invoiceNum||generateInvoiceNum(r.id)}',userName:'${(currentUser.name||'').replace(/'/g,"\\'")}',userEmail:'${(currentUser.email||'').replace(/'/g,"\\'")}',userPhone:'${(currentUser.phone||'').replace(/'/g,"\\'")}',vehicleNumber:'${r.vehicleNumber}',vehicleType:'${r.vehicleType}',serviceName:'${(r.serviceName||'').replace(/'/g,"\\'")}',serviceAmount:${r.serviceAmount||0},stickerAmount:${r.stickerAmount||0},totalAmount:${r.totalAmount||0},createdAt:${r.createdAt}})" style="background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.4);color:#f39c12;border-radius:16px;padding:5px 12px;font-size:0.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap"><i class="fas fa-file-invoice"></i> Invoice</button>
+          </div>
+        </div>
+        <div class="live-progress-wrap" style="margin-top:6px">
+          <div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress${prog>=100?'<span class="progress-complete-label"><i class="fas fa-check-circle"></i> Complete</span>':''}</span><span class="live-progress-pct" id="spct_${r.id}">0%</span></div>
+          <div class="live-progress-bar-outer"><div class="live-progress-bar-inner ${prog>=100?'complete':''}" id="sbar_${r.id}" style="width:0%"></div></div>
+          <div class="live-progress-steps">${sh}</div>
+        </div>
+        ${docPreviewHtml}
+        ${r.expiryDate?`<div style="background:#1a2535;border-radius:14px;padding:8px 14px;margin-top:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:0.82rem"><i class="fas fa-calendar-alt" style="color:#f39c12;margin-right:5px"></i>Expires: ${new Date(r.expiryDate).toLocaleDateString()}</span><span class="badge ${(()=>{let d=Math.ceil((r.expiryDate-Date.now())/86400000);return d<0?'expired':d<30?'expiring':''})()||'active'}">${(()=>{let d=Math.ceil((r.expiryDate-Date.now())/86400000);return d<0?'Expired':d<30?'Expiring':'Active'})()}</span></div>`:''}
+      </div>`;
       setTimeout(()=>{let b=document.getElementById(`sbar_${r.id}`),p=document.getElementById(`spct_${r.id}`);if(b){b.style.width=prog+'%';animateCounter(p,0,prog,1200)}},200);
+
     } else if(r.type==='fine'){
       let sc=r.paid?'verified':r.status==='approved'?'warning':'pending',st=r.paid?'Paid':r.status==='approved'?'Pending Payment':'Under Review';
       let fp=r.paid?100:r.status==='approved'?75:40;
       let fsh=[{l:'Submitted',p:40},{l:'Reviewed',p:75},{l:'Paid',p:100}].map(fs=>{let cls=fp>=fs.p?'done':'';return`<div class="live-step ${cls}"><div class="step-dot"></div>${fs.l}</div>`}).join('');
-      div.innerHTML+=`<div class="card" style="border-left:4px solid ${r.paid?'#27ae60':'#e67e22'}"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><div><span style="font-weight:700">Fine – ${r.vehicleNumber}</span><p style="font-size:0.8rem;color:rgba(255,255,255,0.6)">ID: ${r.ownerId}</p></div><span class="badge ${sc}">${st}</span></div>${r.fineDetails?`<div class="price-breakdown"><div class="price-row"><span class="price-label">Fine:</span><span class="price-value">MVR ${r.fineDetails.fineAmount}</span></div><div class="price-row total"><span class="price-label">Total:</span><span class="price-value">MVR ${r.fineDetails.fineAmount+r.fineDetails.serviceFee}</span></div></div>`:''}<div class="live-progress-wrap"><div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="fpct_${r.id}">0%</span></div><div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="fbar_${r.id}" style="width:0%"></div></div><div class="live-progress-steps">${fsh}</div></div></div>`;
+      div.innerHTML+=`<div class="card" style="border-left:4px solid ${r.paid?'#27ae60':'#e67e22'}">
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+          <div><span style="font-weight:700">Fine – ${r.vehicleNumber}</span><br><span style="color:rgba(255,255,255,0.6);font-size:0.82rem">ID: ${r.ownerId}</span></div>
+          <span class="badge ${sc}">${st}</span>
+        </div>
+        ${r.fineDetails?`<div style="background:#1a2535;border-radius:14px;padding:10px 14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center"><span>${r.fineDetails.typeName}</span><span style="color:#f39c12;font-weight:700">MVR ${r.fineDetails.fineAmount+r.fineDetails.serviceFee}</span></div>`:''}
+        <div class="live-progress-wrap">
+          <div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress${fp>=100?'<span class="progress-complete-label"><i class="fas fa-check-circle"></i> Complete</span>':''}</span><span class="live-progress-pct" id="fpct_${r.id}">0%</span></div>
+          <div class="live-progress-bar-outer"><div class="live-progress-bar-inner ${fp>=100?'complete':''}" id="fbar_${r.id}" style="width:0%"></div></div>
+          <div class="live-progress-steps">${fsh}</div>
+        </div>
+      </div>`;
       setTimeout(()=>{let b=document.getElementById(`fbar_${r.id}`),p=document.getElementById(`fpct_${r.id}`);if(b){b.style.width=fp+'%';animateCounter(p,0,fp,1200)}},200);
+
     } else if(r.type==='business'){
       let prog=r.progress||20,svc=BIZ_SERVICES[r.serviceType]||{};
       let bs=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';
       let bsh=[{l:'Submitted',p:20},{l:'Reviewing',p:50},{l:'Processing',p:75},{l:'Done',p:100}].map(st=>{let cls=prog>=st.p?'done':(prog>=st.p-30?'current':'');return`<div class="live-step ${cls}"><div class="step-dot"></div>${st.l}</div>`}).join('');
-      let dlBtn=r.bizDocumentURL?`<a href="${r.bizDocumentURL}" download target="_blank" class="btn btn-success btn-small" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-download"></i> Download Document</a>`:'';
-      div.innerHTML+=`<div class="card" style="border-left:4px solid #3498db"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:8px"><i class="fas ${svc.icon||'fa-briefcase'}" style="color:${svc.color||'#3498db'}"></i><span style="font-weight:700">${r.serviceName}</span></div><span class="badge ${bs}">${r.status}</span></div><div class="live-progress-wrap"><div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress</span><span class="live-progress-pct" id="bpct2_${r.id}">0%</span></div><div class="live-progress-bar-outer"><div class="live-progress-bar-inner" id="bbar2_${r.id}" style="width:0%"></div></div><div class="live-progress-steps">${bsh}</div></div>${r.adminNote?`<div style="background:rgba(52,152,219,0.15);border-left:3px solid #3498db;border-radius:10px;padding:10px;margin:10px 0"><p style="font-size:0.85rem">${r.adminNote}</p></div>`:''} ${dlBtn}</div>`;
+
+      let bizDocPreview='';
+      if(r.status==='approved'&&r.bizDocumentURL){
+        let isImg=isImageUrl(r.bizDocumentURL);
+        let safeUrl=r.bizDocumentURL.replace(/'/g,'%27');
+        let safeTitle=r.serviceName.replace(/'/g,'&apos;');
+        bizDocPreview=`<div style="background:linear-gradient(135deg,rgba(39,174,96,0.1),rgba(39,174,96,0.05));border:1px solid rgba(39,174,96,0.35);border-radius:16px;padding:12px 14px;margin:10px 0;display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:38px;height:38px;border-radius:50%;background:rgba(39,174,96,0.2);border:2px solid #27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-check" style="color:#27ae60;font-size:1rem"></i></div>
+            <div><div style="color:#2ecc71;font-weight:700;font-size:0.88rem">✅ Approved</div><div style="color:rgba(255,255,255,0.5);font-size:0.75rem">${r.serviceName}</div></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <button onclick="${isImg?`openLightbox('${safeUrl}','${safeTitle}','${safeUrl}')`:`window.open('${safeUrl}')`}" style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.5);color:#5dade2;border-radius:20px;padding:7px 14px;font-size:0.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap"><i class="fas fa-eye"></i> View</button>
+            <a href="${r.bizDocumentURL}" download target="_blank" style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.5);color:#2ecc71;border-radius:20px;padding:7px 14px;font-size:0.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap"><i class="fas fa-download"></i> Save</a>
+          </div>
+        </div>`;
+      } else if(r.status==='approved'){
+        bizDocPreview=`<div style="background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.3);border-radius:16px;padding:10px 14px;margin:10px 0;display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(39,174,96,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-check" style="color:#27ae60"></i></div><div><div style="color:#2ecc71;font-weight:700;font-size:0.85rem">✅ Approved</div><div style="color:rgba(255,255,255,0.5);font-size:0.75rem">Document coming soon.</div></div></div>`;
+      }
+
+      div.innerHTML+=`<div class="card" style="border-left:4px solid #3498db">
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <i class="fas ${svc.icon||'fa-briefcase'}" style="color:${svc.color||'#3498db'}"></i>
+            <div><span style="font-weight:700">${r.serviceName}</span><br><span style="color:rgba(255,255,255,0.6);font-size:0.82rem">${new Date(r.createdAt).toLocaleDateString()}</span></div>
+          </div>
+          <span class="badge ${bs}">${r.status}</span>
+        </div>
+        <div class="live-progress-wrap">
+          <div class="live-progress-header"><span class="live-progress-label"><i class="fas fa-tasks" style="color:#f39c12;margin-right:5px"></i>Progress${prog>=100?'<span class="progress-complete-label"><i class="fas fa-check-circle"></i> Complete</span>':''}</span><span class="live-progress-pct" id="bpct2_${r.id}">0%</span></div>
+          <div class="live-progress-bar-outer"><div class="live-progress-bar-inner ${prog>=100?'complete':''}" id="bbar2_${r.id}" style="width:0%"></div></div>
+          <div class="live-progress-steps">${bsh}</div>
+        </div>
+        ${bizDocPreview}
+        ${r.adminNote?`<div style="background:rgba(52,152,219,0.15);border-left:3px solid #3498db;border-radius:10px;padding:10px;margin:10px 0"><p style="font-size:0.85rem">${r.adminNote}</p></div>`:''}
+      </div>`;
       setTimeout(()=>{let b=document.getElementById(`bbar2_${r.id}`),p=document.getElementById(`bpct2_${r.id}`);if(b){b.style.width=prog+'%';animateCounter(p,0,prog,1200)}},200);
     }
   });
 };
 
-// DOCUMENTS
+// ===== DOCUMENTS FOLDER — with visual preview grid =====
 async function loadDocuments(){
   let sSnap=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
   let fSnap=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
   let bSnap=await db.ref('business_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
   let adSnap=await db.ref(`admin_uploads/${currentUser.uid}`).once('value');
-  let idc=0,stickc=0,finec=0,slipc=0,bizc=0,adminc=0;
+  let invSnap=await db.ref(`user_invoices/${currentUser.uid}`).once('value');
+  let idc=0,stickc=0,finec=0,slipc=0,bizc=0,adminc=0,invc=0;
   if(sSnap.exists())sSnap.forEach(c=>{let r=c.val();if(r.documents){if(r.documents.doc0)idc++;if(r.documentURL)stickc++;if(r.documents.paymentSlip)slipc++}});
   if(fSnap.exists())fSnap.forEach(c=>{let r=c.val();if(r.documentUrl)finec++;if(r.paymentSlip)slipc++});
   if(bSnap.exists())bSnap.forEach(c=>{let r=c.val();if(r.documents)bizc+=Object.keys(r.documents).length});
   if(adSnap.exists())adminc=adSnap.numChildren();
-  document.getElementById('idCount').innerText=idc+' files';document.getElementById('stickerCount').innerText=stickc+' files';document.getElementById('fineCount').innerText=finec+' files';document.getElementById('slipCount').innerText=slipc+' files';document.getElementById('bizCount').innerText=bizc+' files';document.getElementById('adminUploadCount').innerText=adminc+' files';
+  if(invSnap.exists())invc=invSnap.numChildren();
+  document.getElementById('invoiceCount').innerText=invc+' invoice'+(invc!==1?'s':'');
+  document.getElementById('idCount').innerText=idc+' files';
+  document.getElementById('stickerCount').innerText=stickc+' files';
+  document.getElementById('fineCount').innerText=finec+' files';
+  document.getElementById('slipCount').innerText=slipc+' files';
+  document.getElementById('bizCount').innerText=bizc+' files';
+  document.getElementById('adminUploadCount').innerText=adminc+' files';
 }
 
 window.openFolder=async function(name){
-  let cont=document.getElementById('folderContents'),files=[];
-  if(name==='id_documents'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documents&&r.documents.doc0)files.push({name:`ID - ${r.vehicleNumber}`,url:r.documents.doc0,date:r.createdAt})})}
-  else if(name==='sticker_documents'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documentURL)files.push({name:`${r.serviceName} - ${r.vehicleNumber}`,url:r.documentURL,date:r.createdAt,download:true})})}
-  else if(name==='fine_documents'){let f=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(f.exists())f.forEach(c=>{let r=c.val();if(r.documentUrl)files.push({name:`Fine - ${r.vehicleNumber}`,url:r.documentUrl,date:r.createdAt})})}
-  else if(name==='payment_slips'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documents&&r.documents.paymentSlip)files.push({name:`Payment - ${r.serviceName}`,url:r.documents.paymentSlip,date:r.createdAt})});let f=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(f.exists())f.forEach(c=>{let r=c.val();if(r.paymentSlip)files.push({name:`Fine Payment - ${r.vehicleNumber}`,url:r.paymentSlip,date:r.paidAt})})}
-  else if(name==='business_docs'){let b=await db.ref('business_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(b.exists())b.forEach(c=>{let r=c.val();if(r.documents)Object.keys(r.documents).forEach(dk=>{files.push({name:`${r.serviceName} - ${dk}`,url:r.documents[dk],date:r.createdAt})});if(r.bizDocumentURL)files.push({name:`${r.serviceName} - Official Doc`,url:r.bizDocumentURL,date:r.createdAt,download:true})})}
+  let cont=document.getElementById('folderContents');
+
+  // ===== INVOICES FOLDER — special rendering =====
+  if(name==='invoices'){
+    let invSnap=await db.ref(`user_invoices/${currentUser.uid}`).once('value');
+    cont.innerHTML='';
+    let invList=[];
+    if(invSnap.exists())invSnap.forEach(c=>{let d=c.val();d._key=c.key;invList.push(d)});
+    invList.sort((a,b)=>b.createdAt-a.createdAt);
+    let html=`<h4 style="margin:0 0 1rem;display:flex;align-items:center;gap:8px"><i class="fas fa-file-invoice-dollar" style="color:#f39c12"></i>INVOICES <span style="font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:400">(${invList.length} invoice${invList.length!==1?'s':''})</span></h4>`;
+    if(!invList.length){
+      html+=`<div class="card"><p style="color:rgba(255,255,255,0.5)">No invoices yet. Invoices are generated automatically when you submit a service request.</p></div>`;
+      cont.innerHTML=html;return;
+    }
+    invList.forEach(inv=>{
+      let date=new Date(inv.createdAt||Date.now()).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+      let safeInv=JSON.stringify(inv).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+      html+=`<div style="background:#1b2537;border-radius:20px;border:1px solid #2e3f55;margin-bottom:10px;overflow:hidden;transition:0.2s" onmouseenter="this.style.borderColor='#f39c12'" onmouseleave="this.style.borderColor='#2e3f55'">
+        <div style="background:linear-gradient(135deg,#0f1624,#1a2a4a);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-file-invoice-dollar" style="color:#f39c12;font-size:1rem"></i></div>
+            <div><div style="color:white;font-weight:700;font-size:0.88rem">${inv.invoiceNum||'Invoice'}</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem">${date}</div></div>
+          </div>
+          <span style="background:#e8f8ef;color:#27ae60;border:1.5px solid #27ae60;border-radius:20px;padding:3px 10px;font-size:0.68rem;font-weight:700">PAID</span>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div>
+              <div style="color:rgba(255,255,255,0.6);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">Service</div>
+              <div style="color:white;font-weight:600;font-size:0.88rem">${inv.serviceName||'—'}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="color:rgba(255,255,255,0.6);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">Vehicle</div>
+              <div style="color:white;font-weight:600;font-size:0.88rem">${inv.vehicleNumber||'—'}</div>
+            </div>
+          </div>
+          <div style="background:#1a2535;border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span style="color:rgba(255,255,255,0.6);font-size:0.82rem">Total Paid</span>
+            <span style="color:#f39c12;font-weight:800;font-size:1.1rem">MVR ${(inv.totalAmount||0).toFixed(2)}</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button onclick='openInvoiceFromData(${JSON.stringify(inv)})' style="flex:1;background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.4);color:#f39c12;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fas fa-eye"></i> View Invoice</button>
+            <button onclick='printInvoiceFromData(${JSON.stringify(inv)})' style="background:rgba(52,152,219,0.12);border:1px solid rgba(52,152,219,0.4);color:#5dade2;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0"><i class="fas fa-print"></i> Print</button>
+          </div>
+        </div>
+      </div>`;
+    });
+    cont.innerHTML=html;
+    return;
+  }
+
+  // ===== ALL OTHER FOLDERS =====
+  let files=[];
+  if(name==='id_documents'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documents&&r.documents.doc0)files.push({name:`ID – ${r.vehicleNumber}`,url:r.documents.doc0,date:r.createdAt})})}
+  else if(name==='sticker_documents'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documentURL)files.push({name:`${r.serviceName} – ${r.vehicleNumber}`,url:r.documentURL,date:r.createdAt,download:true})})}
+  else if(name==='fine_documents'){let f=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(f.exists())f.forEach(c=>{let r=c.val();if(r.documentUrl)files.push({name:`Fine – ${r.vehicleNumber}`,url:r.documentUrl,date:r.createdAt})})}
+  else if(name==='payment_slips'){let s=await db.ref('service_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(s.exists())s.forEach(c=>{let r=c.val();if(r.documents&&r.documents.paymentSlip)files.push({name:`Payment – ${r.serviceName}`,url:r.documents.paymentSlip,date:r.createdAt})});let f=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(f.exists())f.forEach(c=>{let r=c.val();if(r.paymentSlip)files.push({name:`Fine Payment – ${r.vehicleNumber}`,url:r.paymentSlip,date:r.paidAt})})}
+  else if(name==='business_docs'){let b=await db.ref('business_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');if(b.exists())b.forEach(c=>{let r=c.val();if(r.documents)Object.keys(r.documents).forEach(dk=>{files.push({name:`${r.serviceName} – ${dk}`,url:r.documents[dk],date:r.createdAt})});if(r.bizDocumentURL)files.push({name:`${r.serviceName} – Official Doc`,url:r.bizDocumentURL,date:r.createdAt,download:true})})}
   else if(name==='admin_uploads'){let ad=await db.ref(`admin_uploads/${currentUser.uid}`).once('value');if(ad.exists())ad.forEach(c=>{let d=c.val();files.push({name:d.name,url:d.url,date:d.uploadedAt,download:true})})}
-  let html=`<h4 style="margin:1rem 0">${name.replace(/_/g,' ').toUpperCase()}</h4>`;
-  if(!files.length)html+='<div class="card">No files in this folder</div>';
-  else{files.sort((a,b)=>b.date-a.date);files.forEach(f=>{html+=`<div class="doc-item"><div class="doc-icon"><i class="fas fa-file"></i></div><div class="doc-info"><div class="doc-name">${f.name}</div><div class="doc-date">${new Date(f.date).toLocaleDateString()}</div></div><a href="${f.url}" ${f.download?'download ':''} target="_blank" style="color:#f39c12;text-decoration:none"><i class="fas fa-${f.download?'download':'external-link-alt'}"></i></a></div>`})}
+
+  let folderLabel=name.replace(/_/g,' ').toUpperCase();
+  if(!files.length){
+    cont.innerHTML=`<div class="card"><h4 style="margin-bottom:8px"><i class="fas fa-folder-open" style="color:#f39c12;margin-right:8px"></i>${folderLabel}</h4><p style="color:rgba(255,255,255,0.5)">No files in this folder</p></div>`;
+    return;
+  }
+  files.sort((a,b)=>b.date-a.date);
+
+  let html=`<h4 style="margin:0 0 1rem;display:flex;align-items:center;gap:8px"><i class="fas fa-folder-open" style="color:#f39c12"></i>${folderLabel} <span style="font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:400">(${files.length} file${files.length!==1?'s':''})</span></h4>`;
+  html+=`<div class="doc-preview-grid">`;
+  files.forEach(f=>{
+    let isImg=isImageUrl(f.url);
+    let safeUrl=f.url.replace(/'/g,'%27');
+    let safeName=(f.name||'Document').replace(/'/g,'&apos;');
+    html+=`<div class="doc-preview-card">
+      <div class="doc-preview-thumb-wrap" onclick="${isImg?`openLightbox('${safeUrl}','${safeName}','${safeUrl}')`:`window.open('${safeUrl}')`}">
+        ${isImg
+          ?`<img class="doc-preview-thumb" src="${f.url}" alt="${safeName}">`
+          :`<div class="doc-preview-pdf"><i class="fas fa-file-pdf"></i></div>`}
+      </div>
+      <div class="doc-preview-info">
+        <div class="doc-preview-name" title="${safeName}">${safeName}</div>
+        <div class="doc-preview-date">${new Date(f.date||Date.now()).toLocaleDateString()}</div>
+      </div>
+      <div class="doc-preview-actions">
+        <button onclick="${isImg?`openLightbox('${safeUrl}','${safeName}','${safeUrl}')`:`window.open('${safeUrl}')`}" style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);color:#5dade2;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;flex-shrink:0" title="View"><i class="fas fa-eye"></i></button>
+        <a href="${f.url}" download target="_blank" style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.4);color:#2ecc71;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;text-decoration:none;flex-shrink:0" title="Download"><i class="fas fa-download"></i></a>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
   cont.innerHTML=html;
 };
 
 window.showRegisterModal=()=>document.getElementById('registerModal').style.display='flex';
 window.closeRegisterModal=()=>document.getElementById('registerModal').style.display='none';
 window.logoutUser=()=>{localStorage.removeItem('ra_session');location.reload()};
+
+window.openInvoiceFromData=function(data){showInvoice(data)};
+window.printInvoiceFromData=function(data){_currentInvoiceData=data;printInvoice()};
 </script>
 </body>
 </html>
