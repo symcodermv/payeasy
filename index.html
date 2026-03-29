@@ -163,6 +163,18 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .preview-item img{width:100%;height:80px;object-fit:cover;border-radius:8px}
 .preview-item span{font-size:0.7rem;display:block;margin-top:3px;color:#f39c12}
 .fine-item{background:#1b2a3f;border-radius:16px;padding:1rem;margin-bottom:1rem;border-left:4px solid #e67e22}
+.pay-tab{flex:1;padding:10px 6px;border-radius:14px;border:1.5px solid #2e3f55;background:#1b2537;color:rgba(255,255,255,0.5);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.pay-tab:hover{border-color:#3a5070;color:white}
+.pay-tab-active{border-color:#f39c12!important;background:rgba(243,156,18,0.1)!important;color:#f39c12!important}
+.pay-opt{background:#1b2537;border:2px solid #2e3f55;border-radius:16px;padding:13px 14px;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.pay-opt:hover{border-color:#3a5070;background:#1e2d42}
+.pay-opt.selected{border-color:#27ae60;background:rgba(39,174,96,0.07)}
+.pay-opt-icon{width:38px;height:38px;border-radius:11px;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.pay-opt-label{color:white;font-weight:700;font-size:0.88rem}
+.pay-opt-sub{display:flex;align-items:center;gap:5px;margin-top:3px}
+.pay-opt-check{width:22px;height:22px;min-width:22px;border-radius:50%;background:#27ae60;color:white;display:none;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;margin-left:auto}
+.pay-opt.selected .pay-opt-check{display:flex}
+.card-badge{color:white;font-size:0.6rem;font-weight:800;padding:2px 5px;border-radius:3px;letter-spacing:0.3px}
 .live-progress-wrap{background:#1a2535;border-radius:18px;padding:1rem 1.2rem;margin:0.8rem 0;border:1px solid #2a3a55}
 .live-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .live-progress-label{color:white;font-size:0.85rem;font-weight:600}
@@ -656,17 +668,53 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 
 <!-- PAY FINE MODAL -->
 <div id="payFineModal" class="modal-overlay">
-  <div class="modal-content">
-    <div class="modal-header"><div class="modal-title"><i class="fas fa-money-bill"></i> Pay Fine</div><button class="close-btn" onclick="closePayFineModal()">&times;</button></div>
-    <div id="payFineMessage" class="message"></div>
-    <input type="hidden" id="payFineId"><input type="hidden" id="payFineAmount">
-    <div class="card" style="margin-bottom:20px"><h4 style="color:#f39c12;margin-bottom:10px">Fine Details</h4><div id="payFineDetails"></div></div>
-    <div class="bank-details" id="payFineBankDetails"></div>
-    <div class="form-group"><label class="form-label">Upload Payment Slip <span style="color:#f39c12">*</span></label>
-      <div class="file-upload" onclick="document.getElementById('payFineSlipFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Upload payment slip</p><input type="file" id="payFineSlipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handlePayFineSlip(this)"></div>
-      <div id="payFineSlipName" class="file-name"></div><img id="payFineSlipPreview" class="document-preview" style="display:none">
+  <div class="modal-content" style="max-width:480px">
+    <div class="modal-header" style="background:linear-gradient(135deg,#0d1f1a,#12271e);border-bottom:1px solid rgba(39,174,96,0.25)">
+      <div class="modal-title"><i class="fas fa-lock" style="color:#27ae60"></i> Secure Payment</div>
+      <button class="close-btn" onclick="closePayFineModal()">&times;</button>
     </div>
-    <button class="btn btn-success" onclick="submitFinePayment()"><i class="fas fa-check"></i> Submit Payment</button>
+    <div id="payFineMessage" class="message"></div>
+    <input type="hidden" id="payFineId"><input type="hidden" id="payFineAmount"><input type="hidden" id="payFineType">
+    <!-- Summary -->
+    <div style="background:linear-gradient(135deg,rgba(230,126,34,0.1),rgba(230,126,34,0.03));border:1px solid rgba(230,126,34,0.3);border-radius:16px;padding:14px 16px;margin-bottom:16px">
+      <div style="color:rgba(255,255,255,0.45);font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Payment Summary</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div id="payFineTypeName" style="color:white;font-weight:700;font-size:0.95rem">—</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:3px"><i class="fas fa-shield-alt" style="color:#27ae60;margin-right:4px"></i>BML Connect · Bank of Maldives</div></div>
+        <div id="payFineAmountDisplay" style="color:#e67e22;font-size:1.5rem;font-weight:800">MVR —</div>
+      </div>
+    </div>
+    <!-- Tabs -->
+    <div style="color:rgba(255,255,255,0.45);font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Select Payment Method</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button type="button" onclick="selectFineTab('card')" id="ftab_card" class="pay-tab pay-tab-active"><i class="fas fa-credit-card"></i> Card</button>
+      <button type="button" onclick="selectFineTab('transfer')" id="ftab_transfer" class="pay-tab"><i class="fas fa-university"></i> Bank Transfer</button>
+    </div>
+    <!-- Card Panel -->
+    <div id="fpanel_card">
+      <div class="pay-opt selected" onclick="selectFineCard('card')" id="fcard_card">
+        <div class="pay-opt-icon" style="background:rgba(52,152,219,0.12);border-color:rgba(52,152,219,0.4)"><i class="fas fa-credit-card" style="color:#5dade2"></i></div>
+        <div style="flex:1"><div class="pay-opt-label">Debit &amp; Credit Card</div><div class="pay-opt-sub"><span class="card-badge" style="background:#1a56db">VISA</span><span class="card-badge" style="background:linear-gradient(135deg,#eb001b,#f79e1b)">MC</span></div></div>
+        <div class="pay-opt-check" id="fchk_card">✓</div>
+      </div>
+
+
+      <div style="display:flex;align-items:center;gap:8px;background:rgba(39,174,96,0.05);border:1px solid rgba(39,174,96,0.15);border-radius:12px;padding:9px 12px;margin-bottom:12px">
+        <i class="fas fa-shield-alt" style="color:#27ae60;flex-shrink:0"></i>
+        <div style="color:rgba(255,255,255,0.4);font-size:0.72rem">256-bit SSL. Card details never stored. Powered by <strong style="color:#2ecc71">BML Connect</strong>.</div>
+      </div>
+      <button class="btn btn-success" onclick="proceedFineCardPayment()" id="finePayNowBtn" style="background:linear-gradient(135deg,#27ae60,#1e8449);box-shadow:0 4px 20px rgba(39,174,96,0.3)">
+        <i class="fas fa-lock"></i> Pay Now · <span id="finePayAmtLabel">—</span>
+      </button>
+    </div>
+    <!-- Bank Transfer Panel -->
+    <div id="fpanel_transfer" style="display:none">
+      <div class="bank-details" id="payFineBankDetails" style="margin-bottom:12px"></div>
+      <div class="form-group"><label class="form-label">Upload Payment Slip <span style="color:#f39c12">*</span></label>
+        <div class="file-upload" onclick="document.getElementById('payFineSlipFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Upload slip (JPG, PNG, PDF)</p><input type="file" id="payFineSlipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handlePayFineSlip(this)"></div>
+        <div id="payFineSlipName" class="file-name"></div><img id="payFineSlipPreview" class="document-preview" style="display:none">
+      </div>
+      <button class="btn btn-success" onclick="submitFinePayment('transfer')" style="background:linear-gradient(135deg,#27ae60,#1e8449)"><i class="fas fa-paper-plane"></i> Submit Payment</button>
+    </div>
   </div>
 </div>
 
@@ -698,14 +746,39 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
       </div>
       <div id="sstep3Div" style="display:none">
         <div class="price-breakdown" id="priceBreakdown"></div>
-        <div class="bank-details" id="serviceBankDetails"></div>
-        <div class="form-group"><label class="form-label">Upload Payment Slip <span style="color:#f39c12">*</span></label>
-          <div class="file-upload" onclick="document.getElementById('serviceSlipFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Upload payment slip</p><input type="file" id="serviceSlipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleServiceSlip(this)"></div>
-          <div id="serviceSlipName" class="file-name"></div><img id="serviceSlipPreview" class="document-preview" style="display:none">
+        <!-- Payment Method Tabs -->
+        <div style="color:rgba(255,255,255,0.45);font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Select Payment Method</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <button type="button" onclick="selectSvcTab('card')" id="stab_card" class="pay-tab pay-tab-active"><i class="fas fa-credit-card"></i> Card</button>
+          <button type="button" onclick="selectSvcTab('transfer')" id="stab_transfer" class="pay-tab"><i class="fas fa-university"></i> Bank Transfer</button>
         </div>
-        <div style="display:flex;justify-content:space-between;margin-top:20px">
-          <button type="button" class="btn btn-secondary" onclick="servicePrevStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
-          <button type="button" class="btn btn-success" onclick="submitServiceRequest()"><i class="fas fa-check"></i> Submit</button>
+        <!-- Card Panel -->
+        <div id="spanel_card">
+          <div class="pay-opt selected" onclick="selectSvcCard('card')" id="scard_card">
+            <div class="pay-opt-icon" style="background:rgba(52,152,219,0.12);border-color:rgba(52,152,219,0.4)"><i class="fas fa-credit-card" style="color:#5dade2"></i></div>
+            <div style="flex:1"><div class="pay-opt-label">Debit &amp; Credit Card</div><div class="pay-opt-sub"><span class="card-badge" style="background:#1a56db">VISA</span><span class="card-badge" style="background:linear-gradient(135deg,#eb001b,#f79e1b)">MC</span></div></div>
+            <div class="pay-opt-check" id="schk_card">✓</div>
+          </div>
+
+
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(39,174,96,0.05);border:1px solid rgba(39,174,96,0.15);border-radius:12px;padding:9px 12px;margin-bottom:10px">
+            <i class="fas fa-shield-alt" style="color:#27ae60;flex-shrink:0"></i>
+            <div style="color:rgba(255,255,255,0.4);font-size:0.72rem">256-bit SSL. Card details never stored. Powered by <strong style="color:#2ecc71">BML Connect</strong>.</div>
+          </div>
+        </div>
+        <!-- Bank Transfer Panel -->
+        <div id="spanel_transfer" style="display:none">
+          <div class="bank-details" id="serviceBankDetails" style="margin-bottom:12px"></div>
+          <div class="form-group"><label class="form-label">Upload Payment Slip <span style="color:#f39c12">*</span></label>
+            <div class="file-upload" onclick="document.getElementById('serviceSlipFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Upload slip (JPG, PNG, PDF)</p><input type="file" id="serviceSlipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleServiceSlip(this)"></div>
+            <div id="serviceSlipName" class="file-name"></div><img id="serviceSlipPreview" class="document-preview" style="display:none">
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:16px;gap:10px">
+          <button type="button" class="btn btn-secondary" style="flex:0 0 auto" onclick="servicePrevStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button type="button" class="btn btn-success" id="svcSubmitBtn" style="flex:1;background:linear-gradient(135deg,#27ae60,#1e8449);box-shadow:0 4px 16px rgba(39,174,96,0.3)" onclick="submitServiceRequest()">
+            <i class="fas fa-lock"></i> <span id="svcSubmitLabel">Pay &amp; Submit</span>
+          </button>
         </div>
       </div>
     </form>
@@ -775,7 +848,7 @@ if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const db=firebase.database(),storage=firebase.storage();
 
 let currentUser=null,vehicleTypes={},services={},bankDetails={};
-let currentServiceFiles={},imagePreviews={},currentFineFile=null,currentPayFineFile=null;
+let currentServiceFiles={},imagePreviews={},currentFineFile=null,currentPayFineFile=null,currentPayFineFile2=null;
 let bizDocFiles={},currentBizKey=null;
 let _notifListener=null,_shownToasts=new Set();
 
@@ -1394,6 +1467,22 @@ window.loadUserFines=async function(){
     let borderColor=isPaid?'#27ae60':isApproved?'#e67e22':'#3498db';
     let total=hasFineDetails?(f.fineDetails.fineAmount+f.fineDetails.serviceFee):0;
     let safeId=f.id.replace(/'/g,"\\'");
+    // Admin uploaded document
+    let adminDocHtml='';
+    if(f.adminDocumentUrl){
+      let isImg=isImageUrl(f.adminDocumentUrl);
+      let safeDocUrl=f.adminDocumentUrl.replace(/'/g,'%27');
+      adminDocHtml=`<div style="background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.3);border-radius:14px;padding:10px 14px;margin:0 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:34px;height:34px;border-radius:10px;background:rgba(52,152,219,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas ${isImg?'fa-image':'fa-file-pdf'}" style="color:#3498db;font-size:0.95rem"></i></div>
+          <div><div style="color:#5dade2;font-weight:600;font-size:0.82rem">Fine Document</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem">From admin</div></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button onclick="${isImg?`openLightbox('${safeDocUrl}','Fine Document – ${f.vehicleNumber}','${safeDocUrl}')`:`window.open('${safeDocUrl}')`}" style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);color:#5dade2;border-radius:16px;padding:6px 12px;font-size:0.75rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px"><i class="fas fa-eye"></i> View</button>
+          <a href="${f.adminDocumentUrl}" download target="_blank" style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.4);color:#2ecc71;border-radius:16px;padding:6px 12px;font-size:0.75rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:4px"><i class="fas fa-download"></i></a>
+        </div>
+      </div>`;
+    }
 
     cont.innerHTML+=`<div style="background:#1b2537;border-radius:22px;border:1px solid #2e3f55;border-left:5px solid ${borderColor};margin-bottom:14px;overflow:hidden;transition:0.2s" onmouseenter="this.style.borderColor='${borderColor}'" onmouseleave="this.style.borderColor='#2e3f55'">
       <!-- Card Header -->
@@ -1449,10 +1538,13 @@ window.loadUserFines=async function(){
         <span style="color:#27ae60;font-weight:800;font-size:1rem">MVR ${total.toFixed(2)}</span>
       </div>`:''}
 
+      <!-- Admin uploaded document row -->
+      ${adminDocHtml}
+
       <!-- Action Buttons -->
       <div style="padding:0 16px 14px;display:flex;gap:8px;flex-wrap:wrap">
         ${hasFineDetails?`<button onclick="openFineDetail('${safeId}')" style="flex:1;background:rgba(230,126,34,0.12);border:1px solid rgba(230,126,34,0.4);color:#e67e22;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0"><i class="fas fa-file-invoice"></i> View Details</button>`:''}
-        ${f.documentUrl?`<button onclick="openLightbox('${f.documentUrl.replace(/'/g,'%27')}','Fine Document – ${f.vehicleNumber}','${f.documentUrl.replace(/'/g,'%27')}')" style="background:rgba(52,152,219,0.12);border:1px solid rgba(52,152,219,0.4);color:#5dade2;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0"><i class="fas fa-eye"></i> Doc</button>`:''}
+        ${f.documentUrl?`<button onclick="openLightbox('${f.documentUrl.replace(/'/g,'%27')}','Fine Document – ${f.vehicleNumber}','${f.documentUrl.replace(/'/g,'%27')}')" style="background:rgba(52,152,219,0.12);border:1px solid rgba(52,152,219,0.4);color:#5dade2;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0"><i class="fas fa-eye"></i> My Doc</button>`:''}
         ${hasFineDetails&&!isPaid&&isApproved?`<button onclick="openPayFineModal('${safeId}',${total},'${(f.fineDetails.typeName||'').replace(/'/g,"\\'")}') " style="flex:1;background:linear-gradient(135deg,#e67e22,#d35400);border:none;color:white;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;box-shadow:0 4px 14px rgba(230,126,34,0.35)"><i class="fas fa-money-bill-wave"></i> Pay MVR ${total.toFixed(2)}</button>`:''}
       </div>
     </div>`;
@@ -1546,6 +1638,7 @@ window.openFineDetail=async function(fid){
         </div>
       </div>`:''}
       ${f.notes?`<div style="background:#f8fafc;border-radius:12px;padding:11px 13px;border:1px solid #e8edf3;margin-bottom:1rem"><div style="color:#8899aa;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">Notes</div><div style="color:#1a2535;font-size:0.85rem">${f.notes}</div></div>`:''}
+      ${f.adminDocumentUrl?`<div style="background:#e8f4fd;border-radius:12px;padding:12px 14px;border:1px solid rgba(52,152,219,0.35);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-paperclip" style="color:#3498db;font-size:1.1rem"></i><div><div style="color:#1a6896;font-weight:700;font-size:0.85rem">Fine Document</div><div style="color:#5d8aaa;font-size:0.75rem">Attached by admin</div></div></div><div style="display:flex;gap:6px"><button onclick="${isImageUrl(f.adminDocumentUrl)?`document.getElementById('fineDetailModal').style.display='none';openLightbox('${f.adminDocumentUrl.replace(/'/g,'%27')}','Fine Document','${f.adminDocumentUrl.replace(/'/g,'%27')}');`:`window.open('${f.adminDocumentUrl.replace(/'/g,'%27')}')`}" style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);color:#3498db;border-radius:14px;padding:6px 12px;font-size:0.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px"><i class="fas fa-eye"></i> View</button><a href="${f.adminDocumentUrl}" download target="_blank" style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.4);color:#27ae60;border-radius:14px;padding:6px 12px;font-size:0.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:4px"><i class="fas fa-download"></i></a></div></div>`:''}
     </div>
     <!-- Footer -->
     <div style="background:#f8fafc;padding:0.9rem 1.3rem;border-top:1px solid #e8edf3;text-align:center;position:relative;z-index:1">
@@ -1578,26 +1671,166 @@ window.printFineDetail=function(){
 };
 
 window.openPayFineModal=function(fid,total,type){
-  document.getElementById('payFineId').value=fid;document.getElementById('payFineAmount').value=total;
-  document.getElementById('payFineDetails').innerHTML=`<p>Fine Type: <strong>${type}</strong></p><p>Total: <strong style="color:#f39c12">MVR ${total}</strong></p>`;
-  document.getElementById('payFineBankDetails').innerHTML=renderBankDetails(total);
+  document.getElementById('payFineId').value=fid;
+  document.getElementById('payFineAmount').value=total;
+  document.getElementById('payFineType')?document.getElementById('payFineType').value=type:'';
+  document.getElementById('payFineTypeName').textContent=type||'Traffic Fine';
+  let amtStr='MVR '+parseFloat(total).toFixed(2);
+  document.getElementById('payFineAmountDisplay').textContent=amtStr;
+  let lbl=document.getElementById('finePayAmtLabel');if(lbl)lbl.textContent=amtStr;
+  let msg=document.getElementById('payFineMessage');if(msg)msg.style.display='none';
+  let btn=document.getElementById('finePayNowBtn');if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-lock"></i> Pay Now · '+amtStr;}
+  _fineCardType='card';
+  selectFineTab('card');
+  // reset slip fields
+  let _sf=document.getElementById('payFineSlipFile');if(_sf)_sf.value='';
+  let _sp=document.getElementById('payFineSlipPreview');if(_sp)_sp.style.display='none';
+  let _sn=document.getElementById('payFineSlipName');if(_sn)_sn.innerHTML='';
   document.getElementById('payFineModal').style.display='flex';
 };
-window.closePayFineModal=function(){document.getElementById('payFineModal').style.display='none';document.getElementById('payFineSlipPreview').style.display='none';document.getElementById('payFineSlipName').innerHTML='';currentPayFineFile=null};
-window.handlePayFineSlip=function(i){let f=i.files[0];if(!f)return;currentPayFineFile=f;previewImage(f,'payFineSlipPreview','payFineSlipName')};
-window.submitFinePayment=async function(){
-  let fid=document.getElementById('payFineId').value,amt=document.getElementById('payFineAmount').value;
-  if(!currentPayFineFile){showMessage('payFineMessage','Upload payment slip','error');return}
+window.closePayFineModal=function(){
   document.getElementById('payFineModal').style.display='none';
-  showUploadProgress([{label:'Uploading Payment Slip',icon:'receipt'},{label:'Confirming Payment',icon:'check-circle'}]);
+  currentPayFineFile=null;
+  let slipEl=document.getElementById('payFineSlipFile');if(slipEl)slipEl.value='';
+  let previewEl=document.getElementById('payFineSlipPreview');if(previewEl)previewEl.style.display='none';
+  let nameEl=document.getElementById('payFineSlipName');if(nameEl)nameEl.innerHTML='';
+};
+
+// BML Connect Payment Gateway (Bank of Maldives)
+const BML_API_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6ImQ5ZjA3YzY0LWIwNWQtNGU1My04MjkzLWIwODljZmNiYjAzNCIsImNvbXBhbnlJZCI6IjVmYmYyMTRkZWU2MDc1MDAwOGFmZTUzMiIsImlhdCI6MTc3NDc2ODA4NSwiZXhwIjo0OTMwNDQxNjg1fQ.LnTzLLdbdt3f-CflW32CgBJHG_lYFGApoLxR2hSqUzw';
+const BML_APP_ID='d9f07c64-b05d-4e53-8293-b089cfcbb034';
+const BML_API_URL='https://api.merchants.bankofmaldives.com.mv/v1/transactions';
+// provider: 'card' = Visa/MC/UnionPay all go through BML card gateway
+const BML_PROVIDERS={card:'card'};
+
+
+let _fineCardType='card',_svcTab='card',_svcCardType='card';
+
+// Tab switching — Fine
+window.selectFineTab=function(tab){
+  ['card','transfer'].forEach(t=>{
+    let b=document.getElementById('ftab_'+t),p=document.getElementById('fpanel_'+t);
+    if(b)b.classList.toggle('pay-tab-active',t===tab);
+    if(p)p.style.display=t===tab?'block':'none';
+  });
+  if(tab==='transfer'){
+    let bd=document.getElementById('payFineBankDetails');
+    let amt=parseFloat(document.getElementById('payFineAmount').value)||0;
+    if(bd)bd.innerHTML=renderBankDetails(amt);
+  }
+};
+// Card type selection — Fine
+window.selectFineCard=function(type){
+  _fineCardType=type;
+  ['card'].forEach(t=>{
+    let el=document.getElementById('fcard_'+t);
+    if(el)el.classList.toggle('selected',t===type);
+  });
+};
+// Slip handlers — Fine
+window.handlePayFineSlip=function(i){let f=i.files[0];if(!f)return;currentPayFineFile=f;previewImage(f,'payFineSlipPreview','payFineSlipName')};
+
+// Card payment — Fine (BML Connect)
+window.proceedFineCardPayment=async function(){
+  let fid=document.getElementById('payFineId').value;
+  let amount=parseFloat(document.getElementById('payFineAmount').value);
+  let type=document.getElementById('payFineType')?document.getElementById('payFineType').value:'Traffic Fine';
+  let btn=document.getElementById('finePayNowBtn');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Preparing...';
   try{
-    setUploadStage(0,'active');let sr=storage.ref(`payment_slips/fines/${fid}/${currentPayFineFile.name}`);await sr.put(currentPayFineFile);let su=await sr.getDownloadURL();
+    let provider=BML_PROVIDERS[_fineCardType]||'card';
+    let returnUrl=location.href.split('?')[0]+'?fine_paid='+encodeURIComponent(fid)+'&bml=1';
+    let amountLaari=Math.round(amount*100); // BML uses smallest unit (laari)
+    let localId='FINE-'+fid.slice(-8)+'-'+Date.now().toString(36).toUpperCase();
+    let body={
+      currency:'MVR',
+      amount:amountLaari,
+      provider:provider,
+      localId:localId,
+      customerReference:'Traffic Fine: '+type,
+      redirectUrl:returnUrl,
+      appVersion:'RegAssist-1.0',
+      apiVersion:'2.0',
+      deviceId:BML_APP_ID,
+      signMethod:'sha1'
+    };
+    // Generate sha1 signature: sha1(amount + currency + localId + apiKey)
+    // We use SubtleCrypto for sha1 in browser
+    async function sha1(str){
+      const buf=await crypto.subtle.digest('SHA-1',new TextEncoder().encode(str));
+      return btoa(String.fromCharCode(...new Uint8Array(buf)));
+    }
+    body.signature=await sha1(amountLaari+'MVR'+localId+BML_API_KEY);
+    let resp=await fetch(BML_API_URL,{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+BML_API_KEY,'Content-Type':'application/json','X-App-Id':BML_APP_ID},
+      body:JSON.stringify(body)
+    });
+    let data=await resp.json();
+    if(data&&data.url){
+      await db.ref('fine_requests/'+fid).update({paymentPending:true,bmlTransactionId:data.transactionId||'',paymentMethod:'card_'+_fineCardType,paymentInitiatedAt:Date.now()});
+      window.location.href=data.url;
+    } else if(data&&data.transactionId){
+      // Some BML responses return transactionId directly — redirect to BML payment page
+      await db.ref('fine_requests/'+fid).update({paymentPending:true,bmlTransactionId:data.transactionId,paymentMethod:'card_'+_fineCardType,paymentInitiatedAt:Date.now()});
+      window.location.href='https://api.merchants.bankofmaldives.com.mv/pay/'+data.transactionId;
+    } else {
+      let errMsg=(data.message||data.error||JSON.stringify(data));
+      showMessage('payFineMessage','Payment error: '+errMsg+'. Try bank transfer.','error');
+      btn.disabled=false;btn.innerHTML='<i class="fas fa-lock"></i> Pay Now';
+    }
+  }catch(e){
+    showMessage('payFineMessage','Connection error. Please use bank transfer.','error');
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-lock"></i> Pay Now';
+  }
+};
+
+// Slip submit — Fine (bank transfer)
+window.submitFinePayment=async function(mode){
+  let fid=document.getElementById('payFineId').value;
+  let amt=parseFloat(document.getElementById('payFineAmount').value);
+  let file=currentPayFineFile;
+  if(!file){showMessage('payFineMessage','Please upload your payment slip','error');return}
+  document.getElementById('payFineModal').style.display='none';
+  showUploadProgress([{label:'Uploading Payment Slip',icon:'receipt'},{label:'Saving Record',icon:'database'}]);
+  try{
+    setUploadStage(0,'active');
+    let sr=storage.ref('payment_slips/fines/'+fid+'/'+file.name);
+    await sr.put(file);let su=await sr.getDownloadURL();
     setUploadStage(0,'done');setUploadStage(1,'active');
-    await db.ref(`fine_requests/${fid}`).update({paid:true,paidAt:Date.now(),paymentSlip:su,paymentAmount:parseInt(amt)});
-    setUploadStage(1,'done');completeUploadProgress('Payment submitted successfully!');
-    setTimeout(()=>{hideUploadProgress();loadUserFines();showNotification('Payment submitted')},2000);
+    await db.ref('fine_requests/'+fid).update({paymentSlip:su,paymentPending:true,paymentMethod:mode,paymentAmount:amt,paymentSubmittedAt:Date.now()});
+    setUploadStage(1,'done');completeUploadProgress('Payment slip submitted! Admin will verify shortly.');
+    setTimeout(()=>{hideUploadProgress();loadUserFines();showNotification('Payment slip submitted')},2200);
+    currentPayFineFile=null;
   }catch(err){hideUploadProgress();document.getElementById('payFineModal').style.display='flex';showMessage('payFineMessage','Error: '+err.message,'error');}
 };
+
+// Tab switching — Service
+window.selectSvcTab=function(tab){
+  _svcTab=tab;
+  ['card','transfer'].forEach(t=>{
+    let b=document.getElementById('stab_'+t),p=document.getElementById('spanel_'+t);
+    if(b)b.classList.toggle('pay-tab-active',t===tab);
+    if(p)p.style.display=t===tab?'block':'none';
+  });
+  let lbl=document.getElementById('svcSubmitLabel');
+  if(lbl)lbl.textContent=tab==='card'?'Pay & Submit':'Submit Request';
+  if(tab==='transfer'){
+    let sAmt=parseInt(document.getElementById('serviceAmount').value||0);
+    let stAmt=parseInt(document.getElementById('stickerAmount').value||0);
+    let bd=document.getElementById('serviceBankDetails');
+    if(bd)bd.innerHTML=renderBankDetails(sAmt+stAmt);
+  }
+};
+// Card type selection — Service
+window.selectSvcCard=function(type){
+  _svcCardType=type;
+  ['card'].forEach(t=>{
+    let el=document.getElementById('scard_'+t);
+    if(el)el.classList.toggle('selected',t===type);
+  });
+};
+window.handleServiceSlip=function(i){let f=i.files[0];if(!f)return;currentServiceFiles.paymentSlip=f;previewImage(f,'serviceSlipPreview','serviceSlipName')};
 
 async function loadDashboardFines(){
   let snap=await db.ref('fine_requests').orderByChild('userId').equalTo(currentUser.uid).once('value');
@@ -1624,9 +1857,23 @@ window.openServiceRequest=function(sid,sname,sAmt,stAmt,totAmt,vid){
   document.getElementById('serviceBankDetails').innerHTML=renderBankDetails(tot);
   document.getElementById('sstep1Div').style.display='block';document.getElementById('sstep2Div').style.display='none';document.getElementById('sstep3Div').style.display='none';
   ['trackStep1','trackStep2','trackStep3','trackStep4'].forEach((id,i)=>document.getElementById(id).className='tracker-step'+(i===0?' completed':''));
+  // reset payment tab
+  _svcTab='card';_svcCardType='card';
+  setTimeout(()=>{selectSvcTab('card');selectSvcCard('card');},50);
   document.getElementById('serviceRequestModal').style.display='flex';
 };
 window.closeServiceModal=()=>document.getElementById('serviceRequestModal').style.display='none';
+
+// Handle BML Connect payment return
+(function(){
+  let p=new URLSearchParams(location.search);
+  let fp=p.get('fine_paid'),sp=p.get('svc_paid'),bml=p.get('bml');
+  if(bml==='1'){
+    if(fp)db.ref('fine_requests/'+fp).update({paid:true,paidAt:Date.now(),paymentPending:false,paymentMethod:'card'}).then(()=>showNotification('Fine payment confirmed! ✅'));
+    if(sp)db.ref('service_requests/'+sp).update({paid:true,paidAt:Date.now(),paymentPending:false,progress:25}).then(()=>showNotification('Service payment confirmed! ✅'));
+    history.replaceState({},'',location.pathname);
+  }
+})();
 window.handleServiceDoc=function(idx,i){let f=i.files[0];if(!f)return;currentServiceFiles[`doc${idx}`]=f;previewImage(f,`sDocPreview${idx}`,`sDocName${idx}`);if(f.type.startsWith('image/')){let r=new FileReader();r.onload=e=>{imagePreviews[`doc${idx}`]=e.target.result;updateImagePreview()};r.readAsDataURL(f)}};
 window.handleServicePhoto=function(num,i){let f=i.files[0];if(!f)return;currentServiceFiles[`photo${num}`]=f;previewImage(f,null,`sPhotoName${num}`);let r=new FileReader();r.onload=e=>{imagePreviews[`photo${num}`]=e.target.result;updateImagePreview()};r.readAsDataURL(f)};
 function updateImagePreview(){let grid=document.getElementById('imagePreviewGrid'),sec=document.getElementById('imagePreviewSection');if(Object.keys(imagePreviews).length>0){sec.style.display='block';grid.innerHTML='';Object.keys(imagePreviews).forEach(k=>{let lb=k.startsWith('photo')?`Photo ${k.replace('photo','')}`:'Document';grid.innerHTML+=`<div class="preview-item"><img src="${imagePreviews[k]}" alt="Preview"><span>${lb}</span></div>`})}}
@@ -1638,29 +1885,90 @@ window.serviceNextStep=function(s){
 window.servicePrevStep=function(s){if(s===2){document.getElementById('sstep2Div').style.display='none';document.getElementById('sstep1Div').style.display='block';document.getElementById('trackStep2').className='tracker-step'}else if(s===3){document.getElementById('sstep3Div').style.display='none';document.getElementById('sstep2Div').style.display='block';document.getElementById('trackStep3').className='tracker-step';document.getElementById('trackStep2').className='tracker-step active'}};
 
 window.submitServiceRequest=async function(){
-  if(!currentServiceFiles.paymentSlip){showMessage('serviceModalMessage','Upload payment slip','error');return}
+  let tab=_svcTab||'card';
+  // Validate
+  if(tab==='transfer'&&!currentServiceFiles.paymentSlip){showMessage('serviceModalMessage','Upload payment slip','error');return}
+
   let sid=document.getElementById('serviceId').value,sname=document.getElementById('serviceName').value;
   let sAmt=parseInt(document.getElementById('serviceAmount').value),stAmt=parseInt(document.getElementById('stickerAmount').value);
   let vid=document.getElementById('serviceVehicle').value,vehicle=currentUser.vehicles[vid];
-  let fileKeys=Object.keys(currentServiceFiles);
-  let stages=fileKeys.map(k=>{if(k==='paymentSlip')return{label:'Uploading Payment Slip',icon:'receipt'};if(k.startsWith('photo'))return{label:`Uploading Photo ${k.replace('photo','')}`,icon:'camera'};return{label:`Uploading Document ${parseInt(k.replace('doc',''))+1}`,icon:'file-alt'}});
+  let rid='req_'+Date.now()+'_'+Math.random().toString(36).substr(2,6);
+  let rid_ts=Date.now();
+
+  if(tab==='card'){
+    // Upload docs first, then redirect to BML Connect
+    let docKeys=Object.keys(currentServiceFiles).filter(k=>!k.startsWith('paymentSlip'));
+    let docStages=docKeys.map(k=>k.startsWith('photo')?{label:'Uploading Photo '+k.replace('photo',''),icon:'camera'}:{label:'Uploading Document '+(parseInt(k.replace('doc',''))+1),icon:'file-alt'});
+    docStages.push({label:'Saving Request',icon:'database'});
+    document.getElementById('serviceRequestModal').style.display='none';
+    showUploadProgress(docStages);
+    try{
+      let urls={},si=0;
+      for(let k of docKeys){
+        setUploadStage(si,'active');let f=currentServiceFiles[k];
+        let ref=storage.ref('requests/'+rid+'/'+(k.startsWith('photo')?'vehicle_photos':'documents')+'/'+f.name);
+        await ref.put(f);urls[k]=await ref.getDownloadURL();
+        setUploadStage(si,'done');si++;
+      }
+      setUploadStage(si,'active');
+      let invoiceNum=generateInvoiceNum(rid);
+      let invoiceData={rid,invoiceNum,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone||'',vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,createdAt:rid_ts};
+      await db.ref('service_requests/'+rid).set({userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone||'',vehicleId:vid,vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceId:sid,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,status:'pending',paid:false,paymentPending:true,paymentMethod:'card_'+_svcCardType,createdAt:rid_ts,documents:urls,progress:10,invoiceNum});
+      await db.ref('user_invoices/'+currentUser.uid+'/'+rid).set(invoiceData);
+      setUploadStage(si,'done');
+      completeUploadProgress('Request saved! Redirecting to payment...');
+      setTimeout(async()=>{
+        hideUploadProgress();
+        // BML Connect redirect for service
+        let provider=BML_PROVIDERS[_svcCardType]||'card';
+        let returnUrl=location.href.split('?')[0]+'?svc_paid='+encodeURIComponent(rid)+'&bml=1';
+        let amountLaari=Math.round((sAmt+stAmt)*100);
+        let localId='SVC-'+rid.slice(-8)+'-'+Date.now().toString(36).toUpperCase();
+        async function sha1Svc(str){const buf=await crypto.subtle.digest('SHA-1',new TextEncoder().encode(str));return btoa(String.fromCharCode(...new Uint8Array(buf)));}
+        let sig=await sha1Svc(amountLaari+'MVR'+localId+BML_API_KEY);
+        let body={currency:'MVR',amount:amountLaari,provider:provider,localId:localId,customerReference:sname+' | '+vehicle.number,redirectUrl:returnUrl,appVersion:'RegAssist-1.0',apiVersion:'2.0',deviceId:BML_APP_ID,signMethod:'sha1',signature:sig};
+        try{
+          let resp=await fetch(BML_API_URL,{method:'POST',headers:{'Authorization':'Bearer '+BML_API_KEY,'Content-Type':'application/json','X-App-Id':BML_APP_ID},body:JSON.stringify(body)});
+          let data=await resp.json();
+          let payUrl=data.url||(data.transactionId?'https://api.merchants.bankofmaldives.com.mv/pay/'+data.transactionId:null);
+          if(payUrl){
+            await db.ref('service_requests/'+rid).update({bmlTransactionId:data.transactionId||''});
+            window.location.href=payUrl;
+          } else {
+            showNotification('Card redirect failed. Request saved — pay via bank transfer.','error');
+            loadUserRequests();showInvoice(invoiceData);
+          }
+        }catch(e){showNotification('Payment redirect failed. Request saved.','error');loadUserRequests();}
+      },2000);
+    }catch(err){hideUploadProgress();document.getElementById('serviceRequestModal').style.display='flex';showMessage('serviceModalMessage','Error: '+err.message,'error');}
+    return;
+  }
+
+  // Bank transfer — include slip file
+  let slipFile=currentServiceFiles.paymentSlip;
+  let fileKeys=Object.keys(currentServiceFiles).filter(k=>k!=='paymentSlip2');
+  let stages=fileKeys.map(k=>{
+    if(k==='paymentSlip'||k==='paymentSlip2')return{label:'Uploading Payment Slip',icon:'receipt'};
+    if(k.startsWith('photo'))return{label:'Uploading Photo '+k.replace('photo',''),icon:'camera'};
+    return{label:'Uploading Document '+(parseInt(k.replace('doc',''))+1),icon:'file-alt'};
+  });
   stages.push({label:'Saving Request',icon:'database'});
   document.getElementById('serviceRequestModal').style.display='none';showUploadProgress(stages);
   try{
-    let rid='req_'+Date.now()+'_'+Math.random().toString(36).substr(2,6),urls={};let stageIdx=0;
+    let urls={},si=0;
     for(let k of fileKeys){
-      setUploadStage(stageIdx,'active');let f=currentServiceFiles[k];
-      let path=k.startsWith('photo')?'vehicle_photos':k==='paymentSlip'?'payment_slips':'documents';
-      let ref=storage.ref(`requests/${rid}/${path}/${f.name}`);await ref.put(f);urls[k]=await ref.getDownloadURL();
-      setUploadStage(stageIdx,'done');stageIdx++;
+      setUploadStage(si,'active');let f=currentServiceFiles[k];
+      let path=k.startsWith('photo')?'vehicle_photos':(k==='paymentSlip'||k==='paymentSlip2')?'payment_slips':'documents';
+      let ref=storage.ref('requests/'+rid+'/'+path+'/'+f.name);await ref.put(f);urls[k]=await ref.getDownloadURL();
+      setUploadStage(si,'done');si++;
     }
-    setUploadStage(stageIdx,'active');
-    let rid_ts=Date.now();
+    setUploadStage(si,'active');
     let invoiceNum=generateInvoiceNum(rid);
     let invoiceData={rid,invoiceNum,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone||'',vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,createdAt:rid_ts};
-    await db.ref(`service_requests/${rid}`).set({userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone||'',vehicleId:vid,vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceId:sid,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,status:'pending',paid:true,paymentVerified:false,createdAt:rid_ts,documents:urls,progress:25,invoiceNum});
-    await db.ref(`user_invoices/${currentUser.uid}/${rid}`).set(invoiceData);
-    setUploadStage(stageIdx,'done');
+    let slipUrl=urls.paymentSlip||urls.paymentSlip2||null;
+    await db.ref('service_requests/'+rid).set({userId:currentUser.uid,userName:currentUser.name,userEmail:currentUser.email,userPhone:currentUser.phone||'',vehicleId:vid,vehicleNumber:vehicle.number,vehicleType:vehicle.type,serviceId:sid,serviceName:sname,serviceAmount:sAmt,stickerAmount:stAmt,totalAmount:sAmt+stAmt,status:'pending',paid:true,paymentVerified:false,paymentMethod:tab,createdAt:rid_ts,documents:urls,paymentSlipUrl:slipUrl,progress:25,invoiceNum});
+    await db.ref('user_invoices/'+currentUser.uid+'/'+rid).set(invoiceData);
+    setUploadStage(si,'done');
     document.getElementById('trackStep3').className='tracker-step completed';document.getElementById('trackStep4').className='tracker-step active';
     completeUploadProgress('Service request submitted successfully!');
     setTimeout(()=>{hideUploadProgress();loadUserRequests();showInvoice(invoiceData)},2200);
