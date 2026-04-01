@@ -439,6 +439,7 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
             <div class="sidebar-item" onclick="showUserSection('business',this)"><i class="fas fa-briefcase"></i> Business Services</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-section-label">Account</div>
+            <div class="sidebar-item" onclick="showUserSection('profile',this)"><i class="fas fa-user-circle"></i> My Profile</div>
             <div class="sidebar-item" onclick="showUserSection('folder',this)"><i class="fas fa-folder"></i> My Documents</div>
             <div class="sidebar-item" onclick="showUserSection('requests',this)"><i class="fas fa-clipboard-list"></i> My Requests</div>
             <div class="sidebar-item" onclick="showUserSection('notifications',this)"><i class="fas fa-bell"></i> Notifications<span id="sbNotifBadge" style="display:none;background:#e74c3c;color:white;border-radius:20px;padding:1px 8px;font-size:0.7rem;margin-left:4px;font-weight:700"></span></div>
@@ -487,6 +488,56 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
               <div id="bizServiceCards"></div>
               <div style="margin-top:1.5rem"><h4 class="section-title" style="font-size:1.1rem"><i class="fas fa-history"></i> My Business Requests</h4><div id="bizRequestsList"></div></div>
             </div>
+            <!-- MY PROFILE SECTION -->
+            <div id="profileSection" class="user-section" style="display:none">
+              <h4 class="section-title"><i class="fas fa-user-circle"></i> My Profile</h4>
+
+              <!-- Profile card -->
+              <div class="card" id="profileCard" style="background:linear-gradient(135deg,#1a2a3f,#1e2a3a);border:1px solid #2e4057;margin-bottom:1.2rem">
+                <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem">
+                  <div id="profileAvatarWrap" style="position:relative;flex-shrink:0">
+                    <div id="profileAvatar" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:white;overflow:hidden;border:3px solid rgba(243,156,18,0.5)" onclick="document.getElementById('avatarFileInput').click()">
+                      <span id="profileInitials">U</span>
+                      <img id="profileAvatarImg" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0" alt="">
+                    </div>
+                    <div onclick="document.getElementById('avatarFileInput').click()" style="position:absolute;bottom:0;right:0;width:24px;height:24px;background:#f39c12;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #141b2b">
+                      <i class="fas fa-camera" style="font-size:0.6rem;color:#1e2a3a"></i>
+                    </div>
+                    <input type="file" id="avatarFileInput" accept=".jpg,.jpeg,.png" style="display:none" onchange="handleAvatarUpload(this)">
+                  </div>
+                  <div style="flex:1;min-width:0">
+                    <div id="profileName" style="color:white;font-weight:800;font-size:1.2rem;margin-bottom:3px">Loading...</div>
+                    <div id="profileEmail" style="color:rgba(255,255,255,0.55);font-size:0.82rem;margin-bottom:4px"></div>
+                    <div id="profilePhone" style="color:rgba(255,255,255,0.55);font-size:0.82rem;margin-bottom:6px"></div>
+                    <div id="profileVerBadge" style="display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(243,156,18,0.15);color:#f39c12;border:1px solid rgba(243,156,18,0.4)"><i class="fas fa-clock"></i> Pending Verification</div>
+                  </div>
+                </div>
+                <button onclick="showEditProfile()" style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.15);border-radius:14px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);font-size:0.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:0.2s" onmouseenter="this.style.background='rgba(243,156,18,0.1)';this.style.borderColor='rgba(243,156,18,0.4)';this.style.color='#f39c12'" onmouseleave="this.style.background='rgba(255,255,255,0.05)';this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='rgba(255,255,255,0.7)'">
+                  <i class="fas fa-edit"></i> Edit Profile
+                </button>
+              </div>
+
+              <!-- Document Wallet -->
+              <div class="card">
+                <div class="card-title" style="margin-bottom:0.5rem"><i class="fas fa-wallet" style="color:#f39c12"></i> Document Wallet</div>
+                <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:1.2rem">Upload your personal documents — ID card, driving licence, passport etc. Stored securely and accessible anytime.</p>
+
+                <!-- Add document button -->
+                <button onclick="showAddProfileDoc()" style="width:100%;padding:12px;border:2px dashed rgba(243,156,18,0.4);border-radius:16px;background:rgba(243,156,18,0.04);color:#f39c12;font-size:0.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1rem;transition:0.2s" onmouseenter="this.style.background='rgba(243,156,18,0.1)';this.style.borderColor='rgba(243,156,18,0.7)'" onmouseleave="this.style.background='rgba(243,156,18,0.04)';this.style.borderColor='rgba(243,156,18,0.4)'">
+                  <i class="fas fa-plus-circle"></i> Add Document
+                </button>
+
+                <!-- Documents list -->
+                <div id="profileDocsList">
+                  <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3)">
+                    <i class="fas fa-id-card" style="font-size:2.5rem;margin-bottom:0.8rem;display:block;opacity:0.4"></i>
+                    <div style="font-size:0.9rem">No documents uploaded yet</div>
+                    <div style="font-size:0.78rem;margin-top:4px">Add your ID, licence, passport etc.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div id="folderSection" class="user-section" style="display:none">
               <h4 class="section-title"><i class="fas fa-folder"></i> My Documents</h4>
               <div class="folder-grid">
@@ -668,6 +719,58 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 </div>
 
 <!-- LIGHTBOX -->
+<!-- EDIT PROFILE MODAL -->
+<div id="editProfileModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-user-edit"></i> Edit Profile</div>
+      <button class="close-btn" onclick="closeEditProfile()">&times;</button>
+    </div>
+    <div id="editProfileMsg" class="message"></div>
+    <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="epName" placeholder="Your full name"></div>
+    <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" id="epPhone" placeholder="+960 XXXXXXX"></div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="epEmail" placeholder="you@example.com"></div>
+    <div class="form-group"><label class="form-label">New Password <span style="color:rgba(255,255,255,0.4);font-weight:400">(leave blank to keep current)</span></label><input type="password" class="form-input" id="epPassword" placeholder="New password"></div>
+    <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="epConfirm" placeholder="Confirm new password"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveEditProfile()"><i class="fas fa-save"></i> Save Changes</button>
+  </div>
+</div>
+
+<!-- ADD PROFILE DOCUMENT MODAL -->
+<div id="addProfileDocModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-id-card"></i> Add Document</div>
+      <button class="close-btn" onclick="closeAddProfileDoc()">&times;</button>
+    </div>
+    <div id="addProfileDocMsg" class="message"></div>
+    <div class="form-group">
+      <label class="form-label">Document Type</label>
+      <select class="form-input" id="pdocType">
+        <option value="National ID">National ID</option>
+        <option value="Driving Licence">Driving Licence</option>
+        <option value="Passport">Passport</option>
+        <option value="Work Permit">Work Permit</option>
+        <option value="Insurance Card">Insurance Card</option>
+        <option value="Boat Licence">Boat Licence</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Custom Label <span style="color:rgba(255,255,255,0.4);font-weight:400">(optional)</span></label><input type="text" class="form-input" id="pdocLabel" placeholder="e.g. My Driving Licence 2025"></div>
+    <div class="form-group"><label class="form-label">Expiry Date <span style="color:rgba(255,255,255,0.4);font-weight:400">(optional)</span></label><input type="date" class="form-input" id="pdocExpiry"></div>
+    <div class="form-group">
+      <label class="form-label">Upload Document <span style="color:#e74c3c">*</span></label>
+      <div id="pdocUploadZone" style="border:2px dashed rgba(243,156,18,0.5);border-radius:18px;padding:1.5rem;text-align:center;cursor:pointer;background:rgba(243,156,18,0.03);transition:0.2s;position:relative" onclick="document.getElementById('pdocFile').click()" onmouseenter="this.style.background='rgba(243,156,18,0.08)';this.style.borderColor='#f39c12'" onmouseleave="this.style.background='rgba(243,156,18,0.03)';this.style.borderColor='rgba(243,156,18,0.5)'">
+        <input type="file" id="pdocFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handlePdocFile(this)">
+        <div id="pdocUploadEmpty"><i class="fas fa-cloud-upload-alt" style="font-size:2.2rem;color:#f39c12;display:block;margin-bottom:8px"></i><div style="color:white;font-weight:600;margin-bottom:4px">Tap to upload</div><div style="color:rgba(255,255,255,0.4);font-size:0.78rem">JPG, PNG or PDF</div></div>
+        <div id="pdocUploadDone" style="display:none"><i class="fas fa-check-circle" style="font-size:2rem;color:#27ae60;display:block;margin-bottom:6px"></i><div id="pdocFileName" style="color:#2ecc71;font-weight:600;font-size:0.88rem;word-break:break-all"></div><div style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-top:4px">Tap to change</div></div>
+      </div>
+      <img id="pdocPreview" style="display:none;width:100%;max-height:160px;object-fit:contain;border-radius:14px;margin-top:10px;border:1px solid #2e3f55">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveProfileDoc()"><i class="fas fa-upload"></i> Save Document</button>
+  </div>
+</div>
+
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
   <img id="lightboxImg" src="" alt="Preview">
@@ -676,7 +779,7 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 </div>
 
 <!-- TELEGRAM FLOAT -->
-<a href="https://t.me/9121220" target="_blank" class="tg-float" id="tgFloat" style="display:none"><i class="fab fa-telegram"></i> Need Help?</a>
+<a href="+9609121220" target="_blank" class="tg-float" id="tgFloat" style="display:none"><i class="fab fa-telegram"></i> Need Help?</a>
 <script>
 
 const firebaseConfig={apiKey:"AIzaSyA-di-_1PsrdRH_CiQCLsN4pLH-ERQxje4",authDomain:"autoease-f84b5.firebaseapp.com",databaseURL:"https://autoease-f84b5-default-rtdb.firebaseio.com",projectId:"autoease-f84b5",storageBucket:"autoease-f84b5.firebasestorage.app",messagingSenderId:"547912368245",appId:"1:547912368245:web:692e246c18ddcb2607783c"};
@@ -1642,6 +1745,232 @@ async function sendTelegramInvoiceNotification(inv){
     await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT_ID,text:msg,parse_mode:'Markdown'})});
   }catch(e){console.warn('Telegram error:',e.message);}
 }
+
+
+// ============================================================
+// ===== MY PROFILE SYSTEM =====
+// ============================================================
+
+let _pdocFile=null;
+
+const DOC_TYPE_META={
+  'National ID':{icon:'fa-id-card',color:'#3498db',bg:'rgba(52,152,219,0.15)'},
+  'Driving Licence':{icon:'fa-car',color:'#27ae60',bg:'rgba(39,174,96,0.15)'},
+  'Passport':{icon:'fa-passport',color:'#9b59b6',bg:'rgba(155,89,182,0.15)'},
+  'Work Permit':{icon:'fa-briefcase',color:'#e67e22',bg:'rgba(230,126,34,0.15)'},
+  'Insurance Card':{icon:'fa-shield-alt',color:'#1abc9c',bg:'rgba(26,188,156,0.15)'},
+  'Boat Licence':{icon:'fa-ship',color:'#5dade2',bg:'rgba(93,173,226,0.15)'},
+  'Other':{icon:'fa-file-alt',color:'#f39c12',bg:'rgba(243,156,18,0.15)'},
+};
+
+async function loadProfile(){
+  if(!currentUser)return;
+  let snap=await db.ref(`users/${currentUser.uid}`).once('value');
+  if(snap.exists()){Object.assign(currentUser,snap.val());currentUser.uid=snap.key;}
+  // Avatar
+  let ai=document.getElementById('profileAvatarImg'),initEl=document.getElementById('profileInitials');
+  if(currentUser.avatarUrl&&ai){ai.src=currentUser.avatarUrl;ai.style.display='block';if(initEl)initEl.style.display='none';}
+  else{if(ai)ai.style.display='none';if(initEl){initEl.style.display='';initEl.innerText=(currentUser.name||'U').charAt(0).toUpperCase();}}
+  let pn=document.getElementById('profileName');if(pn)pn.innerText=currentUser.name||'—';
+  let pe=document.getElementById('profileEmail');if(pe)pe.innerText=currentUser.email||'';
+  let pp=document.getElementById('profilePhone');if(pp)pp.innerText=currentUser.phone||'';
+  let vb=document.getElementById('profileVerBadge');
+  if(vb){
+    if(currentUser.verified){vb.innerHTML='<i class="fas fa-check-circle"></i> Verified';vb.style.background='rgba(39,174,96,0.15)';vb.style.color='#27ae60';vb.style.borderColor='rgba(39,174,96,0.4)';}
+    else{vb.innerHTML='<i class="fas fa-clock"></i> Pending Verification';vb.style.background='rgba(243,156,18,0.15)';vb.style.color='#f39c12';vb.style.borderColor='rgba(243,156,18,0.4)';}
+  }
+  updateSidebarAvatar();
+  loadProfileDocs();
+}
+
+async function loadProfileDocs(){
+  let snap=await db.ref(`user_profile_docs/${currentUser.uid}`).once('value');
+  let div=document.getElementById('profileDocsList');if(!div)return;
+  if(!snap.exists()){
+    div.innerHTML=`<div style="text-align:center;padding:2.5rem;color:rgba(255,255,255,0.3)"><i class="fas fa-id-card" style="font-size:2.5rem;margin-bottom:0.8rem;display:block;opacity:0.4"></i><div style="font-size:0.9rem">No documents uploaded yet</div><div style="font-size:0.78rem;margin-top:4px">Add your ID, licence, passport and more</div></div>`;
+    return;
+  }
+  let docs=[];snap.forEach(c=>{let d=c.val();d.id=c.key;docs.push(d)});
+  docs.sort((a,b)=>b.uploadedAt-a.uploadedAt);
+  div.innerHTML=docs.map(d=>{
+    let meta=DOC_TYPE_META[d.docType]||DOC_TYPE_META['Other'];
+    let isImg=/(jpg|jpeg|png|gif|webp)/i.test((d.url||'').split('?')[0]);
+    let expiryHtml='';
+    if(d.expiry){
+      let daysLeft=Math.ceil((d.expiry-Date.now())/86400000);
+      let ec=daysLeft<0?'#e74c3c':daysLeft<30?'#e67e22':'#27ae60';
+      let el2=daysLeft<0?`Expired ${Math.abs(daysLeft)}d ago`:daysLeft===0?'Expires today':`Expires in ${daysLeft}d`;
+      expiryHtml=`<span style="color:${ec};font-size:0.72rem;font-weight:600;background:${ec}22;padding:2px 9px;border-radius:10px;border:1px solid ${ec}44;display:inline-flex;align-items:center;gap:4px;margin-top:4px"><i class="fas fa-calendar-alt"></i>${el2}</span>`;
+    }
+    let safeUrl=d.url.replace(/'/g,'%27');
+    let safeLabel=(d.label||d.docType).replace(/'/g,"&apos;");
+    let safeLabelJs=(d.label||d.docType).replace(/'/g,"\'");
+    return`<div style="background:#1a2535;border-radius:20px;overflow:hidden;border:1px solid #2e3f55;margin-bottom:12px">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px">
+        <div style="width:52px;height:52px;border-radius:14px;background:${meta.bg};border:1px solid ${meta.color}44;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
+          <i class="fas ${meta.icon}" style="color:${meta.color};font-size:1.3rem"></i>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="color:white;font-weight:700;font-size:0.95rem;margin-bottom:2px">${d.label||d.docType}</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.75rem">${d.docType} · ${new Date(d.uploadedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div>
+          ${expiryHtml}
+        </div>
+        <button onclick="deleteProfileDoc('${d.id}','${safeLabelJs}')" style="background:none;border:none;color:rgba(255,255,255,0.2);cursor:pointer;font-size:1.1rem;padding:4px;line-height:1;flex-shrink:0;margin-top:2px" onmouseenter="this.style.color='#e74c3c'" onmouseleave="this.style.color='rgba(255,255,255,0.2)'"><i class="fas fa-trash-alt"></i></button>
+      </div>
+      ${isImg?`<div style="padding:0 14px 8px"><img src="${d.url}" onclick="openLightbox('${safeUrl}','${safeLabel}','${safeUrl}')" style="width:100%;max-height:200px;object-fit:cover;border-radius:14px;cursor:pointer;border:1px solid #2e3f55;display:block" loading="lazy" alt="${d.docType}"></div>`:''}
+      <div style="display:flex;gap:8px;padding:8px 14px 14px">
+        ${isImg
+          ?`<button onclick="openLightbox('${safeUrl}','${safeLabel}','${safeUrl}')" style="flex:1;padding:10px;border:1px solid rgba(52,152,219,0.4);border-radius:14px;background:rgba(52,152,219,0.08);color:#5dade2;font-size:0.83rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fas fa-eye"></i> View</button>`
+          :`<button onclick="window.open('${safeUrl}')" style="flex:1;padding:10px;border:1px solid rgba(52,152,219,0.4);border-radius:14px;background:rgba(52,152,219,0.08);color:#5dade2;font-size:0.83rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fas fa-eye"></i> Open</button>`}
+        <a href="${d.url}" download target="_blank" style="flex:1;padding:10px;border:1px solid rgba(39,174,96,0.4);border-radius:14px;background:rgba(39,174,96,0.08);color:#2ecc71;font-size:0.83rem;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fas fa-download"></i> Download</a>
+        <button onclick="shareProfileDoc('${safeUrl}','${safeLabelJs}')" title="Share" style="padding:10px 14px;border:1px solid rgba(243,156,18,0.3);border-radius:14px;background:rgba(243,156,18,0.07);color:#f39c12;font-size:0.83rem;cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:600"><i class="fas fa-share-alt"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.handleAvatarUpload=async function(input){
+  let f=input.files[0];if(!f)return;
+  if(!f.type.startsWith('image/')){showNotification('Please upload an image file','error');return}
+  showUploadProgress([{label:'Uploading profile photo',icon:'user-circle'}]);
+  try{
+    setUploadStage(0,'active');
+    let ref=storage.ref(`user_avatars/${currentUser.uid}/avatar_${Date.now()}`);
+    await ref.put(f);let url=await ref.getDownloadURL();
+    setUploadStage(0,'done');
+    await db.ref(`users/${currentUser.uid}`).update({avatarUrl:url});
+    currentUser.avatarUrl=url;
+    let ai=document.getElementById('profileAvatarImg'),initEl=document.getElementById('profileInitials');
+    if(ai){ai.src=url;ai.style.display='block';}if(initEl)initEl.style.display='none';
+    updateSidebarAvatar();
+    completeUploadProgress('Profile photo updated!');
+    setTimeout(hideUploadProgress,1800);
+  }catch(e){hideUploadProgress();showNotification('Upload failed: '+e.message,'error');}
+};
+
+function updateSidebarAvatar(){
+  let avatarDiv=document.querySelector('.sidebar-header .avatar');
+  if(!avatarDiv||!currentUser.avatarUrl)return;
+  avatarDiv.style.overflow='hidden';avatarDiv.style.padding='0';avatarDiv.style.fontSize='0';
+  if(!document.getElementById('sidebarAvatarImg')){
+    avatarDiv.innerHTML=`<img id="sidebarAvatarImg" src="${currentUser.avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block" alt="">`;
+  } else {
+    document.getElementById('sidebarAvatarImg').src=currentUser.avatarUrl;
+  }
+}
+
+window.showEditProfile=function(){
+  document.getElementById('epName').value=currentUser.name||'';
+  document.getElementById('epEmail').value=currentUser.email||'';
+  document.getElementById('epPhone').value=currentUser.phone||'';
+  document.getElementById('epPassword').value='';
+  document.getElementById('epConfirm').value='';
+  let m=document.getElementById('editProfileMsg');if(m)m.style.display='none';
+  document.getElementById('editProfileModal').style.display='flex';
+};
+window.closeEditProfile=function(){document.getElementById('editProfileModal').style.display='none';};
+
+window.saveEditProfile=async function(){
+  let name=document.getElementById('epName').value.trim();
+  let email=document.getElementById('epEmail').value.trim();
+  let phone=document.getElementById('epPhone').value.trim();
+  let pw=document.getElementById('epPassword').value;
+  let conf=document.getElementById('epConfirm').value;
+  if(!name){showMessage('editProfileMsg','Name cannot be empty','error');return}
+  if(pw&&pw!==conf){showMessage('editProfileMsg','Passwords do not match','error');return}
+  let updates={name,email,phone};
+  if(pw)updates.password=pw;
+  try{
+    await db.ref(`users/${currentUser.uid}`).update(updates);
+    Object.assign(currentUser,updates);
+    document.getElementById('sidebarUserName').innerText=name;
+    document.getElementById('headerUserName').innerText=name;
+    document.getElementById('welcomeName').innerText=name;
+    loadProfile();
+    showMessage('editProfileMsg','Profile updated successfully!','success');
+    setTimeout(()=>document.getElementById('editProfileModal').style.display='none',1400);
+  }catch(e){showMessage('editProfileMsg','Error: '+e.message,'error');}
+};
+
+window.showAddProfileDoc=function(){
+  _pdocFile=null;
+  let pf=document.getElementById('pdocFile');if(pf)pf.value='';
+  document.getElementById('pdocLabel').value='';
+  document.getElementById('pdocExpiry').value='';
+  document.getElementById('pdocType').selectedIndex=0;
+  document.getElementById('pdocUploadEmpty').style.display='block';
+  document.getElementById('pdocUploadDone').style.display='none';
+  document.getElementById('pdocPreview').style.display='none';
+  let m=document.getElementById('addProfileDocMsg');if(m)m.style.display='none';
+  document.getElementById('addProfileDocModal').style.display='flex';
+};
+window.closeAddProfileDoc=function(){document.getElementById('addProfileDocModal').style.display='none';_pdocFile=null;};
+
+window.handlePdocFile=function(input){
+  let f=input.files[0];if(!f)return;_pdocFile=f;
+  document.getElementById('pdocUploadEmpty').style.display='none';
+  document.getElementById('pdocUploadDone').style.display='block';
+  document.getElementById('pdocFileName').innerText=f.name.length>36?f.name.substring(0,33)+'...':f.name;
+  let prev=document.getElementById('pdocPreview');
+  if(f.type.startsWith('image/')){let r=new FileReader();r.onload=e=>{prev.src=e.target.result;prev.style.display='block';};r.readAsDataURL(f);}
+  else{prev.style.display='none';}
+};
+
+window.saveProfileDoc=async function(){
+  if(!_pdocFile){showMessage('addProfileDocMsg','Please upload a file','error');return}
+  let docType=document.getElementById('pdocType').value;
+  let label=document.getElementById('pdocLabel').value.trim()||docType;
+  let expiryVal=document.getElementById('pdocExpiry').value;
+  let expiry=expiryVal?new Date(expiryVal).getTime():null;
+  document.getElementById('addProfileDocModal').style.display='none';
+  showUploadProgress([{label:'Uploading '+label,icon:'id-card'},{label:'Saving record',icon:'database'}]);
+  try{
+    setUploadStage(0,'active');
+    let ref=storage.ref(`user_profile_docs/${currentUser.uid}/${Date.now()}_${_pdocFile.name}`);
+    await ref.put(_pdocFile);let url=await ref.getDownloadURL();
+    setUploadStage(0,'done');setUploadStage(1,'active');
+    let docId='pdoc_'+Date.now();
+    await db.ref(`user_profile_docs/${currentUser.uid}/${docId}`).set({docType,label,url,expiry,uploadedAt:Date.now(),fileName:_pdocFile.name});
+    setUploadStage(1,'done');
+    completeUploadProgress(label+' saved to your wallet!');
+    setTimeout(()=>{hideUploadProgress();loadProfileDocs();},1800);
+    _pdocFile=null;
+  }catch(e){
+    hideUploadProgress();
+    document.getElementById('addProfileDocModal').style.display='flex';
+    showMessage('addProfileDocMsg','Upload failed: '+e.message,'error');
+  }
+};
+
+window.deleteProfileDoc=function(docId,label){
+  if(!confirm('Delete "'+label+'"? This cannot be undone.'))return;
+  db.ref(`user_profile_docs/${currentUser.uid}/${docId}`).remove().then(()=>{
+    showNotification(label+' deleted');loadProfileDocs();
+  });
+};
+
+window.shareProfileDoc=async function(url,label){
+  if(navigator.share){
+    try{await navigator.share({title:label,url});}
+    catch(e){if(e.name!=='AbortError'){copyToClipboard(url);showNotification('Link copied!');}}
+  } else {
+    copyToClipboard(url);showNotification('Link copied to clipboard!');
+  }
+};
+
+// Hook showUserSection to load profile
+const _origSUS=window.showUserSection;
+window.showUserSection=function(s,el){
+  _origSUS(s,el);
+  if(s==='profile')loadProfile();
+};
+
+// Hook showUserDashboard to update sidebar avatar
+const _origSUD=window.showUserDashboard;
+window.showUserDashboard=function(){
+  _origSUD();
+  setTimeout(updateSidebarAvatar,300);
+};
 
 </script>
 </body>
