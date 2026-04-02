@@ -71,6 +71,25 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .login-options{margin-top:1.8rem;text-align:center;display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
 .login-options a{color:#f39c12;text-decoration:none;font-size:1rem;font-weight:500;cursor:pointer}
 .developer-name{text-align:center;padding:1.2rem;color:white;font-size:0.9rem;border-top:1px solid #253241}
+.social-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;text-decoration:none;font-size:1.2rem;transition:all 0.3s;border:1px solid rgba(255,255,255,0.12);background:#2a2a2a;color:rgba(255,255,255,0.6);filter:grayscale(1) brightness(0.7)}
+.social-btn:hover{transform:translateY(-3px) scale(1.08);filter:grayscale(0) brightness(1.1)}
+.social-btn.fb{--c1:#1877f2;--c2:#0d5dbf}
+.social-btn.ig{--c1:#f58529;--c2:#515bd4}
+.social-btn.tt{--c1:#010101;--c2:#010101}
+.social-btn.yt{--c1:#ff0000;--c2:#cc0000}
+.social-btn.tw{--c1:#000;--c2:#14171a}
+.social-btn.tg{--c1:#0088cc;--c2:#006a9e}
+.social-btn.wa{--c1:#25d366;--c2:#128c7e}
+.social-btn.snap{--c1:#fffc00;--c2:#e6e300}
+.social-btn:hover.fb,.social-btn:hover.ig,.social-btn:hover.tt,.social-btn:hover.yt,.social-btn:hover.tw,.social-btn:hover.tg,.social-btn:hover.wa,.social-btn:hover.snap{color:white}
+.social-btn.fb:hover{background:linear-gradient(135deg,#1877f2,#0d5dbf)}
+.social-btn.ig:hover{background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4)}
+.social-btn.tt:hover{background:#010101;border-color:rgba(255,255,255,0.2)}
+.social-btn.yt:hover{background:linear-gradient(135deg,#ff0000,#cc0000)}
+.social-btn.tw:hover{background:#000;border-color:rgba(255,255,255,0.2)}
+.social-btn.tg:hover{background:linear-gradient(135deg,#0088cc,#006a9e)}
+.social-btn.wa:hover{background:linear-gradient(135deg,#25d366,#128c7e)}
+.social-btn.snap:hover{background:linear-gradient(135deg,#fffc00,#e6e300);color:#000!important}
 .app-wrapper{display:flex;height:100vh;background:#0a0f1e;position:relative;overflow:hidden}
 .sidebar{width:280px;background:#141b2b;height:100vh;position:fixed;left:-280px;top:0;transition:0.3s;z-index:1000;border-right:1px solid #2a3a55;overflow-y:auto}
 .sidebar.open{left:0}
@@ -326,10 +345,8 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 <!-- HOMEPAGE SLIDESHOW -->
 <div id="homepageContainer" class="homepage-container">
   <div class="slideshow" id="slideshow">
-    <div class="slide" style="background-image:url('post1.png')"></div>
-    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1920&q=80')"></div>
-    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1920&q=80')"></div>
-    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=1920&q=80')"></div>
+    <!-- Slides loaded dynamically from Firebase admin_slides -->
+    <div class="slide active" style="background:linear-gradient(135deg,#0a0f1e,#1a2a4a)"></div>
   </div>
   <div class="homepage-overlay"></div>
   <div class="home-content">
@@ -339,6 +356,10 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
     <div class="home-buttons">
       <button class="btn-home" onclick="enterApp()"><i class="fas fa-right-to-bracket"></i> Get Started</button>
       <button class="btn-home btn-home-outline" onclick="showLoginFromHome()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+    </div>
+    <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-top:0.8rem">
+      <button onclick="openAdViewer()" id="homeAdBtn" style="display:none;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.35);color:white;padding:10px 24px;border-radius:30px;font-size:0.9rem;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);transition:0.2s" onmouseenter="this.style.background='rgba(255,255,255,0.2)'" onmouseleave="this.style.background='rgba(255,255,255,0.1)'"><i class="fas fa-tags" style="margin-right:6px;color:#f39c12"></i> View Offers</button>
+      <button onclick="openHowToUse()" id="homeHowBtn" style="display:none;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.35);color:white;padding:10px 24px;border-radius:30px;font-size:0.9rem;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);transition:0.2s" onmouseenter="this.style.background='rgba(255,255,255,0.2)'" onmouseleave="this.style.background='rgba(255,255,255,0.1)'"><i class="fas fa-question-circle" style="margin-right:6px;color:#5dade2"></i> How to Use</button>
     </div>
   </div>
   <div class="slide-dots" id="slideDots"></div>
@@ -402,6 +423,12 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
         <div class="login-options"><a onclick="showRegisterModal()">Create account</a><a onclick="backToHomepage()">&#x2190; Back</a></div>
       </div>
       <div class="developer-name">RegAssist &copy; 2025 &middot; <a href="https://t.me/+9607705120" target="_blank" style="color:#0088cc"><i class="fab fa-telegram"></i> Support</a></div>
+
+      <!-- SOCIAL MEDIA LINKS -->
+      <div id="loginSocialLinks" style="display:none;padding:0.8rem 1.2rem 1.2rem">
+        <div style="text-align:center;color:rgba(255,255,255,0.3);font-size:0.72rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Follow Us</div>
+        <div id="socialLinksRow" style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap"></div>
+      </div>
     </div>
 
     <div id="registerModal" class="modal-overlay">
@@ -433,10 +460,10 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
             <div class="sidebar-section-label">Vehicle</div>
             <div class="sidebar-item" onclick="showUserSection('vehicles',this)"><i class="fas fa-car"></i> My Vehicles</div>
             <div class="sidebar-item" onclick="showUserSection('services',this)"><i class="fas fa-concierge-bell"></i> Vehicle Services</div>
-            <div class="sidebar-item" onclick="showUserSection('fines',this)"><i class="fas fa-exclamation-triangle"></i> Traffic Fines</div>
+            <div class="sidebar-item" onclick="showUserSection('fines',this)" style="color:#e74c3c"><i class="fas fa-exclamation-triangle" style="color:#e74c3c"></i> Traffic Fines</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-section-label">Business</div>
-            <div class="sidebar-item" onclick="showUserSection('business',this)"><i class="fas fa-briefcase"></i> Business Services</div>
+            <div class="sidebar-item" id="bizSidebarItem" style="display:none" onclick="showUserSection('business',this)"><i class="fas fa-briefcase"></i> Business Services</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-section-label">Account</div>
             <div class="sidebar-item" onclick="showUserSection('profile',this)"><i class="fas fa-user-circle"></i> My Profile</div>
@@ -478,8 +505,8 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
               <div id="serviceGrid" class="vehicle-grid"></div>
             </div>
             <div id="finesSection" class="user-section" style="display:none">
-              <h4 class="section-title"><i class="fas fa-exclamation-triangle"></i> Traffic Fines</h4>
-              <button class="btn btn-warning" style="margin-bottom:1rem" onclick="showAddFineModal()"><i class="fas fa-plus"></i> Submit Fine Check</button>
+              <h4 class="section-title" style="color:#e74c3c"><i class="fas fa-exclamation-triangle" style="color:#e74c3c"></i> Traffic Fines</h4>
+              <button class="btn btn-danger" style="margin-bottom:1rem" onclick="showAddFineModal()"><i class="fas fa-plus"></i> Submit Fine Check</button>
               <div id="userFinesList"></div>
             </div>
             <div id="businessSection" class="user-section" style="display:none">
@@ -604,7 +631,7 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
       <div class="file-upload" onclick="document.getElementById('fineDocFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Upload supporting document</p><input type="file" id="fineDocFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleFineDoc(this)"></div>
       <div id="fineDocName" class="file-name"></div><img id="fineDocPreview" class="document-preview" style="display:none">
     </div>
-    <button class="btn btn-warning" onclick="submitFineCheck()"><i class="fas fa-search"></i> Submit for Fine Check</button>
+    <button class="btn btn-danger" onclick="submitFineCheck()"><i class="fas fa-search"></i> Submit for Fine Check</button>
   </div>
 </div>
 
@@ -618,14 +645,14 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
     <div class="bank-details" id="payFineBankDetails" style="margin-bottom:16px"></div>
     <div class="form-group">
       <label class="form-label" style="font-size:0.95rem;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="fas fa-receipt" style="color:#f39c12"></i> Upload Payment Slip <span style="color:#e74c3c">*</span></label>
-      <div onclick="document.getElementById('payFineSlipFile').click()" style="border:2px dashed rgba(243,156,18,0.5);border-radius:20px;padding:1.4rem 1rem;text-align:center;cursor:pointer;background:rgba(243,156,18,0.04)">
+      <div onclick="document.getElementById('payFineSlipFile').click()" style="border:2px dashed rgba(231,76,60,0.5);border-radius:20px;padding:1.4rem 1rem;text-align:center;cursor:pointer;background:rgba(231,76,60,0.04)">
         <input type="file" id="payFineSlipFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handlePayFineSlip(this)">
         <div id="payFineUploadEmpty"><i class="fas fa-cloud-upload-alt" style="font-size:2.2rem;color:#f39c12;display:block;margin-bottom:8px"></i><div style="color:white;font-weight:600;font-size:0.95rem;margin-bottom:4px">Tap to upload slip</div><div style="color:rgba(255,255,255,0.4);font-size:0.78rem">JPG, PNG or PDF</div></div>
         <div id="payFineUploadDone" style="display:none"><i class="fas fa-check-circle" style="font-size:2rem;color:#27ae60;display:block;margin-bottom:6px"></i><div id="payFineSlipName" style="color:#2ecc71;font-weight:600;font-size:0.88rem;word-break:break-all"></div><div style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-top:4px">Tap to change</div></div>
       </div>
       <img id="payFineSlipPreview" style="display:none;width:100%;max-height:160px;object-fit:contain;border-radius:14px;margin-top:10px;border:1px solid #2e3f55">
     </div>
-    <button onclick="submitFinePayment()" style="width:100%;padding:16px;border:none;border-radius:22px;background:linear-gradient(135deg,#27ae60,#1e8449);color:white;font-size:1.05rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(39,174,96,0.35);margin-top:4px"><i class="fas fa-paper-plane"></i> Submit Payment</button>
+    <button onclick="submitFinePayment()" style="width:100%;padding:16px;border:none;border-radius:22px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-size:1.05rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(231,76,60,0.4);margin-top:4px"><i class="fas fa-paper-plane"></i> Submit Payment</button>
   </div>
 </div>
 
@@ -669,7 +696,7 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
         </div>
         <div style="display:flex;gap:10px;margin-top:8px">
           <button type="button" onclick="servicePrevStep(3)" style="padding:14px 18px;border:1.5px solid #2e3f55;border-radius:18px;background:transparent;color:rgba(255,255,255,0.7);font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap"><i class="fas fa-arrow-left"></i> Back</button>
-          <button type="button" onclick="submitServiceRequest()" style="flex:1;padding:16px;border:none;border-radius:18px;background:linear-gradient(135deg,#27ae60,#1e8449);color:white;font-size:1.05rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(39,174,96,0.35)"><i class="fas fa-paper-plane"></i> Submit Request</button>
+          <button type="button" onclick="submitServiceRequest()" style="flex:1;padding:16px;border:none;border-radius:18px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-size:1.05rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(231,76,60,0.4)"><i class="fas fa-paper-plane"></i> Submit Request</button>
         </div>
       </div>
     </form>
@@ -771,6 +798,30 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
   </div>
 </div>
 
+<!-- AD VIEWER MODAL -->
+<div id="adViewerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:8500;flex-direction:column">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#0f1624;border-bottom:1px solid #1a2640;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(243,156,18,0.15);display:flex;align-items:center;justify-content:center"><i class="fas fa-tags" style="color:#f39c12"></i></div>
+      <div><div style="color:white;font-weight:700;font-size:0.95rem">Special Offers</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem" id="adViewerCount"></div></div>
+    </div>
+    <button onclick="closeAdViewer()" style="background:rgba(255,255,255,0.1);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="adViewerScroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;gap:12px"></div>
+</div>
+
+<!-- HOW TO USE MODAL -->
+<div id="howToUseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:8500;flex-direction:column">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#0f1624;border-bottom:1px solid #1a2640;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(52,152,219,0.15);display:flex;align-items:center;justify-content:center"><i class="fas fa-question-circle" style="color:#5dade2"></i></div>
+      <div><div style="color:white;font-weight:700;font-size:0.95rem">How to Use RegAssist</div><div style="color:rgba(255,255,255,0.4);font-size:0.72rem">Scroll to see all steps</div></div>
+    </div>
+    <button onclick="closeHowToUse()" style="background:rgba(255,255,255,0.1);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="howToUseScroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;gap:12px"></div>
+</div>
+
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
   <img id="lightboxImg" src="" alt="Preview">
@@ -779,7 +830,7 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
 </div>
 
 <!-- TELEGRAM FLOAT -->
-<a href="https://t.me/+9609121220" target="_blank" class="tg-float" id="tgFloat" style="display:none"><i class="fab fa-telegram"></i> Need Help?</a>
+<a href="https://t.me/9121220" target="_blank" class="tg-float" id="tgFloat" style="display:none"><i class="fab fa-telegram"></i> Need Help?</a>
 <script>
 
 const firebaseConfig={apiKey:"AIzaSyA-di-_1PsrdRH_CiQCLsN4pLH-ERQxje4",authDomain:"autoease-f84b5.firebaseapp.com",databaseURL:"https://autoease-f84b5-default-rtdb.firebaseio.com",projectId:"autoease-f84b5",storageBucket:"autoease-f84b5.firebasestorage.app",messagingSenderId:"547912368245",appId:"1:547912368245:web:692e246c18ddcb2607783c"};
@@ -1195,7 +1246,7 @@ window.loadUserVehicles=async function(){
       let color=vs==='verified'?'#27ae60':vs==='rejected'?'#e74c3c':'#f39c12';
       let icon=vs==='verified'?'fa-check-circle':vs==='rejected'?'fa-times-circle':'fa-clock';
       let tname=vehicleTypes[veh.type]?.name||veh.type;
-      cont.innerHTML+=`<div class="vehicle-card"><div class="vehicle-icon"><i class="fas ${vehicleTypes[veh.type]?.icon||'fa-car'}"></i></div><div class="vehicle-name">${veh.number}</div><div class="vehicle-plate">${veh.model||''}</div><div class="vehicle-type-badge">${tname}</div><div style="margin-top:8px;font-size:0.8rem;color:${color}"><i class="fas ${icon}"></i> ${vs}</div><button class="btn btn-info btn-small" style="margin-top:10px" onclick="selectVehicleForService('${k}')"><i class="fas fa-concierge-bell"></i> Services</button><button class="btn btn-warning btn-small" style="margin-top:5px" onclick="selectVehicleForFine('${k}')"><i class="fas fa-exclamation-triangle"></i> Fine</button></div>`;
+      cont.innerHTML+=`<div class="vehicle-card"><div class="vehicle-icon"><i class="fas ${vehicleTypes[veh.type]?.icon||'fa-car'}"></i></div><div class="vehicle-name">${veh.number}</div><div class="vehicle-plate">${veh.model||''}</div><div class="vehicle-type-badge">${tname}</div><div style="margin-top:8px;font-size:0.8rem;color:${color}"><i class="fas ${icon}"></i> ${vs}</div><button class="btn btn-info btn-small" style="margin-top:10px" onclick="selectVehicleForService('${k}')"><i class="fas fa-concierge-bell"></i> Services</button><button class="btn btn-danger btn-small" style="margin-top:5px" onclick="selectVehicleForFine('${k}')"><i class="fas fa-exclamation-triangle"></i> Fine</button></div>`;
     });
   }
   let dc=document.getElementById('dashboardVehicles');
@@ -1307,7 +1358,7 @@ window.loadUserFines=async function(){
       <div style="padding:0 16px 14px;display:flex;gap:8px;flex-wrap:wrap">
         ${hasFineDetails?`<button onclick="openFineDetail('${safeId}')" style="flex:1;background:rgba(230,126,34,0.12);border:1px solid rgba(230,126,34,0.4);color:#e67e22;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0"><i class="fas fa-file-invoice"></i> View Details</button>`:''}
         ${f.documentUrl?`<button onclick="openLightbox('${f.documentUrl.replace(/'/g,'%27')}','Fine Document','${f.documentUrl.replace(/'/g,'%27')}')" style="background:rgba(52,152,219,0.12);border:1px solid rgba(52,152,219,0.4);color:#5dade2;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0"><i class="fas fa-eye"></i> My Doc</button>`:''}
-        ${hasFineDetails&&!isPaid&&isApproved?`<button onclick="openPayFineModal('${safeId}',${total},'${(f.fineDetails.typeName||'').replace(/'/g,"\\'")}') " style="flex:1;background:linear-gradient(135deg,#e67e22,#d35400);border:none;color:white;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;box-shadow:0 4px 14px rgba(230,126,34,0.35)"><i class="fas fa-money-bill-wave"></i> Pay MVR ${total.toFixed(2)}</button>`:''}
+        ${hasFineDetails&&!isPaid&&isApproved?`<button onclick="openPayFineModal('${safeId}',${total},'${(f.fineDetails.typeName||'').replace(/'/g,"\\'")}') " style="flex:1;background:linear-gradient(135deg,#e74c3c,#c0392b);border:none;color:white;border-radius:16px;padding:9px 14px;font-size:0.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;box-shadow:0 4px 14px rgba(231,76,60,0.4)"><i class="fas fa-money-bill-wave"></i> Pay MVR ${total.toFixed(2)}</button>`:''}
       </div>
     </div>`;
   });
@@ -1348,7 +1399,7 @@ window.openFineDetail=async function(fid){
     </div>
     <div style="background:#f8fafc;padding:0.9rem 1.3rem;border-top:1px solid #e8edf3;text-align:center;position:relative;z-index:1"><p style="color:#8899aa;font-size:0.72rem;line-height:1.6">RegAssist · Vehicle Registration Services · <strong style="color:#4455aa">Telegram: @9121220</strong></p></div>
   </div>
-  ${!isPaid&&f.fineDetails&&f.status==='approved'?`<div style="margin-top:12px"><button onclick="closeFineDetail();openPayFineModal('${f.id.replace(/'/g,"\\'")}',${total},'${(f.fineDetails?.typeName||'').replace(/'/g,"\\'")}') " style="width:100%;background:linear-gradient(135deg,#e67e22,#d35400);border:none;color:white;border-radius:16px;padding:13px;font-size:0.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 20px rgba(230,126,34,0.4)"><i class="fas fa-money-bill-wave"></i> Pay Fine · MVR ${total.toFixed(2)}</button></div>`:''}`;
+  ${!isPaid&&f.fineDetails&&f.status==='approved'?`<div style="margin-top:12px"><button onclick="closeFineDetail();openPayFineModal('${f.id.replace(/'/g,"\\'")}',${total},'${(f.fineDetails?.typeName||'').replace(/'/g,"\\'")}') " style="width:100%;background:linear-gradient(135deg,#e74c3c,#c0392b);border:none;color:white;border-radius:16px;padding:13px;font-size:0.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 20px rgba(231,76,60,0.4)"><i class="fas fa-money-bill-wave"></i> Pay Fine · MVR ${total.toFixed(2)}</button></div>`:''}`;
   document.getElementById('fineDetailContent').innerHTML=html;
   document.getElementById('fineDetailModal').style.display='flex';
 };
@@ -1970,6 +2021,212 @@ const _origSUD=window.showUserDashboard;
 window.showUserDashboard=function(){
   _origSUD();
   setTimeout(updateSidebarAvatar,300);
+};
+
+
+// ============================================================
+// ===== SOCIAL MEDIA LINKS (loaded from Firebase) =====
+// ============================================================
+// Admin saves links to: social_links/{platform} = {url, active}
+// Platforms: facebook, instagram, tiktok, youtube, twitter, telegram, whatsapp, snapchat
+
+const SOCIAL_META = {
+  facebook:  {icon:'fab fa-facebook-f',  cls:'fb',  label:'Facebook'},
+  instagram: {icon:'fab fa-instagram',   cls:'ig',  label:'Instagram'},
+  tiktok:    {icon:'fab fa-tiktok',      cls:'tt',  label:'TikTok'},
+  youtube:   {icon:'fab fa-youtube',     cls:'yt',  label:'YouTube'},
+  twitter:   {icon:'fab fa-x-twitter',   cls:'tw',  label:'X / Twitter'},
+  telegram:  {icon:'fab fa-telegram',    cls:'tg',  label:'Telegram'},
+  whatsapp:  {icon:'fab fa-whatsapp',    cls:'wa',  label:'WhatsApp'},
+  snapchat:  {icon:'fab fa-snapchat',    cls:'snap',label:'Snapchat'},
+};
+
+async function loadSocialLinks(){
+  try{
+    let snap=await db.ref('social_links').once('value');
+    let row=document.getElementById('socialLinksRow');
+    let wrap=document.getElementById('loginSocialLinks');
+    if(!snap.exists()||!row||!wrap)return;
+    let links=snap.val();
+    let html='';
+    Object.keys(SOCIAL_META).forEach(platform=>{
+      let d=links[platform];
+      if(!d||!d.url||d.active===false)return;
+      let m=SOCIAL_META[platform];
+      let url=d.url.startsWith('http')?d.url:'https://'+d.url;
+      html+=`<a href="${url}" target="_blank" rel="noopener" class="social-btn ${m.cls}" title="${m.label}"><i class="${m.icon}"></i></a>`;
+    });
+    if(html){row.innerHTML=html;wrap.style.display='block';}
+    else{wrap.style.display='none';}
+  }catch(e){console.warn('Social links error:',e);}
+}
+
+// Load social links when app starts
+const _origLoadInitialData=loadInitialData;
+window.loadInitialData=async function(){
+  await _origLoadInitialData();
+  loadSocialLinks();
+};
+
+
+// ============================================================
+// ===== DYNAMIC SLIDESHOW FROM FIREBASE =====
+// ============================================================
+async function loadDynamicSlideshow(){
+  try{
+    let snap=await db.ref('admin_slides').orderByChild('order').once('value');
+    let ss=document.getElementById('slideshow');if(!ss)return;
+    let imgSlides=[];
+    if(snap.exists())snap.forEach(c=>{let d=c.val();if(d.url&&d.active!==false)imgSlides.push(d);});
+    if(!imgSlides.length){
+      // Fallback gradient slides
+      ss.innerHTML=`
+        <div class="slide active" style="background:linear-gradient(135deg,#0a0f1e,#1e2a4a)"></div>
+        <div class="slide" style="background:linear-gradient(135deg,#1a0a00,#2a1505)"></div>
+        <div class="slide" style="background:linear-gradient(135deg,#0a1a0a,#1a2a1a)"></div>`;
+    } else {
+      ss.innerHTML=imgSlides.map((d,i)=>`<div class="slide${i===0?' active':''}" style="background-image:url('${d.url}')"></div>`).join('');
+    }
+    initSlideshow();
+  }catch(e){console.warn('Slideshow load error:',e);initSlideshow();}
+}
+
+// ============================================================
+// ===== AD VIEWER =====
+// ============================================================
+window.openAdViewer=async function(){
+  let modal=document.getElementById('adViewerModal');
+  let scr=document.getElementById('adViewerScroll');
+  let cnt=document.getElementById('adViewerCount');
+  modal.style.display='flex';
+  scr.innerHTML=`<div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.4)"><i class="fas fa-spinner fa-spin" style="font-size:2rem"></i><div style="margin-top:1rem">Loading offers...</div></div>`;
+  try{
+    let snap=await db.ref('admin_ads').orderByChild('order').once('value');
+    let ads=[];if(snap.exists())snap.forEach(c=>{let d=c.val();d.id=c.key;if(d.active!==false)ads.push(d);});
+    if(!ads.length){scr.innerHTML=`<div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.4)"><i class="fas fa-tags" style="font-size:2.5rem;margin-bottom:1rem;display:block;opacity:0.4"></i><div>No offers available right now</div></div>`;if(cnt)cnt.innerText='';return;}
+    if(cnt)cnt.innerText=ads.length+' offer'+(ads.length!==1?'s':'');
+    scr.innerHTML=ads.map((ad,i)=>{
+      let isImg=/(jpg|jpeg|png|gif|webp)/i.test((ad.url||'').split('?')[0]);
+      let isPdf=/(\.pdf)/i.test((ad.url||'').split('?')[0]);
+      return`<div style="background:#141b2b;border-radius:20px;overflow:hidden;border:1px solid #2a3a55">
+        ${ad.title?`<div style="padding:14px 16px 8px;font-weight:700;color:white;font-size:1rem">${ad.title}</div>`:''}
+        ${ad.description?`<div style="padding:0 16px 10px;color:rgba(255,255,255,0.6);font-size:0.85rem;line-height:1.5">${ad.description}</div>`:''}
+        ${isImg?`<img src="${ad.url}" style="width:100%;display:block;cursor:pointer" onclick="openLightbox('${ad.url.replace(/'/g,'%27')}','${(ad.title||'Offer '+(i+1)).replace(/'/g,"&apos;")}','${ad.url.replace(/'/g,'%27')}')" alt="${ad.title||'Ad'}" loading="lazy">`:''}
+        ${isPdf?`<div style="padding:12px 16px"><a href="${ad.url}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:14px;padding:12px 16px;text-decoration:none;color:white"><i class="fas fa-file-pdf" style="color:#e74c3c;font-size:1.5rem;flex-shrink:0"></i><div><div style="font-weight:600;font-size:0.9rem">${ad.title||'View PDF'}</div><div style="color:rgba(255,255,255,0.5);font-size:0.75rem">Tap to open document</div></div><i class="fas fa-external-link-alt" style="color:rgba(255,255,255,0.3);margin-left:auto"></i></a></div>`:''}
+        ${ad.linkUrl?`<div style="padding:10px 16px 14px"><a href="${ad.linkUrl.startsWith('http')?ad.linkUrl:'https://'+ad.linkUrl}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#f39c12,#e67e22);border:none;border-radius:14px;padding:11px 16px;text-decoration:none;color:white;font-weight:700;font-size:0.88rem"><i class="fas fa-external-link-alt"></i> ${ad.linkLabel||'Learn More'}</a></div>`:''}
+      </div>`;
+    }).join('');
+  }catch(e){scr.innerHTML=`<div style="text-align:center;padding:2rem;color:#e74c3c">Failed to load offers</div>`;}
+};
+window.closeAdViewer=function(){document.getElementById('adViewerModal').style.display='none';};
+
+// ============================================================
+// ===== HOW TO USE =====
+// ============================================================
+window.openHowToUse=async function(){
+  let modal=document.getElementById('howToUseModal');
+  let scr=document.getElementById('howToUseScroll');
+  modal.style.display='flex';
+  scr.innerHTML=`<div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.4)"><i class="fas fa-spinner fa-spin" style="font-size:2rem"></i><div style="margin-top:1rem">Loading guide...</div></div>`;
+  try{
+    let snap=await db.ref('admin_howto').orderByChild('order').once('value');
+    let steps=[];if(snap.exists())snap.forEach(c=>{let d=c.val();d.id=c.key;if(d.active!==false)steps.push(d);});
+    if(!steps.length){scr.innerHTML=`<div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.4)"><i class="fas fa-question-circle" style="font-size:2.5rem;margin-bottom:1rem;display:block;opacity:0.4"></i><div>How-to guide coming soon!</div></div>`;return;}
+    scr.innerHTML=steps.map((s,i)=>{
+      let isImg=/(jpg|jpeg|png|gif|webp)/i.test((s.url||'').split('?')[0]);
+      return`<div style="background:#141b2b;border-radius:20px;overflow:hidden;border:1px solid #2a3a55">
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 16px ${s.url?'6px':'14px'}">
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;color:white;flex-shrink:0">${i+1}</div>
+          <div style="flex:1"><div style="color:white;font-weight:700;font-size:0.95rem">${s.title||'Step '+(i+1)}</div>${s.description?`<div style="color:rgba(255,255,255,0.6);font-size:0.82rem;margin-top:3px;line-height:1.5">${s.description}</div>`:''}</div>
+        </div>
+        ${isImg&&s.url?`<img src="${s.url}" style="width:100%;display:block;cursor:pointer" onclick="openLightbox('${s.url.replace(/'/g,'%27')}','Step ${i+1}: ${(s.title||'').replace(/'/g,"&apos;")}','')" alt="Step ${i+1}" loading="lazy">`:''}
+      </div>`;
+    }).join('');
+  }catch(e){scr.innerHTML=`<div style="text-align:center;padding:2rem;color:#e74c3c">Failed to load guide</div>`;}
+};
+window.closeHowToUse=function(){document.getElementById('howToUseModal').style.display='none';};
+
+// ============================================================
+// ===== BUSINESS ACCESS CHECK =====
+// ============================================================
+async function checkBusinessAccess(){
+  if(!currentUser)return;
+  // Check if admin has granted business access to this user
+  let snap=await db.ref(`users/${currentUser.uid}/businessAccess`).once('value');
+  let hasAccess=snap.exists()&&snap.val()===true;
+  // Also check if user is verified (could be tied to verification)
+  // Admin can grant access separately via users/{uid}/businessAccess = true
+  let bizItem=document.getElementById('bizSidebarItem');
+  if(bizItem)bizItem.style.display=hasAccess?'flex':'none';
+  return hasAccess;
+}
+
+// ============================================================
+// ===== LOAD HOME CONTENT (ads/howto buttons + slideshow) =====
+// ============================================================
+async function loadHomeContent(){
+  // Load dynamic slideshow
+  await loadDynamicSlideshow();
+  // Check if ads exist → show button
+  try{
+    let adSnap=await db.ref('admin_ads').orderByChild('active').equalTo(true).limitToFirst(1).once('value');
+    let adBtn=document.getElementById('homeAdBtn');
+    if(adBtn)adBtn.style.display=adSnap.exists()?'block':'none';
+  }catch(e){}
+  // Check if howto steps exist → show button
+  try{
+    let htSnap=await db.ref('admin_howto').limitToFirst(1).once('value');
+    let htBtn=document.getElementById('homeHowBtn');
+    if(htBtn)htBtn.style.display=htSnap.exists()?'block':'none';
+  }catch(e){}
+}
+
+// ============================================================
+// ===== PATCH EXISTING FUNCTIONS =====
+// ============================================================
+// Override window.onload to also load home content
+const _origOnLoad=window.onload;
+window.onload=function(){
+  if(_origOnLoad)_origOnLoad();
+  loadHomeContent();
+};
+
+// Patch showUserDashboard to also check business access
+const __origSUD2=window.showUserDashboard;
+window.showUserDashboard=function(){
+  __origSUD2();
+  checkBusinessAccess();
+};
+
+// Patch loadSocialLinks to use correct format with direct href link
+// (overrides the version added earlier — this one is definitive)
+async function loadSocialLinks(){
+  try{
+    let snap=await db.ref('social_links').once('value');
+    let row=document.getElementById('socialLinksRow');
+    let wrap=document.getElementById('loginSocialLinks');
+    if(!snap.exists()||!row||!wrap)return;
+    let links=snap.val();
+    const PLATFORMS=['facebook','instagram','tiktok','youtube','twitter','telegram','whatsapp','snapchat'];
+    const ICONS={facebook:'fab fa-facebook-f',instagram:'fab fa-instagram',tiktok:'fab fa-tiktok',youtube:'fab fa-youtube',twitter:'fab fa-x-twitter',telegram:'fab fa-telegram',whatsapp:'fab fa-whatsapp',snapchat:'fab fa-snapchat'};
+    const CLS={facebook:'fb',instagram:'ig',tiktok:'tt',youtube:'yt',twitter:'tw',telegram:'tg',whatsapp:'wa',snapchat:'snap'};
+    let html='';
+    PLATFORMS.forEach(p=>{
+      let d=links[p];if(!d||!d.url||d.active===false)ret91312urn;
+      let url=d.url.startsWith('http')?d.url:'https://'+d.url;
+      html+=`<a href="${url}" target="_blank" rel="noopener" class="social-btn ${CLS[p]}" title="${p.charAt(0).toUpperCase()+p.slice(1)}"><i class="${ICONS[p]}"></i></a>`;
+    });
+    if(html){row.innerHTML=html;wrap.style.display='block';}
+    else wrap.style.display='none';
+  }catch(e){console.warn('Social links:',e);}
+}
+
+// Override the old loadInitialData to also load social + home content
+const _origLID2=window.loadInitialData||async function(){await loadVehicleTypes();await loadServices();await loadBankDetails()};
+window.loadInitialData=async function(){
+  await loadVehicleTypes();await loadServices();await loadBankDetails();
+  loadSocialLinks();
+  loadHomeContent();
 };
 
 </script>
