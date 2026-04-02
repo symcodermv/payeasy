@@ -1103,8 +1103,22 @@ window.showLoginFromHome=function(){enterApp()};
 window.backToHomepage=function(){document.getElementById('homepageContainer').style.display='flex';document.getElementById('mainContent').classList.remove('show');document.getElementById('userDashboard').style.display='none';document.getElementById('loginSection').style.display='none';document.getElementById('tgFloat').style.display='none';initSlideshow()};
 
 window.onload=()=>{
-  setTimeout(()=>{document.getElementById('splashScreen').style.opacity='0';setTimeout(()=>{document.getElementById('splashScreen').style.display='none';initSlideshow()},300)},2000);
-  loadInitialData();checkSession();
+  setTimeout(()=>{
+    document.getElementById('splashScreen').style.opacity='0';
+    setTimeout(()=>{document.getElementById('splashScreen').style.display='none';},300);
+  },2000);
+  // Load base data, then social links + home content, then check session
+  (async()=>{
+    await loadVehicleTypes();
+    await loadServices();
+    await loadBankDetails();
+    // Load home content (slideshow + ad/howto buttons) in parallel
+    loadHomeContent();
+    // Load social links for login screen
+    loadSocialLinks();
+    // Check existing session
+    checkSession();
+  })();
 };
 
 async function loadInitialData(){await loadVehicleTypes();await loadServices();await loadBankDetails()}
@@ -2061,12 +2075,7 @@ async function loadSocialLinks(){
   }catch(e){console.warn('Social links error:',e);}
 }
 
-// Load social links when app starts
-const _origLoadInitialData=loadInitialData;
-window.loadInitialData=async function(){
-  await _origLoadInitialData();
-  loadSocialLinks();
-};
+// Social links and home content are loaded in window.onload directly
 
 
 // ============================================================
@@ -2165,7 +2174,7 @@ async function checkBusinessAccess(){
 // ===== LOAD HOME CONTENT (ads/howto buttons + slideshow) =====
 // ============================================================
 async function loadHomeContent(){
-  // Load dynamic slideshow
+  // Load dynamic slideshow (also calls initSlideshow internally)
   await loadDynamicSlideshow();
   // Check if ads exist → show button
   try{
@@ -2181,53 +2190,11 @@ async function loadHomeContent(){
   }catch(e){}
 }
 
-// ============================================================
-// ===== PATCH EXISTING FUNCTIONS =====
-// ============================================================
-// Override window.onload to also load home content
-const _origOnLoad=window.onload;
-window.onload=function(){
-  if(_origOnLoad)_origOnLoad();
-  loadHomeContent();
-};
 
-// Patch showUserDashboard to also check business access
-const __origSUD2=window.showUserDashboard;
-window.showUserDashboard=function(){
-  __origSUD2();
-  checkBusinessAccess();
-};
 
-// Patch loadSocialLinks to use correct format with direct href link
-// (overrides the version added earlier — this one is definitive)
-async function loadSocialLinks(){
-  try{
-    let snap=await db.ref('social_links').once('value');
-    let row=document.getElementById('socialLinksRow');
-    let wrap=document.getElementById('loginSocialLinks');
-    if(!snap.exists()||!row||!wrap)return;
-    let links=snap.val();
-    const PLATFORMS=['facebook','instagram','tiktok','youtube','twitter','telegram','whatsapp','snapchat'];
-    const ICONS={facebook:'fab fa-facebook-f',instagram:'fab fa-instagram',tiktok:'fab fa-tiktok',youtube:'fab fa-youtube',twitter:'fab fa-x-twitter',telegram:'fab fa-telegram',whatsapp:'fab fa-whatsapp',snapchat:'fab fa-snapchat'};
-    const CLS={facebook:'fb',instagram:'ig',tiktok:'tt',youtube:'yt',twitter:'tw',telegram:'tg',whatsapp:'wa',snapchat:'snap'};
-    let html='';
-    PLATFORMS.forEach(p=>{
-      let d=links[p];if(!d||!d.url||d.active===false)ret91312urn;
-      let url=d.url.startsWith('http')?d.url:'https://'+d.url;
-      html+=`<a href="${url}" target="_blank" rel="noopener" class="social-btn ${CLS[p]}" title="${p.charAt(0).toUpperCase()+p.slice(1)}"><i class="${ICONS[p]}"></i></a>`;
-    });
-    if(html){row.innerHTML=html;wrap.style.display='block';}
-    else wrap.style.display='none';
-  }catch(e){console.warn('Social links:',e);}
-}
 
-// Override the old loadInitialData to also load social + home content
-const _origLID2=window.loadInitialData||async function(){await loadVehicleTypes();await loadServices();await loadBankDetails()};
-window.loadInitialData=async function(){
-  await loadVehicleTypes();await loadServices();await loadBankDetails();
-  loadSocialLinks();
-  loadHomeContent();
-};
+
+
 
 </script>
 </body>
