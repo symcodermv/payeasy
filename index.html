@@ -6,7 +6,6 @@
 <title>RegAssist</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 <style>
@@ -444,7 +443,6 @@ p,span,div,h1,h2,h3,h4,h5,h6,label{color:white}
           <div class="form-group"><label class="form-label">Password <span style="color:#f39c12">*</span></label><input type="password" class="form-input" id="regPassword" placeholder="Choose a password"></div>
           <div class="form-group"><label class="form-label">Confirm Password <span style="color:#f39c12">*</span></label><input type="password" class="form-input" id="regConfirm" placeholder="Re-enter password"></div>
           <button class="btn btn-primary" id="sendOtpBtn" onclick="sendRegisterOtp()"><i class="fas fa-paper-plane"></i> Send OTP</button>
-          <div id="recaptchaContainer"></div>
         </div>
 
         <!-- STEP 2: Enter OTP -->
@@ -1176,26 +1174,34 @@ if(document.getElementById('loginForm')){
 }
 
 // ===== OTP REGISTRATION (Firebase Phone Auth — no server, no Twilio) =====
-let _regData=null,_resendTimer=null,_recaptcha=null,_confirmation=null;
-function resetRecaptcha(){
-  try{if(_recaptcha){_recaptcha.clear();}}catch(_){}
-  _recaptcha=null;
-}
-async function makeFreshRecaptcha(){
-  // Fully remove any previous verifier and replace the container node, then build + render a brand-new one
-  resetRecaptcha();
-  var old=document.getElementById('recaptchaContainer');
-  if(old&&old.parentNode){var fresh=document.createElement('div');fresh.id='recaptchaContainer';old.parentNode.replaceChild(fresh,old);}
-  _recaptcha=new firebase.auth.RecaptchaVerifier('recaptchaContainer',{size:'invisible'});
-  await _recaptcha.render();
-  return _recaptcha;
-}
+let _regData=null,_resendTimer=null,_otpCode='';
 async function getOtpSettings(){
   try{let s=(await db.ref('otp_settings').once('value')).val()||{};return {enabled:s.enabled!==false,countryCode:s.countryCode||'+960'};}
   catch(e){return {enabled:true,countryCode:'+960'};}
 }
 function normalizeRegPhone(p,cc){p=(p||'').trim().replace(/[\s\-()]/g,'');if(!p)return'';if(p.startsWith('+'))return p;if(p.startsWith('00'))return'+'+p.slice(2);return cc+p.replace(/^0+/,'');}
 async function createRegUser(d){let ref=db.ref('users').push();await ref.set({name:d.name,email:d.email||'',phone:d.phone,password:d.password,verified:false,phoneVerified:!!d.phoneVerified,createdAt:Date.now(),vehicles:{}});return ref.key;}
+// Try to send the code by SMS through Twilio (creds saved in admin). Returns {sent, demo, error}.
+async function sendOtpSms(phone,code){
+  let t={};
+  try{t=(await db.ref('twilio_settings').once('value')).val()||{};}catch(_){}
+  if(!t.accountSid||!t.authToken){return {sent:false,demo:true};}
+  try{
+    let body=new URLSearchParams();
+    body.append('To',phone);
+    body.append('Body','RegAssist: Your verification code is '+code+'. Valid for 10 minutes. Do not share it.');
+    if(t.messagingServiceSid&&t.messagingServiceSid.indexOf('MG')===0)body.append('MessagingServiceSid',t.messagingServiceSid);
+    else body.append('From',t.fromNumber||'');
+    let resp=await fetch('https://api.twilio.com/2010-04-01/Accounts/'+t.accountSid+'/Messages.json',{
+      method:'POST',
+      headers:{'Authorization':'Basic '+btoa(t.accountSid+':'+t.authToken),'Content-Type':'application/x-www-form-urlencoded'},
+      body:body.toString()
+    });
+    if(resp.ok)return {sent:true};
+    let err={};try{err=await resp.json();}catch(_){}
+    return {sent:false,error:err.message||'Twilio rejected the request'};
+  }catch(e){return {sent:false,error:e.message||'Could not reach Twilio from the browser'};}
+}
 
 window.sendRegisterOtp=async function(){
   let name=document.getElementById('regName').value.trim();
@@ -1219,38 +1225,38 @@ window.sendRegisterOtp=async function(){
     catch(e){showMessage('registerMessage','Could not create account: '+e.message,'error');}
     btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Send OTP';return;
   }
-  // OTP on — send via Firebase Phone Auth
-  try{
-    let verifier=await makeFreshRecaptcha();
-    _confirmation=await firebase.auth().signInWithPhoneNumber(phone,verifier);
-    document.getElementById('otpPhoneLabel').innerText=phone;
-    document.getElementById('regStep1').style.display='none';
-    document.getElementById('regStep2').style.display='block';
-    document.getElementById('regOtpCode').value='';
-    document.getElementById('regOtpCode').focus();
-    startResendTimer();
+  // OTP on — generate our own code and send via Twilio (no reCAPTCHA, no Firebase phone auth)
+  _otpCode=String(Math.floor(100000+Math.random()*900000));
+  let res=await sendOtpSms(phone,_otpCode);
+  document.getElementById('otpPhoneLabel').innerText=phone;
+  document.getElementById('regStep1').style.display='none';
+  document.getElementById('regStep2').style.display='block';
+  document.getElementById('regOtpCode').value='';
+  document.getElementById('regOtpCode').focus();
+  startResendTimer();
+  if(res.sent){
     showMessage('registerMessage','Code sent! Check your SMS.','success');
-  }catch(e){
-    showMessage('registerMessage','OTP error: '+(e.code?e.code+' — ':'')+(e.message||'Could not send code'),'error');
-    resetRecaptcha();
+  }else if(res.demo){
+    showMessage('registerMessage','Your code is: '+_otpCode+' (enter it below)','success');
+  }else{
+    showMessage('registerMessage','SMS could not be sent ('+res.error+'). Your code is: '+_otpCode,'error');
   }
   btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Send OTP';
 };
 
 window.verifyRegisterOtp=async function(){
-  if(!_regData||!_confirmation){backToRegStep1();return}
+  if(!_regData){backToRegStep1();return}
   let code=document.getElementById('regOtpCode').value.trim();
-  if(code.length<4){showMessage('registerMessage','Enter the code from your SMS','error');return}
+  if(code.length<4){showMessage('registerMessage','Enter the code','error');return}
+  if(code!==_otpCode){showMessage('registerMessage','Incorrect code. Please try again.','error');return}
   let btn=document.getElementById('verifyOtpBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verifying...';
   try{
-    await _confirmation.confirm(code);
     await createRegUser(Object.assign({},_regData,{phoneVerified:true}));
-    try{await firebase.auth().signOut()}catch(_){}
     showMessage('registerMessage','Account created! You can now sign in.','success');
-    clearInterval(_resendTimer);_regData=null;_confirmation=null;
+    clearInterval(_resendTimer);_regData=null;_otpCode='';
     setTimeout(()=>{closeRegisterModal();resetRegisterModal()},1500);
   }catch(e){
-    showMessage('registerMessage','Invalid or expired code','error');
+    showMessage('registerMessage','Could not create account: '+(e.message||''),'error');
     btn.disabled=false;btn.innerHTML='<i class="fas fa-check-circle"></i> Verify &amp; Create Account';return;
   }
   btn.disabled=false;btn.innerHTML='<i class="fas fa-check-circle"></i> Verify &amp; Create Account';
@@ -1260,11 +1266,12 @@ window.resendRegisterOtp=async function(){
   if(!_regData)return;
   let link=document.getElementById('resendOtpLink');
   if(link.dataset.disabled==='1')return;
-  try{
-    let verifier=await makeFreshRecaptcha();
-    _confirmation=await firebase.auth().signInWithPhoneNumber(_regData.phone,verifier);
-    showMessage('registerMessage','New code sent','success');startResendTimer();
-  }catch(e){showMessage('registerMessage',e.message||'Could not resend','error')}
+  _otpCode=String(Math.floor(100000+Math.random()*900000));
+  let res=await sendOtpSms(_regData.phone,_otpCode);
+  if(res.sent)showMessage('registerMessage','New code sent','success');
+  else if(res.demo)showMessage('registerMessage','Your new code is: '+_otpCode,'success');
+  else showMessage('registerMessage','SMS failed ('+res.error+'). Your code is: '+_otpCode,'error');
+  startResendTimer();
 };
 
 function startResendTimer(){
@@ -1284,8 +1291,7 @@ function resetRegisterModal(){
   document.getElementById('regStep2').style.display='none';
   document.getElementById('regStep1').style.display='block';
   ['regName','regEmail','regPhone','regPassword','regConfirm','regOtpCode'].forEach(id=>{let el=document.getElementById(id);if(el)el.value=''});
-  _regData=null;_confirmation=null;clearInterval(_resendTimer);
-  resetRecaptcha();
+  _regData=null;_otpCode='';clearInterval(_resendTimer);
 }
 
 async function loadVehicleTypes(){let snap=await db.ref('vehicle_types').once('value');if(snap.exists())vehicleTypes=snap.val();else{vehicleTypes={car:{name:'Car',icon:'fa-car'},bike:{name:'Motorcycle',icon:'fa-motorcycle'},truck:{name:'Truck',icon:'fa-truck'},bus:{name:'Bus',icon:'fa-bus'}};await db.ref('vehicle_types').set(vehicleTypes)}updateVehicleTypeDropdowns()}
