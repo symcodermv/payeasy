@@ -485,6 +485,7 @@ input.dv,textarea.dv{direction:rtl;text-align:right}
             <div class="sidebar-item" id="bizSidebarItem" style="display:none" onclick="showUserSection('business',this)"><i class="fas fa-briefcase"></i> Business Services</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-section-label">Account</div>
+            <div class="sidebar-item" onclick="showUserSection('guides',this)"><i class="fas fa-circle-play"></i> How to Use</div>
             <div class="sidebar-item" onclick="showUserSection('profile',this)"><i class="fas fa-user-circle"></i> My Profile</div>
             <div class="sidebar-item" onclick="showUserSection('folder',this)"><i class="fas fa-folder"></i> My Documents</div>
             <div class="sidebar-item" onclick="showUserSection('requests',this)"><i class="fas fa-clipboard-list"></i> My Requests</div>
@@ -597,6 +598,10 @@ input.dv,textarea.dv{direction:rtl;text-align:right}
                 <button class="btn btn-danger btn-small" onclick="clearAllNotifications()"><i class="fas fa-trash-alt"></i> Clear all</button>
               </div>
               <div id="notifSectionList"><p style="color:rgba(255,255,255,0.4)">No notifications yet</p></div>
+            </div>
+            <div id="guidesSection" class="user-section" style="display:none">
+              <h4 class="section-title"><i class="fas fa-circle-play"></i> How to Use</h4>
+              <div id="userGuidesList"><p style="color:rgba(255,255,255,0.4)">Loading guides...</p></div>
             </div>
           </div>
         </div>
@@ -860,6 +865,14 @@ input.dv,textarea.dv{direction:rtl;text-align:right}
   <iframe id="lightboxFrame" style="display:none;width:90vw;height:78vh;border:none;border-radius:16px;background:#fff" onclick="event.stopPropagation()"></iframe>
   <div class="lightbox-title" id="lightboxTitle"></div>
   <div class="lightbox-actions" id="lightboxActions" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- GUIDE PLAYER -->
+<div id="guidePlayer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:9000;flex-direction:column;align-items:center;justify-content:center;padding:18px" onclick="closeGuidePlayer()">
+  <button onclick="closeGuidePlayer()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:white;width:46px;height:46px;border-radius:50%;font-size:1.4rem;cursor:pointer;line-height:1">&times;</button>
+  <div id="guidePlayerTitle" style="color:white;font-weight:700;margin-bottom:14px;text-align:center;max-width:760px"></div>
+  <div id="guidePlayerBody" style="width:100%;max-width:760px" onclick="event.stopPropagation()"></div>
+  <button onclick="closeGuidePlayer()" style="margin-top:16px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:white;padding:10px 28px;border-radius:30px;font-size:0.95rem;font-weight:600;cursor:pointer"><i class="fas fa-times"></i> Close</button>
 </div>
 
 <!-- TELEGRAM FLOAT -->
@@ -1415,10 +1428,41 @@ window.showUserSection=function(s,el){
   else if(s==='requests')loadUserRequests();
   else if(s==='business'){renderBizServiceCards();loadBizRequests()}
   else if(s==='notifications')markAllRead();
+  else if(s==='guides')loadUserGuides();
   if(window.innerWidth<=500)toggleSidebar();
 };
 
 function renderBizServiceCards(){let g=document.getElementById('bizServiceCards');if(!g)return;g.innerHTML='';Object.keys(BIZ_SERVICES).forEach(k=>{let s=BIZ_SERVICES[k];g.innerHTML+=`<div class="business-service-card" onclick="openBusinessService('${k}')"><div class="biz-icon"><i class="fas ${s.icon}" style="color:${s.color}"></i></div><div class="biz-info"><div class="biz-title">${s.title}</div><div class="biz-desc">${s.desc}</div></div><i class="fas fa-chevron-right biz-arrow"></i></div>`})}
+
+async function loadUserGuides(){
+  let div=document.getElementById('userGuidesList');if(!div)return;
+  let snap=await db.ref('how_to_guides').orderByChild('order').once('value');
+  if(!snap.exists()){div.innerHTML='<p style="color:rgba(255,255,255,0.4)">No guides available yet.</p>';return}
+  let rows=[];snap.forEach(c=>rows.push({id:c.key,...c.val()}));
+  _guideItems=rows;
+  div.innerHTML=rows.map((g,i)=>guideButtonHtml(g,i)).join('');
+}
+window.loadUserGuides=loadUserGuides;
+let _guideItems=[];
+function guideButtonHtml(g,i){
+  return `<button onclick="playGuideIdx(${i})" style="width:100%;text-align:left;background:#0f1624;border:1px solid #1a2640;border-radius:14px;padding:14px;margin:0 0 10px;color:white;cursor:pointer;display:flex;align-items:center;gap:12px">
+    <span style="width:44px;height:44px;border-radius:12px;background:rgba(243,156,18,0.15);color:#f39c12;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas ${g.type==='video'?'fa-circle-play':'fa-image'}" style="font-size:1.1rem"></i></span>
+    <span style="flex:1;min-width:0"><span style="font-weight:700;display:block">${g.titleEn||''}</span>${g.titleDv?`<span class="dv" style="color:#f39c12;font-size:0.92rem;display:block;margin-top:2px">${g.titleDv}</span>`:''}</span>
+    <i class="fas fa-chevron-right" style="color:rgba(255,255,255,0.3)"></i>
+  </button>`;
+}
+window.playGuideIdx=function(i){
+  let g=_guideItems[i];if(!g)return;
+  document.getElementById('guidePlayerTitle').innerHTML=`${g.titleEn||''}${g.titleDv?` · <span class="dv">${g.titleDv}</span>`:''}`;
+  document.getElementById('guidePlayerBody').innerHTML=g.type==='video'
+    ? `<video src="${g.url}" controls autoplay playsinline style="width:100%;border-radius:14px;max-height:78vh;background:#000"></video>`
+    : `<img src="${g.url}" style="width:100%;border-radius:14px;max-height:78vh;object-fit:contain">`;
+  document.getElementById('guidePlayer').style.display='flex';
+};
+window.closeGuidePlayer=function(){
+  let p=document.getElementById('guidePlayer');let v=p.querySelector('video');if(v){try{v.pause()}catch(_){}}
+  document.getElementById('guidePlayerBody').innerHTML='';p.style.display='none';
+};
 
 // ===== VEHICLES =====
 window.showAddVehicleModal=function(){_resubmitVid=null;_idFrontFile=_idBackFile=_vehRegFile=null;document.getElementById('addVehicleModal').style.display='flex';updateVehicleTypeDropdowns()};
@@ -2277,12 +2321,13 @@ function renderHtuGallery(){
 }
 window.openHowToUse=async function(){
   document.getElementById('howToUseModal').style.display='flex';
-  document.getElementById('howToUseScroll').innerHTML='<p style="color:rgba(255,255,255,0.4);text-align:center;padding:3rem">Loading...</p>';
-  let snap=await db.ref('how_to_use').once('value');
-  _htuSteps=[];
-  if(snap.exists())snap.forEach(c=>_htuSteps.push(c.val()));
-  _htuSteps.sort((a,b)=>(a.order||0)-(b.order||0));
-  renderHtuSteps();
+  let scroll=document.getElementById('howToUseScroll');
+  scroll.innerHTML='<p style="color:rgba(255,255,255,0.4);text-align:center;padding:3rem">Loading...</p>';
+  let snap=await db.ref('how_to_guides').orderByChild('order').once('value');
+  let rows=[];if(snap.exists())snap.forEach(c=>rows.push({id:c.key,...c.val()}));
+  if(!rows.length){scroll.innerHTML='<p style="color:rgba(255,255,255,0.5);text-align:center;padding:3rem">No guide available yet.</p>';return}
+  _guideItems=rows;
+  scroll.innerHTML='<div style="padding:14px">'+rows.map((g,i)=>guideButtonHtml(g,i)).join('')+'</div>';
 };
 window.closeHowToUse=function(){document.getElementById('howToUseModal').style.display='none'};
 
@@ -2299,7 +2344,7 @@ async function loadHomeContent(){
   await loadDynamicSlideshow();
   let adSnap=await db.ref('ads').once('value');
   if(adSnap.exists()){let has=false;adSnap.forEach(c=>{if(c.val().active!==false)has=true});if(has)document.getElementById('homeAdBtn').style.display='inline-flex'}
-  let htuSnap=await db.ref('how_to_use').once('value');
+  let htuSnap=await db.ref('how_to_guides').once('value');
   if(htuSnap.exists())document.getElementById('homeHowBtn').style.display='inline-flex';
 }
 
