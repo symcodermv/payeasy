@@ -2249,12 +2249,15 @@ async function loadSocialLinks(){
   let snap=await db.ref('social_links').once('value');
   let row=document.getElementById('socialLinksRow'),wrap=document.getElementById('loginSocialLinks');
   if(!row)return;
-  if(!snap.exists()){wrap.style.display='none';return}
+  if(!snap.exists()){if(wrap)wrap.style.display='none';return}
   let links=snap.val(),html='';
   Object.keys(SOCIAL_META).forEach(k=>{
-    if(links[k]){let m=SOCIAL_META[k];html+=`<a href="${links[k]}" target="_blank" class="social-btn ${m.cls}"><i class="fab ${m.icon}"></i></a>`}
+    let d=links[k];if(!d)return;
+    let url=(typeof d==='string')?d:(d.url||'');
+    let active=(typeof d==='string')?true:(d.active!==false);
+    if(url&&active){let m=SOCIAL_META[k];html+=`<a href="${url}" target="_blank" class="social-btn ${m.cls}"><i class="fab ${m.icon}"></i></a>`}
   });
-  if(html){row.innerHTML=html;wrap.style.display='block'}else wrap.style.display='none';
+  if(html){row.innerHTML=html;if(wrap)wrap.style.display='block'}else if(wrap)wrap.style.display='none';
 }
 
 // ===== DYNAMIC SLIDESHOW =====
