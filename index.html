@@ -354,8 +354,8 @@ input.dv,textarea.dv{direction:rtl;text-align:right}
   <div class="homepage-overlay"></div>
   <div class="home-content">
     <div class="home-logo"><i class="fas fa-clipboard-check"></i><span>RegAssist</span></div>
-    <h1>Vehicle <span>Registration</span><br>Made Easy</h1>
-    <p>Your complete vehicle registration, sticker renewal, traffic fine &amp; business services.</p>
+    <h1 id="heroTitle" style="transition:opacity .5s ease, transform .5s ease">Vehicle <span>Registration</span><br>Made Easy</h1>
+    <p id="heroSub" style="transition:opacity .5s ease, transform .5s ease">Your complete vehicle registration, sticker renewal, traffic fine &amp; business services.</p>
     <div class="home-buttons">
       <button class="btn-home" onclick="enterApp()"><i class="fas fa-right-to-bracket"></i> Get Started</button>
       <button class="btn-home btn-home-outline" onclick="showLoginFromHome()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
@@ -621,7 +621,11 @@ input.dv,textarea.dv{direction:rtl;text-align:right}
       <div class="file-upload" onclick="document.getElementById('idBackFile').click()"><i class="fas fa-id-card"></i><p>Upload ID Back (image or PDF)</p><input type="file" id="idBackFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleIdBack(this)"></div>
       <div id="idBackName" class="file-name"></div><img id="idBackPreview" class="document-preview" style="display:none">
     </div>
-    <div style="background:#1e2a3a;border-radius:16px;padding:12px;margin:15px 0"><p style="color:#f39c12;margin-bottom:5px"><i class="fas fa-info-circle"></i> Note:</p><p style="color:rgba(255,255,255,0.8);font-size:0.9rem">Front and Back of the owner ID can be an image or a PDF. Your vehicle will be verified by admin before services are available.</p></div>
+    <div class="form-group"><label class="form-label">Vehicle Registry <span style="color:#f39c12">*</span></label>
+      <div class="file-upload" onclick="document.getElementById('vehRegFile').click()"><i class="fas fa-file-lines"></i><p>Upload Vehicle Registry (image or PDF)</p><input type="file" id="vehRegFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleVehReg(this)"></div>
+      <div id="vehRegName" class="file-name"></div><img id="vehRegPreview" class="document-preview" style="display:none">
+    </div>
+    <div style="background:#1e2a3a;border-radius:16px;padding:12px;margin:15px 0"><p style="color:#f39c12;margin-bottom:5px"><i class="fas fa-info-circle"></i> Note:</p><p style="color:rgba(255,255,255,0.8);font-size:0.9rem">Owner ID (front & back) and Vehicle Registry can be an image or a PDF. Your vehicle will be verified by admin before services are available.</p></div>
     <button class="btn btn-primary" onclick="addVehicle()"><i class="fas fa-upload"></i> Submit for Verification</button>
   </div>
 </div>
@@ -1169,11 +1173,47 @@ window.onload=()=>{
     await loadBankDetails();
     loadHomeContent();
     loadSocialLinks();
+    initHeroText();
     checkSession();
   })();
 };
 
 async function loadInitialData(){await loadVehicleTypes();await loadServices();await loadBankDetails()}
+
+let _heroSlides=[],_heroIdx=0,_heroTimer=null;
+async function initHeroText(){
+  let list=[];
+  try{let arr=(await db.ref('app_settings/homeHeadlines').once('value')).val();if(Array.isArray(arr))list=arr.filter(Boolean);}catch(_){}
+  if(!list.length){try{let h=(await db.ref('app_settings/homeHero').once('value')).val();if(h)list=[h];}catch(_){}}
+  if(!list.length)list=[{titleEn:'Vehicle Registration Made Easy',subEn:'Your complete vehicle registration, sticker renewal, traffic fine & business services.'}];
+  // build the rotation: each headline in English, then Dhivehi if provided
+  _heroSlides=[];
+  list.forEach(h=>{
+    if(h.titleEn||h.subEn)_heroSlides.push({title:h.titleEn||h.titleDv||'',sub:h.subEn||h.subDv||'',dv:false});
+    if(h.titleDv||h.subDv)_heroSlides.push({title:h.titleDv||h.titleEn||'',sub:h.subDv||h.subEn||'',dv:true});
+  });
+  if(!_heroSlides.length)_heroSlides=[{title:'Vehicle Registration Made Easy',sub:'',dv:false}];
+  _heroIdx=0;applyHeroSlide(_heroSlides[0]);
+  if(_heroTimer)clearInterval(_heroTimer);
+  if(_heroSlides.length>1)_heroTimer=setInterval(()=>{_heroIdx=(_heroIdx+1)%_heroSlides.length;applyHeroSlide(_heroSlides[_heroIdx]);},4200);
+}
+function applyHeroSlide(slide){
+  let t=document.getElementById('heroTitle'),s=document.getElementById('heroSub');if(!t||!s)return;
+  t.style.opacity='0';t.style.transform='translateY(12px)';
+  s.style.opacity='0';s.style.transform='translateY(12px)';
+  setTimeout(()=>{
+    if(slide.dv){t.textContent=slide.title;t.classList.add('dv');s.textContent=slide.sub;s.classList.add('dv');}
+    else{
+      t.classList.remove('dv');s.classList.remove('dv');
+      let words=String(slide.title).split(' ');
+      if(words.length>=2){let mid=Math.ceil(words.length/2);t.innerHTML=words.slice(0,mid-1).join(' ')+' <span>'+words[mid-1]+'</span><br>'+words.slice(mid).join(' ');}
+      else t.textContent=slide.title;
+      s.textContent=slide.sub;
+    }
+    t.style.opacity='1';t.style.transform='translateY(0)';
+    s.style.opacity='1';s.style.transform='translateY(0)';
+  },480);
+}
 
 function showMessage(id,txt,type){let el=document.getElementById(id);if(!el)return;el.style.display='block';el.className='message '+type;el.innerText=txt;setTimeout(()=>el.style.display='none',3500)}
 function showNotification(msg,type='success'){let n=document.createElement('div');n.style.cssText=`position:fixed;bottom:80px;right:20px;background:${type==='success'?'#27ae60':'#c0392b'};color:white;padding:12px 20px;border-radius:20px;z-index:9999;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.4)`;n.innerText=msg;document.body.appendChild(n);setTimeout(()=>n.remove(),3500)}
@@ -1381,11 +1421,12 @@ window.showUserSection=function(s,el){
 function renderBizServiceCards(){let g=document.getElementById('bizServiceCards');if(!g)return;g.innerHTML='';Object.keys(BIZ_SERVICES).forEach(k=>{let s=BIZ_SERVICES[k];g.innerHTML+=`<div class="business-service-card" onclick="openBusinessService('${k}')"><div class="biz-icon"><i class="fas ${s.icon}" style="color:${s.color}"></i></div><div class="biz-info"><div class="biz-title">${s.title}</div><div class="biz-desc">${s.desc}</div></div><i class="fas fa-chevron-right biz-arrow"></i></div>`})}
 
 // ===== VEHICLES =====
-window.showAddVehicleModal=function(){_resubmitVid=null;_idFrontFile=_idBackFile=null;document.getElementById('addVehicleModal').style.display='flex';updateVehicleTypeDropdowns()};
+window.showAddVehicleModal=function(){_resubmitVid=null;_idFrontFile=_idBackFile=_vehRegFile=null;document.getElementById('addVehicleModal').style.display='flex';updateVehicleTypeDropdowns()};
 window.closeAddVehicleModal=function(){document.getElementById('addVehicleModal').style.display='none'};
-let _idFrontFile=null,_idBackFile=null,_resubmitVid=null;
+let _idFrontFile=null,_idBackFile=null,_vehRegFile=null,_resubmitVid=null;
 function handleIdFront(input){if(input.files[0]){_idFrontFile=input.files[0];previewImage(_idFrontFile,'idFrontPreview','idFrontName')}}
 function handleIdBack(input){if(input.files[0]){_idBackFile=input.files[0];previewImage(_idBackFile,'idBackPreview','idBackName')}}
+function handleVehReg(input){if(input.files[0]){_vehRegFile=input.files[0];previewImage(_vehRegFile,'vehRegPreview','vehRegName')}}
 
 // Generic Twilio SMS (same creds saved in admin). Returns {sent,demo,error}.
 async function twilioSendSms(phone,body){
@@ -1413,9 +1454,9 @@ async function addVehicle(){
   let num=document.getElementById('vehicleNumber').value.trim(),type=document.getElementById('vehicleType').value,model=document.getElementById('vehicleModel').value.trim();
   let resubmit=!!_resubmitVid;
   if(!num||!type){showMessage('vehicleMessage','Fill required fields','error');return}
-  if(!resubmit&&(!_idFrontFile||!_idBackFile)){showMessage('vehicleMessage','Upload ID front and ID back','error');return}
+  if(!resubmit&&(!_idFrontFile||!_idBackFile||!_vehRegFile)){showMessage('vehicleMessage','Upload ID front, ID back and vehicle registry','error');return}
   closeAddVehicleModal();
-  showUploadProgress([{label:'ID Front',icon:'id-card'},{label:'ID Back',icon:'id-card'},{label:'Saving vehicle',icon:'database'}]);
+  showUploadProgress([{label:'ID Front',icon:'id-card'},{label:'ID Back',icon:'id-card'},{label:'Vehicle Registry',icon:'file-lines'},{label:'Saving vehicle',icon:'database'}]);
   try{
     let vid=resubmit?_resubmitVid:db.ref('vehicle_verifications').push().key;
     let existing={};
@@ -1425,10 +1466,12 @@ async function addVehicle(){
     setUploadStage(0,'done');setUploadStage(1,'active');
     let idBackUrl=_idBackFile?await uploadVehFile(_idBackFile,vid,'idback'):(existing.idBackUrl||'');
     setUploadStage(1,'done');setUploadStage(2,'active');
-    let documents={'ID Front':idFrontUrl,'ID Back':idBackUrl};
+    let regUrl=_vehRegFile?await uploadVehFile(_vehRegFile,vid,'registry'):(existing.registrationUrl||'');
+    setUploadStage(2,'done');setUploadStage(3,'active');
+    let documents={'ID Front':idFrontUrl,'ID Back':idBackUrl,'Vehicle Registry':regUrl};
     await db.ref(`vehicles/${currentUser.uid}/${vid}`).update({
       number:num,type,model:model||'',
-      idFrontUrl,idBackUrl,
+      idFrontUrl,idBackUrl,registrationUrl:regUrl,
       documents,verified:false,status:'pending',rejectReason:'',
       createdAt:existing.createdAt||Date.now(),updatedAt:Date.now()
     });
@@ -1438,13 +1481,13 @@ async function addVehicle(){
       vehicleNumber:num,vehicleModel:model||'',vehicleType:(vehicleTypes[type]?.name||type),
       documents,status:'pending',reason:'',requestedAt:Date.now()
     });
-    setUploadStage(2,'done');completeUploadProgress(resubmit?'Documents resubmitted for review!':'Vehicle submitted for verification!');
+    setUploadStage(3,'done');completeUploadProgress(resubmit?'Documents resubmitted for review!':'Vehicle submitted for verification!');
     let adminPhone=await getAdminPhone();
     if(adminPhone)twilioSendSms(adminPhone,'RegAssist: '+(resubmit?'Re-submitted':'New')+' vehicle '+num+' from '+(currentUser.name||'a user')+' needs verification.');
-    _idFrontFile=_idBackFile=null;_resubmitVid=null;
+    _idFrontFile=_idBackFile=_vehRegFile=null;_resubmitVid=null;
     ['vehicleNumber','vehicleModel'].forEach(id=>{let el=document.getElementById(id);if(el)el.value=''});
-    ['idFrontName','idBackName'].forEach(id=>{let el=document.getElementById(id);if(el)el.innerText=''});
-    ['idFrontPreview','idBackPreview'].forEach(id=>{let el=document.getElementById(id);if(el)el.style.display='none'});
+    ['idFrontName','idBackName','vehRegName'].forEach(id=>{let el=document.getElementById(id);if(el)el.innerText=''});
+    ['idFrontPreview','idBackPreview','vehRegPreview'].forEach(id=>{let el=document.getElementById(id);if(el)el.style.display='none'});
     setTimeout(()=>{hideUploadProgress();loadUserVehicles()},1800);
   }catch(e){hideUploadProgress();showNotification('Upload failed: '+e.message,'error')}
 }
@@ -1471,9 +1514,10 @@ async function loadUserVehicles(){
     let badge=st==='approved'?'<span class="badge verified">Verified</span>':st==='rejected'?'<span class="badge pending" style="background:rgba(231,76,60,0.18);color:#e74c3c;border-color:rgba(231,76,60,0.35)">Rejected</span>':'<span class="badge pending">Pending</span>';
     let extra='';
     if(st==='rejected'){
-      extra=`<div style="margin-top:8px;background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:8px;font-size:0.78rem;color:#e8836f;text-align:left">${v.rejectReason?'<i class="fas fa-circle-info"></i> '+v.rejectReason:'Documents had an issue.'}<br><button class="btn btn-primary" style="margin-top:8px;padding:6px 12px;font-size:0.8rem" onclick="resubmitVehicle('${vid}')"><i class="fas fa-rotate-right"></i> Resubmit Documents</button></div>`;
+      extra=`<div style="margin-top:8px;background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:8px;font-size:0.78rem;color:#e8836f;text-align:left">${v.rejectReason?'<i class="fas fa-circle-info"></i> '+v.rejectReason:'Documents had an issue.'}<br><button class="btn btn-primary" style="margin-top:8px;padding:6px 12px;font-size:0.8rem" onclick="event.stopPropagation();resubmitVehicle('${vid}')"><i class="fas fa-rotate-right"></i> Resubmit Documents</button></div>`;
     }
-    let card=`<div class="vehicle-card"><div class="vehicle-icon"><i class="fas ${t.icon}"></i></div><div class="vehicle-name">${v.number}</div><div class="vehicle-plate">${v.model||''}</div><div class="vehicle-type-badge">${t.name}</div><div style="margin-top:6px">${badge}</div>${extra}</div>`;
+    let isVerified=(st==='approved');
+    let card=`<div class="vehicle-card" style="cursor:pointer" onclick="goToVehicleServices('${vid}',${isVerified})"><div class="vehicle-icon"><i class="fas ${t.icon}"></i></div><div class="vehicle-name">${v.number}</div><div class="vehicle-plate">${v.model||''}</div><div class="vehicle-type-badge">${t.name}</div><div style="margin-top:6px">${badge}</div>${isVerified?'<div style="margin-top:6px;font-size:0.72rem;color:#27ae60"><i class="fas fa-hand-pointer"></i> Tap for services</div>':''}${extra}</div>`;
     if(list)list.innerHTML+=card;
     if(dash)dash.innerHTML+=card;
   });
@@ -1482,7 +1526,7 @@ async function loadUserVehicles(){
 function selectVehicleForService(vid,v){}
 function selectVehicleForFine(vid,v){}
 
-async function showServiceSelector(){
+async function showServiceSelector(preferVid){
   let snap=await db.ref(`vehicles/${currentUser.uid}`).once('value');
   let sel=document.getElementById('serviceVehicleSelect'),wrap=document.getElementById('vehicleServiceSelector');
   sel.innerHTML='';
@@ -1491,8 +1535,17 @@ async function showServiceSelector(){
   if(!verified.length){document.getElementById('serviceGrid').innerHTML='<p style="color:rgba(255,255,255,0.5)">No verified vehicles yet. Vehicles must be verified by admin before you can request services.</p>';wrap.style.display='none';return}
   wrap.style.display='block';
   verified.forEach(v=>{sel.innerHTML+=`<option value="${v.vid}" data-type="${v.type}">${v.number} - ${vehicleTypes[v.type]?.name||v.type}</option>`});
+  if(preferVid&&verified.some(v=>v.vid===preferVid))sel.value=preferVid;
   loadServicesForVehicle();
 }
+window.goToVehicleServices=function(vid,verified){
+  if(!verified){showNotification('This vehicle is not verified yet. Services unlock after admin approval.','info');return}
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  let si=document.querySelector('.sidebar-item[onclick*="services"]');if(si)si.classList.add('active');
+  document.querySelectorAll('.user-section').forEach(sec=>sec.style.display='none');
+  document.getElementById('servicesSection').style.display='block';
+  showServiceSelector(vid);
+};
 
 let _svcLang='en',_svcNotice=null;
 async function renderServiceNotice(){
@@ -1534,9 +1587,8 @@ async function loadServicesForVehicle(){
     let nm=(_svcLang==='dv'&&s.nameDv)?s.nameDv:s.name;
     let nmCls=(_svcLang==='dv'&&s.nameDv)?'service-name dv':'service-name';
     let feeLbl=_svcLang==='dv'?'ހިދުމަތުގެ ފީ':'Service Fee';
-    let stkLbl=_svcLang==='dv'?'އަހަރީ ސްޓިކާ':'Annual Sticker';
     let lblCls=_svcLang==='dv'?'dv':'';
-    grid.innerHTML+=`<div class="service-card" onclick="openServiceRequest('${k}','${vid}')"><div class="service-icon"><i class="fas ${s.icon||'fa-concierge-bell'}"></i></div><div class="${nmCls}">${nm}</div><div style="display:flex;gap:10px;margin-top:10px"><div style="flex:1;background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.25);border-radius:12px;padding:8px 6px"><div class="${lblCls}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${feeLbl}</div><div style="font-weight:800;color:#f39c12;font-size:0.95rem">MVR ${amt}</div></div><div style="flex:1;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:12px;padding:8px 6px"><div class="${lblCls}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${stkLbl}</div><div style="font-weight:800;color:#27ae60;font-size:0.95rem">MVR ${sticker}</div></div></div></div>`;
+    grid.innerHTML+=`<div class="service-card" onclick="openServiceRequest('${k}','${vid}')"><div class="service-icon"><i class="fas ${s.icon||'fa-concierge-bell'}"></i></div><div class="${nmCls}">${nm}</div><div style="display:flex;gap:10px;margin-top:10px"><div style="flex:1;background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.25);border-radius:12px;padding:8px 6px"><div class="${lblCls}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${feeLbl}</div><div style="font-weight:800;color:#f39c12;font-size:0.95rem">MVR ${amt}</div></div><div style="flex:1;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:12px;padding:8px 6px"><div class="${nmCls.includes('dv')?'dv':''}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${nm}</div><div style="font-weight:800;color:#27ae60;font-size:0.95rem">MVR ${sticker}</div></div></div></div>`;
   });
   if(!grid.innerHTML)grid.innerHTML='<p style="color:rgba(255,255,255,0.5)">No services available</p>';
   renderServiceNotice();
@@ -1579,46 +1631,64 @@ async function loadUserFines(){
   if(!snap.exists()){div.innerHTML='<p style="color:rgba(255,255,255,0.5)">No fine checks submitted yet.</p>';return}
   let items=[];snap.forEach(c=>items.push({fid:c.key,...c.val()}));
   items.sort((a,b)=>b.createdAt-a.createdAt);
+  let gLang='en';try{gLang=(await db.ref('fine_settings/displayLang').once('value')).val()||'en';}catch(_){}
   items.forEach(f=>{
     let statusBadge,actionBtn='';
+    let fd=f.fineDetails||{};
+    let lang=fd.displayLang||gLang;
+    let tEn=fd.typeNameEn||f.typeName||fd.typeName||'';let tDv=fd.typeNameDv||'';
+    let typeShown=(lang==='dv'&&tDv)?tDv:(tEn||tDv);
+    let typeLine=(f.status==='has_fine'&&typeShown)?`<div class="${(lang==='dv'&&tDv)?'dv':''}" style="color:#f39c12;font-size:0.85rem;font-weight:700;margin-top:4px"><i class="fas fa-gavel" style="margin-right:5px"></i>${typeShown}</div>`:'';
     if(f.status==='pending')statusBadge='<span class="badge pending">Checking...</span>';
     else if(f.status==='no_fine'){statusBadge='<span class="badge verified">No Fines</span>'}
     else if(f.status==='has_fine'){
       statusBadge=`<span class="badge expired">Fine: MVR ${f.fineAmount||0}</span>`;
-      if(!f.paid)actionBtn=`<button class="btn btn-warning btn-small" style="margin-top:8px" onclick="openPayFineModal('${f.fid}',${f.fineAmount||0},'${f.vehicleNumber}')"><i class="fas fa-money-bill"></i> Pay Fine</button>`;
+      if(!f.paid)actionBtn=`<button class="btn btn-warning btn-small" style="margin-top:8px" onclick="openFineDetail('${f.fid}')"><i class="fas fa-eye"></i> View &amp; Pay Fine</button>`;
     }
     else if(f.status==='payment_submitted')statusBadge='<span class="badge active">Payment Submitted</span>';
     else if(f.status==='paid')statusBadge='<span class="badge verified">Paid</span>';
-    div.innerHTML+=`<div class="fine-item" onclick="openFineDetail('${f.fid}')" style="cursor:pointer"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><strong>${f.vehicleNumber}</strong><p style="color:rgba(255,255,255,0.6);font-size:0.82rem;margin-top:4px">${new Date(f.createdAt).toLocaleDateString()}</p></div>${statusBadge}</div>${f.adminNote?`<p style="color:rgba(255,255,255,0.75);font-size:0.85rem;margin-top:8px"><i class="fas fa-comment"></i> ${f.adminNote}</p>`:''}<div onclick="event.stopPropagation()">${actionBtn}</div></div>`;
+    div.innerHTML+=`<div class="fine-item" onclick="openFineDetail('${f.fid}')" style="cursor:pointer"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><strong>${f.vehicleNumber}</strong>${typeLine}<p style="color:rgba(255,255,255,0.6);font-size:0.82rem;margin-top:4px">${new Date(f.createdAt).toLocaleDateString()}</p></div>${statusBadge}</div>${f.adminNote?`<p style="color:rgba(255,255,255,0.75);font-size:0.85rem;margin-top:8px"><i class="fas fa-comment"></i> ${f.adminNote}</p>`:''}<div onclick="event.stopPropagation()">${actionBtn}</div></div>`;
   });
 }
 
 let _currentFineDetail=null;
+let _fineDetailLang='en';
 window.openFineDetail=async function(fid){
   let snap=await db.ref(`fine_requests/${currentUser.uid}/${fid}`).once('value');if(!snap.exists())return;
   let f=snap.val();f.fid=fid;_currentFineDetail=f;
-  let statusText={pending:'Checking',no_fine:'No Fines Found',has_fine:'Fine Issued',payment_submitted:'Payment Submitted',paid:'Paid'}[f.status]||f.status;
-  let dispLang='en';try{dispLang=(await db.ref('fine_settings/displayLang').once('value')).val()||'en';}catch(_){}
   let fd=f.fineDetails||{};
-  let tEn=fd.typeNameEn||f.typeName||fd.typeName||'';
-  let tDv=fd.typeNameDv||'';
-  let typeShown=(dispLang==='dv'&&tDv)?tDv:(tEn||tDv);
-  let typeRow=typeShown?`<div style="display:flex;justify-content:space-between"><span style="color:rgba(255,255,255,0.5)">Fine Type</span><strong class="${(dispLang==='dv'&&tDv)?'dv':''}">${typeShown}</strong></div>`:'';
-  let html=`<div style="display:flex;flex-direction:column;gap:10px">
-    <div style="display:flex;justify-content:space-between"><span style="color:rgba(255,255,255,0.5)">Vehicle</span><strong>${f.vehicleNumber}</strong></div>
-    ${typeRow}
-    <div style="display:flex;justify-content:space-between"><span style="color:rgba(255,255,255,0.5)">Owner ID</span><span>${f.ownerId||'—'}</span></div>
-    <div style="display:flex;justify-content:space-between"><span style="color:rgba(255,255,255,0.5)">Contact</span><span>${f.contact||'—'}</span></div>
-    <div style="display:flex;justify-content:space-between"><span style="color:rgba(255,255,255,0.5)">Status</span><strong style="color:#f39c12">${statusText}</strong></div>
-    ${f.fineAmount?`<div style="display:flex;justify-content:space-between"><span style="color:rgba(255,255,255,0.5)">Fine Amount</span><strong style="color:#e74c3c">MVR ${f.fineAmount}</strong></div>`:''}
-    ${f.notes?`<div><span style="color:rgba(255,255,255,0.5)">Notes</span><p style="margin-top:4px">${f.notes}</p></div>`:''}
-    ${f.adminNote?`<div style="background:#1e2a3a;border-radius:12px;padding:12px;margin-top:6px"><span style="color:#f39c12;font-size:0.8rem"><i class="fas fa-comment"></i> Admin Note</span><p style="margin-top:4px">${f.adminNote}</p></div>`:''}
-    ${f.documentUrl?`<img src="${f.documentUrl}" style="width:100%;border-radius:12px;margin-top:8px;cursor:pointer" onclick="openLightbox('${f.documentUrl}','Fine Document','${f.documentUrl}')">`:''}
-    ${f.status==='has_fine'&&!f.paid?`<button class="btn btn-warning" style="margin-top:10px" onclick="closeFineDetail();openPayFineModal('${f.fid}',${f.fineAmount||0},'${f.vehicleNumber}')"><i class="fas fa-money-bill"></i> Pay Fine</button>`:''}
-  </div>`;
-  document.getElementById('fineDetailContent').innerHTML=html;
+  _fineDetailLang=fd.displayLang||'en';
+  try{if(!fd.displayLang){let g=(await db.ref('fine_settings/displayLang').once('value')).val();if(g)_fineDetailLang=g;}}catch(_){}
+  renderFineDetailBody();
   document.getElementById('fineDetailModal').style.display='flex';
 };
+window.toggleFineDetailLang=function(){_fineDetailLang=_fineDetailLang==='en'?'dv':'en';renderFineDetailBody();};
+function renderFineDetailBody(){
+  let f=_currentFineDetail;if(!f)return;let fd=f.fineDetails||{};
+  let dv=_fineDetailLang==='dv';
+  let L=dv?{vehicle:'ވެހިކަލް',type:'ޖޫރިމަނާގެ ބާވަތް',owner:'އޯނަރ އައިޑީ',contact:'ގުޅޭނެ ނަންބަރު',status:'ހާލަތު',amount:'ޖޫރިމަނާ އަދަދު',note:'ނޯޓު',pay:'ޖޫރިމަނާ ދައްކަވާ',title:'ޖޫރިމަނާގެ ތަފްޞީލު'}
+                :{vehicle:'Vehicle',type:'Fine Type',owner:'Owner ID',contact:'Contact',status:'Status',amount:'Fine Amount',note:'Admin Note',pay:'Pay Fine',title:'Fine Details'};
+  let statusMap=dv?{pending:'ބަލަނީ',no_fine:'ޖޫރިމަނާއެއް ނެތް',has_fine:'ޖޫރިމަނާ ކޮށްފައި',payment_submitted:'ފައިސާ ހުށަހަޅާފައި',paid:'ދައްކާފައި'}
+                   :{pending:'Checking',no_fine:'No Fines Found',has_fine:'Fine Issued',payment_submitted:'Payment Submitted',paid:'Paid'};
+  let statusText=statusMap[f.status]||f.status;
+  let tEn=fd.typeNameEn||f.typeName||fd.typeName||'';let tDv=fd.typeNameDv||'';
+  let typeShown=dv?(tDv||tEn):(tEn||tDv);
+  let dvc=dv?'dv':'';
+  let typeRow=typeShown?`<div style="display:flex;justify-content:space-between"><span class="${dvc}" style="color:rgba(255,255,255,0.5)">${L.type}</span><strong class="${(dv&&tDv)?'dv':''}">${typeShown}</strong></div>`:'';
+  let html=`<div style="display:flex;justify-content:flex-end;margin-bottom:6px"><button onclick="toggleFineDetailLang()" style="background:#253445;border:1px solid #2e4057;color:#f39c12;border-radius:18px;padding:5px 12px;font-size:0.78rem;cursor:pointer;font-family:inherit"><i class="fas fa-language"></i> <span class="${dv?'':'dv'}">${dv?'English':'ދިވެހި'}</span></button></div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;justify-content:space-between"><span class="${dvc}" style="color:rgba(255,255,255,0.5)">${L.vehicle}</span><strong>${f.vehicleNumber}</strong></div>
+    ${typeRow}
+    <div style="display:flex;justify-content:space-between"><span class="${dvc}" style="color:rgba(255,255,255,0.5)">${L.owner}</span><span>${f.ownerId||'—'}</span></div>
+    <div style="display:flex;justify-content:space-between"><span class="${dvc}" style="color:rgba(255,255,255,0.5)">${L.contact}</span><span>${f.contact||'—'}</span></div>
+    <div style="display:flex;justify-content:space-between"><span class="${dvc}" style="color:rgba(255,255,255,0.5)">${L.status}</span><strong class="${dvc}" style="color:#f39c12">${statusText}</strong></div>
+    ${f.fineAmount?`<div style="display:flex;justify-content:space-between"><span class="${dvc}" style="color:rgba(255,255,255,0.5)">${L.amount}</span><strong style="color:#e74c3c">MVR ${f.fineAmount}</strong></div>`:''}
+    ${f.adminNote?`<div style="background:#1e2a3a;border-radius:12px;padding:12px;margin-top:6px"><span class="${dvc}" style="color:#f39c12;font-size:0.8rem"><i class="fas fa-comment"></i> ${L.note}</span><p style="margin-top:4px">${f.adminNote}</p></div>`:''}
+    ${f.documentUrl?`<img src="${f.documentUrl}" style="width:100%;border-radius:12px;margin-top:8px;cursor:pointer" onclick="openLightbox('${f.documentUrl}','Fine Document','${f.documentUrl}')">`:''}
+    ${f.status==='has_fine'&&!f.paid?`<button class="btn btn-warning ${dvc}" style="margin-top:10px" onclick="closeFineDetail();openPayFineModal('${f.fid}',${f.fineAmount||0},'${f.vehicleNumber}')"><i class="fas fa-money-bill"></i> ${L.pay}</button>`:''}
+  </div>`;
+  document.getElementById('fineDetailContent').innerHTML=html;
+}
 window.closeFineDetail=function(){document.getElementById('fineDetailModal').style.display='none'};
 window.printFineDetail=function(){if(!_currentFineDetail)return;let f=_currentFineDetail;let w=window.open('','_blank','width=600,height=700');w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fine ${f.vehicleNumber}</title><style>body{font-family:'Segoe UI',sans-serif;padding:30px;color:#1a2535}h2{color:#e67e22}table{width:100%;border-collapse:collapse;margin-top:20px}td{padding:10px;border-bottom:1px solid #eee}td:first-child{color:#888;width:40%}</style></head><body><h2>Traffic Fine Details</h2><table><tr><td>Vehicle</td><td><strong>${f.vehicleNumber}</strong></td></tr><tr><td>Owner ID</td><td>${f.ownerId||'-'}</td></tr><tr><td>Contact</td><td>${f.contact||'-'}</td></tr><tr><td>Fine Amount</td><td>MVR ${f.fineAmount||0}</td></tr><tr><td>Status</td><td>${f.status}</td></tr><tr><td>Date</td><td>${new Date(f.createdAt).toLocaleString()}</td></tr></table><script>window.onload=()=>{window.print();window.close()}<\/script></body></html>`);w.document.close()};
 
@@ -1716,7 +1786,7 @@ window.openServiceRequest=async function(serviceKey,vid){
   if(isInsurance){let csel=document.getElementById('svcInsuranceCompany');if(csel)csel.onchange=function(){document.getElementById('svcInsuranceCompanyOther').style.display=this.value==='__other'?'block':'none'}}
   // price breakdown
   let total=Number(amt)+Number(sticker);
-  document.getElementById('priceBreakdown').innerHTML=`<div class="price-row"><span class="price-label">Service Fee</span><span class="price-value">MVR ${amt}</span></div><div class="price-row"><span class="price-label">Sticker Fee</span><span class="price-value">MVR ${sticker}</span></div><div class="price-row total"><span>Total</span><span>MVR ${total}</span></div>`;
+  document.getElementById('priceBreakdown').innerHTML=`<div class="price-row"><span class="price-label">Service Fee</span><span class="price-value">MVR ${amt}</span></div><div class="price-row"><span class="price-label">${s.name}</span><span class="price-value">MVR ${sticker}</span></div><div class="price-row total"><span>Total</span><span>MVR ${total}</span></div>`;
   document.getElementById('serviceBankDetails').innerHTML=renderBankDetails(total);
   document.getElementById('svcUploadEmpty').style.display='block';
   document.getElementById('svcUploadDone').style.display='none';
