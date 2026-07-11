@@ -132,7 +132,7 @@ body{background:#0a0f1e;min-height:100vh;overflow-x:hidden}
 .vehicle-plate,.service-name{color:white;font-size:0.85rem}
 .vehicle-type-badge{display:inline-block;background:#1e2a3a;padding:3px 8px;border-radius:20px;font-size:0.7rem;margin-top:5px;color:#f39c12}
 .service-price{color:#f39c12;font-size:1.1rem;font-weight:600;margin-top:0.3rem}
-.custom-price-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(243,156,18,0.18);border:1px solid rgba(243,156,18,0.5);border-radius:12px;padding:3px 9px;font-size:0.65rem;font-weight:700;color:#f39c12;margin-top:6px}
+.custom-price-badge{display:none!important}
 .sticker-card{background:#1b2a3f;border-radius:24px;padding:1rem;margin:0.8rem 0;border-left:6px solid #f39c12;color:white}
 .expiry-row{display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0}
 .days-badge{background:#2a3a55;padding:6px 12px;border-radius:40px;font-weight:600;color:white}
@@ -1989,26 +1989,44 @@ function resolveVehicleServicePrice(serviceKey,vtype,s,custom={}){
   let sticker=stickerIsCustom?Number(rec.stickerPrice):Number(typeDefaultSticker);
   return {amt,sticker,total:amt+sticker,isCustom:amountIsCustom||stickerIsCustom,amountIsCustom,stickerIsCustom};
 }
+function vehicleServiceDedupeKey(service){
+  service=service||{};
+  return String(service.name||service.nameDv||service.title||'').normalize('NFKC').toLowerCase().replace(/[\u200B-\u200D\uFEFF]/g,'').replace(/[^a-z0-9ހ-\u07bf]+/gi,'').trim();
+}
 async function loadServicesForVehicle(){
+  let renderToken=++_svcRenderToken;
   let sel=document.getElementById('serviceVehicleSelect');
   if(!sel||!sel.value){let grid=document.getElementById('serviceGrid');if(grid&&!grid.innerHTML)grid.innerHTML='<p style="color:rgba(255,255,255,0.5)">No verified vehicles yet.</p>';renderServiceNotice();return;}
   let vid=sel.value,vtype=sel.options[sel.selectedIndex]?.dataset.type;
   let grid=document.getElementById('serviceGrid');grid.innerHTML='';
   let custom={};
   let cs=await db.ref(`custom_pricing/${currentUser.uid}/${vid}`).once('value');
+  if(renderToken!==_svcRenderToken)return;
   if(cs.exists())custom=cs.val();
+  let serviceEntries=[];
   Object.keys(services).forEach(k=>{
-    let s=services[k];if(!s.active)return;
+    let s=services[k];if(!s||s.active===false)return;
+    let dedupeKey=vehicleServiceDedupeKey(s)||k;
     let price=resolveVehicleServicePrice(k,vtype,s,custom);
+    let existingIndex=serviceEntries.findIndex(item=>item.dedupeKey===dedupeKey);
+    let entry={key:k,service:s,price,dedupeKey};
+    if(existingIndex===-1)serviceEntries.push(entry);
+    else if(price.isCustom&&!serviceEntries[existingIndex].price.isCustom)serviceEntries[existingIndex]=entry;
+  });
+  let seenLabels=new Set(),html='';
+  serviceEntries.forEach(({key:k,service:s,price})=>{
     let amt=price.amt,sticker=price.sticker;
-    let nm=(_svcLang==='dv'&&s.nameDv)?s.nameDv:s.name;
+    let nm=(_svcLang==='dv'&&s.nameDv)?s.nameDv:(s.name||s.nameDv||'Service');
+    let labelKey=String(nm).normalize('NFKC').toLowerCase().replace(/[\u200B-\u200D\uFEFF]/g,'').replace(/[^a-z0-9ހ-\u07bf]+/gi,'').trim();
+    if(labelKey&&seenLabels.has(labelKey))return;
+    seenLabels.add(labelKey);
     let nmCls=(_svcLang==='dv'&&s.nameDv)?'service-name dv':'service-name';
     let feeLbl=_svcLang==='dv'?'ހިދުމަތުގެ ފީ':'Service Fee';
     let lblCls=_svcLang==='dv'?'dv':'';
-    let customBadge=price.isCustom?`<div class="${lblCls}" style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:rgba(243,156,18,0.14);border:1px solid rgba(243,156,18,0.35);color:#f39c12;border-radius:999px;padding:4px 9px;font-size:0.7rem;font-weight:800"><i class="fas fa-tag"></i> ${_svcLang==='dv'?'ކަސްޓަމް ފީ':'Custom price'}</div>`:'';
-    grid.innerHTML+=`<div class="service-card" onclick="openServiceRequest('${k}','${vid}')"><div class="service-icon"><i class="fas ${s.icon||'fa-concierge-bell'}"></i></div><div class="${nmCls}">${nm}</div>${customBadge}<div style="display:flex;gap:10px;margin-top:10px"><div style="flex:1;background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.25);border-radius:12px;padding:8px 6px"><div class="${lblCls}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${feeLbl}</div><div style="font-weight:800;color:#f39c12;font-size:0.95rem">MVR ${amt}</div></div><div style="flex:1;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:12px;padding:8px 6px"><div class="${nmCls.includes('dv')?'dv':''}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${nm}</div><div style="font-weight:800;color:#27ae60;font-size:0.95rem">MVR ${sticker}</div></div></div></div>`;
+    html+=`<div class="service-card" data-service-label="${labelKey}" onclick="openServiceRequest('${k}','${vid}')"><div class="service-icon"><i class="fas ${s.icon||'fa-concierge-bell'}"></i></div><div class="${nmCls}">${nm}</div><div style="display:flex;gap:10px;margin-top:10px"><div style="flex:1;background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.25);border-radius:12px;padding:8px 6px"><div class="${lblCls}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${feeLbl}</div><div style="font-weight:800;color:#f39c12;font-size:0.95rem">MVR ${amt}</div></div><div style="flex:1;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:12px;padding:8px 6px"><div class="${nmCls.includes('dv')?'dv':''}" style="font-size:0.62rem;color:rgba(255,255,255,0.5);letter-spacing:0.5px">${nm}</div><div style="font-weight:800;color:#27ae60;font-size:0.95rem">MVR ${sticker}</div></div></div></div>`;
   });
-  if(!grid.innerHTML)grid.innerHTML='<p style="color:rgba(255,255,255,0.5)">No services available</p>';
+  if(renderToken!==_svcRenderToken)return;
+  grid.innerHTML=html||'<p style="color:rgba(255,255,255,0.5)">No services available</p>';
   renderServiceNotice();
 }
 
@@ -2166,7 +2184,7 @@ async function loadStickerStatus(){
 }
 
 // ===== SERVICE REQUEST =====
-let _svcServiceKey=null,_svcVehicleId=null,_svcVehicle=null,_svcSlipFile=null;
+let _svcServiceKey=null,_svcVehicleId=null,_svcVehicle=null,_svcSlipFile=null,_svcRenderToken=0;
 window.openServiceRequest=async function(serviceKey,vid){
   _svcServiceKey=serviceKey;_svcVehicleId=vid;
   let s=services[serviceKey];if(!s)return;
@@ -2223,7 +2241,7 @@ window.openServiceRequest=async function(serviceKey,vid){
   if(isInsurance){let csel=document.getElementById('svcInsuranceCompany');if(csel)csel.onchange=function(){document.getElementById('svcInsuranceCompanyOther').style.display=this.value==='__other'?'block':'none'}}
   // price breakdown
   let total=Number(amt)+Number(sticker);
-  document.getElementById('priceBreakdown').innerHTML=`${price.isCustom?`<div style="margin-bottom:8px;background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.3);border-radius:12px;padding:8px 10px;color:#f39c12;font-size:0.78rem;font-weight:800"><i class="fas fa-tag"></i> Custom price for this vehicle</div>`:''}<div class="price-row"><span class="price-label ${_svcLang==='dv'?'dv':''}">${_svcLang==='dv'?'ހިދުމަތުގެ ފީ':'Service Fee'}</span><span class="price-value">MVR ${amt}</span></div><div class="price-row"><span class="price-label ${svcTextCls(s,'name')}">${serviceTitle}</span><span class="price-value">MVR ${sticker}</span></div><div class="price-row total"><span class="${_svcLang==='dv'?'dv':''}">${_svcLang==='dv'?'ޖުމްލަ':'Total'}</span><span>MVR ${total}</span></div>`;
+  document.getElementById('priceBreakdown').innerHTML=`<div class="price-row"><span class="price-label ${_svcLang==='dv'?'dv':''}">${_svcLang==='dv'?'ހިދުމަތުގެ ފީ':'Service Fee'}</span><span class="price-value">MVR ${amt}</span></div><div class="price-row"><span class="price-label ${svcTextCls(s,'name')}">${serviceTitle}</span><span class="price-value">MVR ${sticker}</span></div><div class="price-row total"><span class="${_svcLang==='dv'?'dv':''}">${_svcLang==='dv'?'ޖުމްލަ':'Total'}</span><span>MVR ${total}</span></div>`;
   document.getElementById('serviceBankDetails').innerHTML=renderBankDetails(total);
   document.getElementById('svcUploadEmpty').style.display='block';
   document.getElementById('svcUploadDone').style.display='none';
